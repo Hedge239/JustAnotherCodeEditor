@@ -1,0 +1,8 @@
+# Folders
+.build/
+.vscode/
+.old/
+
+# Files
+CMakePresets.json
+docs/READMEv2.md
