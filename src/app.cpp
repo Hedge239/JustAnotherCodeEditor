@@ -54,7 +54,6 @@ int main(int argc, char* argv[])
     
     app::common::log::Clear();
     app::common::log::LogToFile("application", "[MAIN] UserData set to: " + app::common::global::APPDATA);
-    app::common::log::LogToFile("application", "Validating Required UserData files");
 
     // Load plugins
 }
