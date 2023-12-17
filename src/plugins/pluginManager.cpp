@@ -10,9 +10,11 @@
 
 #ifdef _WIN32
     #include "JACE/_win/win32.h"
+    #include "windows.h"
     const bool IsWindows = true;
 #elif __linux__
     #include "JACE/_linux/linux.h"
+    #include "dlfcn.h"
 else
     // Continue adding for other display services
 #endif
@@ -50,7 +52,7 @@ void app::plugins::manager::LoadPlugins()
                 break;
             }
 
-            // This is a horrible way for this to function, is yet another problem for future me
+            // This is yet another horrible function, makeing this another problem for future me
             if(IsWindows)
             {
                 line = line + ".dll";
@@ -69,9 +71,44 @@ void app::plugins::manager::LoadPlugins()
     }
 
     // Load plugin/plugin.so/lib
-    for(std::string plugin : pluginList)
+    for(std::string pluginPath : pluginList)
     {
-        
+        // If I need more then UNIX and Win32 dynamic libs, then that is a later problem
+        #ifdef _WIN32
+            HMODULE pluginHandle = LoadLibrary(std::string(app::common::global::APPDATA + "\\plugins\\" + pluginPath).c_str());
+        #elif
+            void pluginHandle = dlopen(std::string(app::common::global::APPDATA + "\\plugins\\" + pluginPath).c_str(), RTLD_LAZY);
+        #endif
+
+        if(!pluginHandle)
+        {
+            app::common::log::LogToFile("application", "[PLUGIN_MANAGER] [ERROR] Invalid plugin: " + pluginPath);
+        }else
+        {
+            using CreatePluginFn = app::PluginInterface* (*)();
+
+            #ifdef _WIN32
+                CreatePluginFn createPlugin = reinterpret_cast<CreatePluginFn>(GetProcAddress(pluginHandle, "createPlugin"));
+            #elif
+                CreatePluginFn createPlugin = reinterpret_cast<CreatePluginFn>(dlsym(pluginHandle, "createPlugin"));
+            #endif
+
+            // If the plugin falls, it all falls
+            if(!createPlugin)
+            {
+                app::common::log::CreateCrashLog("[PLUGIN_MANAGER] Faild to load createPlugin fuction for: " + pluginPath);
+                FreeLibrary(pluginHandle);
+                exit(0);
+            }
+
+            app::PluginInterface* plugin = createPlugin();
+            
+            // Run all required functions for plugins (eg. logger, etc)
+            // plugin->app::PluginInterface::SetLogger(app::common::log::LogToFile); - TODO - FIX - EVENTUALLY
+
+            // Keep track of all active plugins
+            app::common::global::plugins.push_back(plugin);
+        }
     }
     // Load plugin in and add to vector
     // do the func that run at the beginning
