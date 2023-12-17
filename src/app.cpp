@@ -2,30 +2,25 @@
 #include "JACE/common/logHandeler.h"
 #include "JACE/common/fileHandeler.h"
 #include "JACE/_UI/WindowCreation.h"
-
+#include "JACE/plugins/pluginManager.h"
 
 #include <filesystem>
 
+// This is to be coppied to ANYTHING that has window specific functions, I can see this getting REAL MESSY in the future witch is a later problem
 #ifdef _WIN32
     #include "JACE/_win/win32.h"
+    const bool IsWindows = true;
 #elif __linux__
     #include "JACE/_linux/linux.h"
+    const bool IsWindows = false;
 else
     // Continue adding for other display services
 #endif
 
-bool IsWindows()
-{
-    #ifdef _WIN32
-        return true;
-    #else
-        return false;
-    #endif
-}
-
 
 int main(int argc, char* argv[])
 {
+
     // Get where UserData will be stored and validate
     if(!std::filesystem::exists("app.cfg"))
     {
@@ -56,4 +51,5 @@ int main(int argc, char* argv[])
     app::common::log::LogToFile("application", "[MAIN] UserData set to: " + app::common::global::APPDATA);
 
     // Load plugins
+    app::plugins::manager::LoadPlugins();
 }

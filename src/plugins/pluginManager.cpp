@@ -10,6 +10,7 @@
 
 #ifdef _WIN32
     #include "JACE/_win/win32.h"
+    const bool IsWindows = true;
 #elif __linux__
     #include "JACE/_linux/linux.h"
 else
@@ -22,6 +23,7 @@ void app::plugins::manager::LoadPlugins()
     if(!std::filesystem::exists(app::common::global::APPDATA + "\\plugins\\plugin.ini"))
     {
         std::ofstream c_pluginlist;
+        std::filesystem::create_directory(app::common::global::APPDATA + "\\plugins");
         c_pluginlist.open(app::common::global::APPDATA + "\\plugins\\plugin.ini");
         c_pluginlist.close();
 
@@ -30,28 +32,35 @@ void app::plugins::manager::LoadPlugins()
         return;
     }
 
-    std::ifstream pluginlist;
-    std::vector<std::string> plugins;
+    // Read the list of plugins from plugin.ini
+    std::ifstream pluginListFile;
+    std::vector<std::string> pluginList;
 
-    pluginlist.open(app::common::global::APPDATA + "\\plugins\\plugin.ini");
-    app::common::log::LogToFile("application", "[PLUGIN_MANAGER] Reading from plugin.ini");
+    pluginListFile.open(app::common::global::APPDATA + "\\plugins\\plugin.ini");
 
-    if(pluginlist.is_open())
+    if(pluginListFile.is_open())
     {
         std::string line;
-
-        if(std::getline(pluginlist, line))
+        
+        while(std::getline(pluginListFile, line))
         {
-            app::common::log::LogToFile("application", "[PLUGIN_MANAGER] Text detected in plugin.ini, reading");
-
-            while(std::getline(pluginlist, line) && !line.empty())
+            if(line.empty())
             {
-                plugins.push_back(line);
+                app::common::log::LogToFile("application", "[PLUGIN_MANAGER] Loading all detected plugins");
+                break;
             }
-        }else
-        {
-            app::common::log::LogToFile("application", "[PLUGIN_MANAGER] No text detected, aborting");
-            return;
+
+            // This is a horrible way for this to function, is yet another problem for future me
+            if(IsWindows)
+            {
+                line = line + ".dll";
+            }else
+            {
+                line = line + ".so";
+            };
+
+            app::common::log::LogToFile("application", "[PLUGIN_MANAGER] Found: " + line);
+            pluginList.push_back(line);
         }
     }else
     {
@@ -59,7 +68,11 @@ void app::plugins::manager::LoadPlugins()
         return;
     }
 
-    // Open plugins/pluginName/pluginName.so/lib
+    // Load plugin/plugin.so/lib
+    for(std::string plugin : pluginList)
+    {
+        
+    }
     // Load plugin in and add to vector
     // do the func that run at the beginning
 }
