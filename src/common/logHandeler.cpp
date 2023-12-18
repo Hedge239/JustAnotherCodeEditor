@@ -5,23 +5,53 @@
 #include <fstream>
 #include <iostream>
 
-void app::common::log::Clear()
+
+void app::common::log::LogToFile(std::string FileName, std::string Message)
 {
-    if(std::filesystem::exists(app::common::global::APPDATA + "\\logs"))
+    if(!std::filesystem::exists(app::common::global::APPDATA + "\\logs\\sessionLatest"))
     {
-        std::filesystem::remove_all(app::common::global::APPDATA + "\\logs");
+        std::filesystem::create_directory(app::common::global::APPDATA + "\\logs\\sessionLatest");
     }
+
+    std::ofstream file;
+    std::string FilePath = app::common::global::APPDATA + "\\logs\\sessionLatest\\" + FileName + ".log";
+
+    if(std::filesystem::exists(FilePath))
+    {
+        file.open(FilePath, std::ios_base::app);
+    }else
+    {
+        file.open(FilePath);
+    }
+
+    file << Message << std::endl;
+    file.close();
+}
+
+void app::common::log::LogForPlugins(std::string Message)
+{
+    std::ofstream file;
+    std::string FilePath = app::common::global::APPDATA + "\\logs\\sessionLatest\\plugins.log";
+
+    if(std::filesystem::exists(FilePath))
+    {
+        file.open(FilePath, std::ios_base::app);
+    }else
+    {
+        file.open(FilePath);
+    }
+
+    file << Message << std::endl;
+    file.close();
 }
 
 void app::common::log::CreateCrashLog(std::string message)
 {
-    // Clear previous crash log, hope you did not need that
     if(std::filesystem::exists("crash.log"))
     {
         std::filesystem::remove("crash.log");
     }
 
-    // Write text to crashlog
     std::ofstream crashlog;
     crashlog.open("crash.log");
 
@@ -34,24 +64,20 @@ void app::common::log::CreateCrashLog(std::string message)
     crashlog.close();
 }
 
-void app::common::log::LogToFile(std::string FileName, std::string Message)
-{
-    if(!std::filesystem::exists(app::common::global::APPDATA + "\\logs"))
+void app::common::log::startSession()
+{   
+    // Log are now stored on a session based system, there for we now have the latest logs and logs from the last time the app was run
+    if(std::filesystem::exists(app::common::global::APPDATA + "\\logs\\sessionLatest"))
     {
-        std::filesystem::create_directory(app::common::global::APPDATA + "\\logs");
+        if(std::filesystem::exists(app::common::global::APPDATA + "\\logs\\sessionOld"))
+        {
+            std::filesystem::remove_all(app::common::global::APPDATA + "\\logs\\sessionOld");
+            std::filesystem::rename(app::common::global::APPDATA + "\\logs\\sessionLatest", app::common::global::APPDATA + "\\logs\\sessionOld");
+        }else
+        {
+            std::filesystem::rename(app::common::global::APPDATA + "\\logs\\sessionLatest", app::common::global::APPDATA + "\\logs\\sessionOld");
+        }
     }
-
-    std::ofstream file;
-    std::string FilePath = app::common::global::APPDATA + "\\logs\\" + FileName + ".log";
-
-    if(std::filesystem::exists(FilePath))
-    {
-        file.open(FilePath, std::ios_base::app);
-    }else
-    {
-        file.open(FilePath);
-    }
-
-    file << "[APP]: " << Message << std::endl;
-    file.close();
+    
+    app::common::log::LogToFile("application", "[LOGHANDELER] Session Started");
 }

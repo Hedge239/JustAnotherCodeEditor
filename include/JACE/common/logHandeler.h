@@ -10,10 +10,11 @@ namespace app
         class log
         {
             public:
-            static void LogToFile(std::string FileName, std::string message);
+            static void startSession();
             static void CreateCrashLog(std::string message);
-            
-            static void Clear();
+
+            static void LogToFile(std::string FileName, std::string message);
+            static void LogForPlugins(std::string message);
         };
     }
 }

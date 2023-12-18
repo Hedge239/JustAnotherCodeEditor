@@ -93,21 +93,22 @@ void app::plugins::manager::LoadPlugins()
                 CreatePluginFn createPlugin = reinterpret_cast<CreatePluginFn>(dlsym(pluginHandle, "createPlugin"));
             #endif
 
-            // If the plugin falls, it all falls
+            // If the plugin falls, it all falls, for safety
             if(!createPlugin)
             {
-                app::common::log::CreateCrashLog("[PLUGIN_MANAGER] Faild to load createPlugin fuction for: " + pluginPath);
+                app::common::log::LogToFile("application", "[PLUGIN_MANAGER] [ERROR] Faild to assign createPlugin to: " + pluginPath);
                 FreeLibrary(pluginHandle);
-                exit(0);
-            }
-
-            app::PluginInterface* plugin = createPlugin();
+            }else
+            {
+                app::PluginInterface* plugin = createPlugin();
             
-            // Run all required functions for plugins (eg. logger, etc)
-            // plugin->app::PluginInterface::SetLogger(app::common::log::LogToFile); - TODO - FIX - EVENTUALLY
+                // Run all required functions for plugins (eg. logger, etc)
+                plugin->SetLogger(app::common::log::LogForPlugins);
+                app::common::log::LogToFile("application", "[PLUGIN_MANAGER] Assigned functions to: " + pluginPath);
 
-            // Keep track of all active plugins
-            app::common::global::plugins.push_back(plugin);
+                // Keep track of all active plugins
+                app::common::global::plugins.push_back(plugin);
+            }
         }
     }
     // Load plugin in and add to vector

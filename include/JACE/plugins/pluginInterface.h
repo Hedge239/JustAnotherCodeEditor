@@ -10,7 +10,7 @@ namespace app
     {
         public:
         // Required Functions
-            virtual void SetLogger(std::function<void(std::string, std::string)> logFunction) = 0;
+            virtual void SetLogger(std::function<void(std::string)> logFunction) = 0;
         // Optional Functions
             virtual void createSettings() {}
         

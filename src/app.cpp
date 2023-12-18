@@ -47,9 +47,9 @@ int main(int argc, char* argv[])
     if(app::common::global::APPDATA == "")
         {app::common::log::CreateCrashLog("'path=' in app.cfg can not be empty"); exit(-1);}
     
-    app::common::log::Clear();
+    app::common::log::startSession();
     app::common::log::LogToFile("application", "[MAIN] UserData set to: " + app::common::global::APPDATA);
 
-    // Load plugins
+    // Load plugins - Testing comes at a later time, hope it works
     app::plugins::manager::LoadPlugins();
 }
