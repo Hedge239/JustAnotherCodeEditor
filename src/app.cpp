@@ -1,8 +1,12 @@
 #include "JACE/common/global.h"
 #include "JACE/common/logHandeler.h"
 #include "JACE/common/fileHandeler.h"
+
 #include "JACE/_UI/WindowCreation.h"
+#include "JACE/_UI/themeManager.h"
+
 #include "JACE/plugins/pluginManager.h"
+
 
 #include <filesystem>
 
@@ -52,8 +56,13 @@ int main(int argc, char* argv[])
 
     // Load plugins - Testing comes at a later time, hope it works
     app::plugins::manager::LoadPlugins();
-    app::common::log::LogToFile("application", "[MAIN] Loading Plugins Task Completed");
 
+    // Init themeManager
+    app::appUI::themeManager::InitThemeManager();
+
+    // Load UserData into memory (ie settings, keybinds, etc)
+    //// TODO, I will only set this up when I actually need settings
+    
     // Load UI - pain
 
     // Application cleanup/closeing

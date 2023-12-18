@@ -1,5 +1,7 @@
 #include "JACE/_win/win32.h"
+
 #include "JACE/common/global.h"
+
 
 #include "windows.h"
 #include "shlobj.h"

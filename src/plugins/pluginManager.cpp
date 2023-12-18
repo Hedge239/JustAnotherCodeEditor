@@ -1,7 +1,9 @@
 #include <JACE/plugins/pluginManager.h>
 #include <JACE/plugins/pluginInterface.h>
+
 #include <JACE/common/global.h>
 #include <JACE/common/logHandeler.h>
+
 
 #include <filesystem>
 #include <fstream>
