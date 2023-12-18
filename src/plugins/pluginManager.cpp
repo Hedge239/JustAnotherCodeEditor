@@ -39,6 +39,7 @@ void app::plugins::manager::LoadPlugins()
     std::vector<std::string> pluginList;
 
     pluginListFile.open(app::common::global::APPDATA + "\\plugins\\plugin.ini");
+    app::common::log::LogToFile("application", "[PLUGIN_MANAGER] Initializing");
 
     if(pluginListFile.is_open())
     {
@@ -48,7 +49,6 @@ void app::plugins::manager::LoadPlugins()
         {
             if(line.empty())
             {
-                app::common::log::LogToFile("application", "[PLUGIN_MANAGER] Loading all detected plugins");
                 break;
             }
 
@@ -97,7 +97,13 @@ void app::plugins::manager::LoadPlugins()
             if(!createPlugin)
             {
                 app::common::log::LogToFile("application", "[PLUGIN_MANAGER] [ERROR] Faild to assign createPlugin to: " + pluginPath);
-                FreeLibrary(pluginHandle);
+                
+                // pain
+                #ifdef _WIN32
+                    FreeLibrary(pluginHandle);
+                #elif
+                    dlclose(pluginHandle);
+                #endif
             }else
             {
                 app::PluginInterface* plugin = createPlugin();
@@ -106,11 +112,18 @@ void app::plugins::manager::LoadPlugins()
                 plugin->SetLogger(app::common::log::LogForPlugins);
                 app::common::log::LogToFile("application", "[PLUGIN_MANAGER] Assigned functions to: " + pluginPath);
 
-                // Keep track of all active plugins
+                // Keep track of all active plugins in a global vector
                 app::common::global::plugins.push_back(plugin);
             }
         }
     }
-    // Load plugin in and add to vector
-    // do the func that run at the beginning
+}
+
+void app::plugins::manager::unloadPlugins()
+{
+    // Eventually add FreeLibrary and dlclose, but for now let the OS handel that since this only happens right before the program fully closes - I know this is bad practice, shut-up mom
+    for (app::PluginInterface* plugin : app::common::global::plugins)
+    {
+        delete plugin;
+    }
 }

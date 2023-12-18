@@ -11,7 +11,8 @@ namespace app
         public:
         // Required Functions
             virtual void SetLogger(std::function<void(std::string)> logFunction) = 0;
-        // Optional Functions
+        // Function Calls
+        // Other Functions
             virtual void createSettings() {}
         
             virtual ~PluginInterface() = default;

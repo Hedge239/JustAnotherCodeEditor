@@ -52,4 +52,9 @@ int main(int argc, char* argv[])
 
     // Load plugins - Testing comes at a later time, hope it works
     app::plugins::manager::LoadPlugins();
+    app::common::log::LogToFile("application", "[MAIN] Loading Plugins Task Completed");
+
+    // Load UI - pain
+
+    // Application cleanup/closeing
 }

@@ -9,6 +9,7 @@ namespace app
         {
             public:
             static void LoadPlugins();
+            static void unloadPlugins();
         };
     }
 }

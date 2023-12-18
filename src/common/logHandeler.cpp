@@ -79,5 +79,5 @@ void app::common::log::startSession()
         }
     }
     
-    app::common::log::LogToFile("application", "[LOGHANDELER] Session Started");
+    app::common::log::LogToFile("application", "[LOGHANDELER] Session Started at: " + app::common::global::APPDATA + "\\logs\\sessionLatest");
 }
