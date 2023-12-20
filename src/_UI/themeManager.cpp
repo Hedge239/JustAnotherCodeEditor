@@ -11,7 +11,7 @@
 std::string g_AppTheme; // themeManager will handle all the gfx and color picking, so we will just keep a global var here
 
 
-void app::appUI::themeManager::InitThemeManager()
+void app::UI::themeManager::InitThemeManager()
 {
     if(!std::filesystem::exists(app::common::global::APPDATA + "\\themes\\theme.ini"))
     {

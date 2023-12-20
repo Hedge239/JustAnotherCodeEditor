@@ -3,10 +3,14 @@
 
 namespace app
 {
-    class UI
+    namespace UI
     {
-        public:
-    };
+        class appUI
+        {
+            public:
+            static void CreateMainWindow();
+        };
+    }
 }
 
 #endif /*_WINDOWCREATION_H_*/

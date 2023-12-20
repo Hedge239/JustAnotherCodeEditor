@@ -58,12 +58,13 @@ int main(int argc, char* argv[])
     app::plugins::manager::LoadPlugins();
 
     // Init themeManager
-    app::appUI::themeManager::InitThemeManager();
+    app::UI::themeManager::InitThemeManager();
 
     // Load UserData into memory (ie settings, keybinds, etc)
     //// TODO, I will only set this up when I actually need settings
     
     // Load UI - pain
+    app::UI::appUI::CreateMainWindow();
 
     // Application cleanup/closeing
 }
