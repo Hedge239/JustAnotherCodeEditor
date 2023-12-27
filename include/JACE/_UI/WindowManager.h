@@ -1,5 +1,5 @@
-#ifndef _WINDOWCREATION_H_
-#define _WINDOWCREATION_H_
+#ifndef _WINDOWMANAGER_H_
+#define _WINDOWMANAGER_H_
 
 namespace app
 {
@@ -13,4 +13,4 @@ namespace app
     }
 }
 
-#endif /*_WINDOWCREATION_H_*/
+#endif /*_WINDOWMANAGER_H_*/

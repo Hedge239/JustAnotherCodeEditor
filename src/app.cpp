@@ -31,7 +31,7 @@ int main(int argc, char* argv[])
         if(IsWindows)
         {
             #ifdef _WIN32
-                app::win32::GetDataPath();
+                app::win32::system::GetDataPath();
             #endif
         }else
         {

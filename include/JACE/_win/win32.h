@@ -3,11 +3,14 @@
 
 namespace app
 {
-    class win32
+    namespace win32
     {
-        public:
-        static void GetDataPath();
-    };
+        class system
+        {
+            public:
+            static void GetDataPath();
+        };
+    }
 }
 
 #endif /*_WIN32_H_*/
