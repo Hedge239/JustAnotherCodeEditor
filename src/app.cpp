@@ -2,7 +2,7 @@
 #include "JACE/common/logHandeler.h"
 #include "JACE/common/fileHandeler.h"
 
-#include "JACE/_UI/WindowCreation.h"
+#include "JACE/_UI/WindowManager.h"
 #include "JACE/_UI/themeManager.h"
 
 #include "JACE/plugins/pluginManager.h"

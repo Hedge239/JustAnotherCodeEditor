@@ -7,7 +7,7 @@
 #include "shlobj.h"
 
 
-void app::win32::GetDataPath()
+void app::win32::system::GetDataPath()
 {
     PWSTR DataPath;
     HRESULT result = SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, NULL, &DataPath);

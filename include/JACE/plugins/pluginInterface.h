@@ -12,6 +12,7 @@ namespace app
         // Required Functions
             virtual void SetLogger(std::function<void(std::string)> logFunction) = 0;
         // Function Calls
+            virtual void startOfWindowGeneration() {}
         // Other Functions
             virtual void createSettings() {}
         
