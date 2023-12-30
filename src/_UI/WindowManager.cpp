@@ -19,7 +19,7 @@
 void app::UI::appUI::CreateMainWindow()
 {
     app::common::log::LogToFile("application", "[WindowCreation] Generating Editor Window");
-    app::common::log::LogToFile("application", "[PLUGIN_MANAGER] Executing startOfWindowGeneration on all plugins");
+    app::common::log::LogToFile("application", "[PLUGIN_MANAGER] Calling ""startOfWindowGeneration"" to all applicable plugins");
     for(app::PluginInterface* plugin : app::common::global::plugins){
         plugin->startOfWindowGeneration();
     }

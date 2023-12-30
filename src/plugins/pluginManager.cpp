@@ -109,13 +109,16 @@ void app::plugins::manager::LoadPlugins()
             }else
             {
                 app::PluginInterface* plugin = createPlugin();
+                app::common::log::LogToFile("application", "[PLUGIN_MANAGER] Assigned calls to: " + pluginPath);
             
                 // Run all required functions for plugins (eg. logger, etc)
                 plugin->SetLogger(app::common::log::LogForPlugins);
-                app::common::log::LogToFile("application", "[PLUGIN_MANAGER] Assigned functions to: " + pluginPath);
 
                 // Keep track of all active plugins in a global vector
                 app::common::global::plugins.push_back(plugin);
+
+                // Tell the plugin that it has been loaded
+                plugin->pluginLoaded();
             }
         }
     }
