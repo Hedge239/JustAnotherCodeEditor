@@ -9,6 +9,49 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     switch(uMsg)
     {
+        case WM_CREATE:
+        {
+            // TOPBAR //
+            HMENU hMenu = CreateMenu();
+
+            // File
+            HMENU hFileMenu = CreateMenu();
+                //AppendMenuW(hFileMenu, MF_STRING, 1, L"Open");
+                //AppendMenuW(hFileMenu, MF_STRING, 2, L"Exit");
+            AppendMenuW(hMenu, MF_POPUP, (UINT_PTR)hFileMenu, L"File");
+            // Edit
+            HMENU hEditMenu = CreateMenu();
+            AppendMenuW(hMenu, MF_POPUP, (UINT_PTR)hEditMenu, L"Edit");
+            // View
+            HMENU hViewMenu = CreateMenu();
+            AppendMenuW(hMenu, MF_POPUP, (UINT_PTR)hViewMenu, L"View");
+            // Project
+            HMENU hProjectMenu = CreateMenu();
+            AppendMenuW(hMenu, MF_POPUP, (UINT_PTR)hProjectMenu, L"Project");
+            // Extensions
+            HMENU hPluginMenu = CreateMenu();
+            AppendMenuW(hMenu, MF_POPUP, (UINT_PTR)hPluginMenu, L"Plugin");
+            // Settings
+            HMENU hSettingsMenu = CreateMenu();
+            AppendMenuW(hMenu, MF_POPUP, (UINT_PTR)hSettingsMenu, L"Settings");
+            // Help
+            HMENU hHelpMenu = CreateMenu();
+            AppendMenuW(hMenu, MF_POPUP, (UINT_PTR)hHelpMenu, L"Help");
+
+
+            // SIDEBAR //
+            // TODO
+
+            SetMenu(hwnd, hMenu);
+            break;
+        }
+
+        case WM_DESTROY:
+        {
+            PostQuitMessage(0);
+            break;
+        }
+
         default:
             return DefWindowProcW(hwnd, uMsg, wParam, lParam);
     }
@@ -27,7 +70,6 @@ void app::win32::UI::w32CreateWindow()
     // Define the style of the window
     DWORD windowStyle;
     windowStyle = WS_OVERLAPPEDWINDOW;
-    windowStyle &= ~WS_SYSMENU;
 
     // Create the window
     HWND hwnd = CreateWindowW(

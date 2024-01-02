@@ -67,4 +67,5 @@ int main(int argc, char* argv[])
     app::UI::appUI::CreateMainWindow();
 
     // Application cleanup/closeing
+    app::common::log::LogToFile("application", "[MAIN] Application shuting down");
 }
