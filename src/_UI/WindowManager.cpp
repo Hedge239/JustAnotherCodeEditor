@@ -8,9 +8,9 @@
     #include "JACE/_win/winUI.h"
 #elif __linux__
     #ifdef LINUX_DYNAMIC_DS
-        #include "JACE/_linux/linux-wl.h"
-    #endif
         #include "JACE/_linux/linux-x11.h"
+    #endif
+        #include "JACE/_linux/linux-wl.h"
 #else
     // Continue adding for more display servers
 #endif
