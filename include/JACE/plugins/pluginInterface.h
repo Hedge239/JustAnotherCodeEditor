@@ -9,7 +9,7 @@ namespace app
     class PluginInterface
     {
         public:
-        // Required Functions - Functions all plugins are required to linke (May be removed)
+        // Plugin Sets - Functions that allow the plugin to execute functions allready located in the application
             virtual void SetLogger(std::function<void(std::string)> logFunction) = 0;
         // Application State Calls - Notifications of the application state to plugins
             virtual void beforeAppExit() {}
