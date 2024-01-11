@@ -5,8 +5,7 @@
 #include "JACE/_UI/WindowManager.h"
 #include "JACE/_UI/themeManager.h"
 
-#include "JACE/plugins/pluginManager.h"
-
+#include "JACE/plugins/PluginManager.h"
 
 #include <filesystem>
 
@@ -55,7 +54,7 @@ int main(int argc, char* argv[])
     app::common::log::LogToFile("application", "[MAIN] UserData set to: " + app::common::global::APPDATA);
 
     // Load plugins - Testing comes at a later time, hope it works
-    app::plugins::manager::LoadPlugins();
+    app::plugins::manager::LoadPluginsFromFile();
 
     // Init themeManager
     app::UI::themeManager::InitThemeManager();

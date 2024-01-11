@@ -4,5 +4,6 @@ set(APP_SRC
     "src/common/fileHandeler.cpp"
     "src/_UI/WindowManager.cpp"
     "src/_UI/themeManager.cpp"
-    "src/plugins/pluginManager.cpp"
+    "src/plugins/PluginLoader.cpp"
+    "src/plugins/PluginManager.cpp"
 )

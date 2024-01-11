@@ -1,23 +1,33 @@
 #ifndef _PLUGININTERFACE_H_
 #define _PLUGININTERFACE_H_
 
-#include <functional>
 #include <string>
+#include <functional>
 
-namespace app
+class PluginInterface
 {
-    class PluginInterface
-    {
-        public:
-        // Plugin Sets - Functions that allow the plugin to execute functions allready located in the application
-            virtual void SetLogger(std::function<void(std::string)> logFunction) = 0;
-        // Application State Calls - Notifications of the application state to plugins
-            virtual void beforeAppExit() {}
-        // Application Plugin Calls - Request the application makes to plugins
-            virtual void pluginLoaded() {}
-        
-            virtual ~PluginInterface() = default;
-    };
-}
+    public:
+    virtual ~PluginInterface() {}
+
+    // Plugin Descriptors - REQUIRED
+    virtual const std::string& GetPluginName() const = 0;
+    virtual const std::string& GetPluginVersion() const = 0;
+    virtual const std::string& etPluginVersion() const = 0;
+
+    // CallBack Functions
+    virtual void SetLogCallBack(std::function<void(const std::string&)> LogCallback) {}
+
+    // To Plugin Functions
+    virtual void PluginLoaded() const {}
+    virtual void PluginPreUnloaded() const {}
+};
+
+// Instance Creation & Destruction
+extern "C" PluginInterface* CreatePluginInstance();
+extern "C" void DestroyPluginInstance(PluginInterface*);
+
+// Function Pointers
+using CreatePlugin = PluginInterface* (*)();
+using DestroyPlugin = void (*)(PluginInterface*);
 
 #endif /*_PLUGININTERFACE_H_*/

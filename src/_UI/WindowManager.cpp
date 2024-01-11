@@ -1,13 +1,12 @@
 #include "JACE/_UI/WindowManager.h"
-#include "JACE/plugins/pluginInterface.h"
 
 #include "JACE/common/logHandeler.h"
 #include "JACE/common/global.h"
 
 #ifdef _WIN32
     #include "JACE/_win/winUI.h"
-#elif __linux__
-    #ifdef LINUX_DYNAMIC_DS
+#elif defined(__unix__)
+    #ifdef UNIX_DYNAMIC_DS
         #include "JACE/_linux/linux-x11.h"
     #endif
         #include "JACE/_linux/linux-wl.h"

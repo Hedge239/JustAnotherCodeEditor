@@ -11,7 +11,6 @@ namespace app
         namespace global
         {
             std::string APPDATA;
-            std::vector<app::PluginInterface*> plugins;
         }
     }
 }

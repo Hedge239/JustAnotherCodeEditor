@@ -1,6 +1,9 @@
 #ifndef _PLUGINMANAGER_H_
 #define _PLUGINMANAGER_H_
 
+#include "PluginInterface.h"
+#include <vector>
+
 namespace app
 {
     namespace plugins
@@ -8,10 +11,15 @@ namespace app
         class manager
         {
             public:
-            static void LoadPlugins();
-            static void unloadPlugins();
+            static void LoadPluginsFromFile();
+            static void UnloadLoadedPlugins();
+
+            // Plugin Functions
+            static void pmSetLogCallBack();
+            static void pmPluginLoaded();
+            static void pmPluginUnloaded();
         };
     }
 }
 
-#endif /*_PLUGINMANGER_H_*/
+#endif /*_PLUGINMANAGER_H_*/

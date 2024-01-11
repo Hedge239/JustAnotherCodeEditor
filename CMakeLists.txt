@@ -39,7 +39,7 @@ elseif(UNIX)
         list(APPEND BUILD_FLAGS "wayland-client")
         list(APPEND BUILD_FLAGS "X11")
 
-        add_compile_definitions(LINUX_DYNAMIC_DS)
+        add_compile_definitions(UNIX_DYNAMIC_DS)
     else()
         message(STATUS "Display Server Mode: MODERN")
         message(STATUS "Display Server: WAYLAND")
