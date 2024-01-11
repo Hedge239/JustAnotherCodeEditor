@@ -3,6 +3,9 @@
 #include "JACE/common/logHandeler.h"
 #include "JACE/common/global.h"
 
+#include <filesystem>
+#include <fstream>
+
 #ifdef _WIN32
     #include "JACE/_win/winUI.h"
 #elif defined(__unix__)
@@ -11,19 +14,20 @@
     #endif
         #include "JACE/_linux/linux-wl.h"
 #else
-    // Continue adding for more display servers
+    #error "Not supported operating system"
 #endif
 
 
-void app::UI::appUI::CreateMainWindow()
+void app::UI::appUI::CreateEditorWindow()
 {
-    app::common::log::LogToFile("application", "[WindowCreation] Generating Main Editor Window");
+    app::common::log::LogToFile("application", "[WINDOW_MANAGER] Generating Editor Window");
 
     #ifdef _WIN32
         app::win32::UI::w32CreateWindow();
-    #elif __linux__
+    #elif defined(__unix__)
         // Linux Stuff
     #else
-        app::common::log::CreateCrashLog("Unknown Operating System : Faild to generate main window, aborting"); exit(-1);
+        app::common::log::LogToFile("application", "[WindowManager] Faild to detect valid operating system");
+        app::common::log::CreateCrashLog("Unknown Operating System : Faild to generate main window"); exit(-1);
     #endif
 }

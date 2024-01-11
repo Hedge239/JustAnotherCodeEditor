@@ -15,9 +15,7 @@ namespace app
             static void UnloadLoadedPlugins();
 
             // Plugin Functions
-            static void pmSetLogCallBack();
-            static void pmPluginLoaded();
-            static void pmPluginUnloaded();
+            static void pmPluginPreUnloaded();
         };
     }
 }

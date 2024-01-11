@@ -8,6 +8,7 @@
 #include "JACE/plugins/PluginManager.h"
 
 #include <filesystem>
+#include <fstream>
 
 // This is to be coppied to ANYTHING that has window specific functions, I can see this getting REAL MESSY in the future witch is a later problem
 #ifdef _WIN32
@@ -50,21 +51,30 @@ int main(int argc, char* argv[])
     if(app::common::global::APPDATA == "")
         {app::common::log::CreateCrashLog("'path=' in app.cfg can not be empty"); exit(-1);}
     
+    // Create Cache
+    if(!std::filesystem::exists(app::common::global::APPDATA + "\\cache"))
+    {
+        std::ofstream c_cache;
+        std::filesystem::create_directory(app::common::global::APPDATA + "\\cache");
+    }
+
+    // Init Logger
     app::common::log::startSession();
     app::common::log::LogToFile("application", "[MAIN] UserData set to: " + app::common::global::APPDATA);
 
-    // Load plugins - Testing comes at a later time, hope it works
+    // Load plugins & Themes
     app::plugins::manager::LoadPluginsFromFile();
-
-    // Init themeManager
     app::UI::themeManager::InitThemeManager();
 
     // Load UserData into memory (ie settings, keybinds, etc)
     //// TODO, I will only set this up when I actually need settings
     
     // Load UI - pain
-    app::UI::appUI::CreateMainWindow();
+    app::UI::appUI::CreateEditorWindow();
 
     // Application cleanup/closeing
     app::common::log::LogToFile("application", "[MAIN] Application shuting down");
+
+    app::plugins::manager::pmPluginPreUnloaded();
+    app::plugins::manager::UnloadLoadedPlugins();
 }

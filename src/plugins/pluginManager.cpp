@@ -80,11 +80,29 @@ void app::plugins::manager::LoadPluginsFromFile()
 
     // Load Plugins
     app::plugins::loader::LoadPlugins(pluginList);
+
+    // Assign log & alert plugins
+    const auto& loadedPlugins = app::plugins::loader::GetLoadedPlugins();
+    for (const auto& plugin : loadedPlugins) {
+        plugin->SetLogCallBack(app::common::log::LogForPlugins);
+        plugin->PluginLoaded();
+    }
+
+    app::common::log::LogToFile("application", "[PLUGIN_MANAGER2] Plugins Loaded");
 }
 
 void app::plugins::manager::UnloadLoadedPlugins()
 {
+    app::common::log::LogToFile("application", "[PLUGIN_MANAGER2] Unloading Plugins");
     app::plugins::loader::UnloadPlugins();
 }
 
 // Plugin Calls & Callbacks
+
+void app::plugins::manager::pmPluginPreUnloaded()
+{
+    const auto& loadedPlugins = app::plugins::loader::GetLoadedPlugins();
+    for (const auto& plugin : loadedPlugins) {
+        plugin->PluginPreUnloaded();
+    }
+}

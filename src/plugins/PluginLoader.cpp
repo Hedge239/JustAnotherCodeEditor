@@ -42,7 +42,8 @@
     {
         return dlsym(LibHandel, FuncName);
     }
-
+#else
+    #error "Not supported operating system"
 #endif
 
 std::vector<void*> app::plugins::loader::PluginHandles;
