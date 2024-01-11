@@ -18,7 +18,7 @@ If you wish to build JACE from source instead, follow these steps:
     - Windows
         - CMake
     - Linux (Debian-based)
-        - libx11-dev    (Optional: have LINUX_DYNAMIC_DS set to true in CMakeLists.txt)
+        - libx11-dev    (Optional: have UNIX_DYNAMIC_DS set to true in CMakeLists.txt for x11 to work)
         - libwayland-dev
         - CMake
 2. Clone the repository
