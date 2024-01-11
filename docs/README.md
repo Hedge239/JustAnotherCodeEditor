@@ -32,4 +32,4 @@ If you wish to build JACE from source instead, follow these steps:
 
 ## License
 JACE is licensed under the MIT License, see [LICENSE.txt](https://github.com/Hedge239/JACE/blob/Latest-Dev/LICENSE.txt) for more information
-> Copyright (c) 2023 Lucas I Kohorst
+> Copyright (c) 2023-2024 Lucas I Kohorst
