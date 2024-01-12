@@ -5,10 +5,10 @@
 #include <string>
 
 
-LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-}
+//LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+//{
+//}
 
-void app::win32::UI::w32CreateWindow(bool HadPreviousSession)
+void app::win32::UI::w32CreateWindow()
 {
 }
