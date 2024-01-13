@@ -14,11 +14,11 @@
 #ifdef _WIN32
     #include "JACE/_win/win32.h"
     const bool IsWindows = true;
-#elif __linux__
+#elif defined(__unix__)
     #include "JACE/_linux/linux.h"
     const bool IsWindows = false;
-else
-    // Continue adding for other display services
+#else
+    #error "Not supported operating system"
 #endif
 
 
