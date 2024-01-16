@@ -1,6 +1,8 @@
 #ifndef _SESSIONMANAGER_H_
 #define _SESSIONMANAGER_H_
 
+#include <string>
+
 namespace app
 {
     namespace UI
@@ -8,8 +10,8 @@ namespace app
         class sessionManager
         {
             public:
-            bool hasPreviousSession();
-            std::string lastOpenedProject();
+            static bool hasPreviousSession();
+            static std::string lastOpenedProject();
             struct window {int height; int width;};
 
             static void WriteWindowSize();

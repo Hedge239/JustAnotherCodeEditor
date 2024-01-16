@@ -1,6 +1,8 @@
 #ifndef _FILEHANDELER_H_
 #define _FILEHANDELER_H_
 
+#include <string>
+
 namespace app
 {
     namespace common
@@ -8,6 +10,8 @@ namespace app
         class fileHandeler
         {
             public:
+            static std::string ReadLineFromFile(std::string TargetFile, int targetLine);
+
             static void SetDataPath();
         };
     }
