@@ -24,8 +24,6 @@ If you wish to build JACE from source instead, follow these steps:
 2. Clone the repository
 3. Navigate to project directory and build the project using CMake
 
-**NOTE: ALL FOLDERS/FILES IN THE ASSETS FOLDER HAS TO BE IN THE SAME DIRECTORY AS THE EXECUTABLE**
-
 ## Contribution
 [TODO]
 
