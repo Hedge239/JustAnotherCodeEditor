@@ -97,7 +97,8 @@ void app::plugins::manager::UnloadLoadedPlugins()
     app::plugins::loader::UnloadPlugins();
 }
 
-// Plugin Calls & Callbacks
+
+// Plugin Calls & Callbacks //
 
 void app::plugins::manager::pmPluginPreUnloaded()
 {

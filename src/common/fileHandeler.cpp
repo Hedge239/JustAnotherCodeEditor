@@ -8,7 +8,7 @@
 #include <fstream>
 #include <string>
 
-
+// Most functions in this file are made to use files specified in "app.cfg"
 std::string app::common::fileHandeler::ReadLineFromFile(std::string TargetFile, int TargetLine)
 {
     if(!std::filesystem::is_directory(app::common::global::APPDATA + "\\" + TargetFile))
