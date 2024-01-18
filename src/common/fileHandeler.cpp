@@ -42,6 +42,15 @@ std::string app::common::fileHandeler::ReadLineFromFile(std::string TargetFile, 
     return "";
 }
 
+bool app::common::fileHandeler::DoesFileExist(std::string InputFile)
+{
+    if(!std::filesystem::exists(app::common::global::APPDATA + "\\" + InputFile))
+        {return false;}
+
+    return true;
+}
+
+// Functions
 void app::common::fileHandeler::SetDataPath()
 {
     if(!std::filesystem::exists("app.cfg"))

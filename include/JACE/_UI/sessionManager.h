@@ -10,7 +10,6 @@ namespace app
         class sessionManager
         {
             public:
-            static bool hasPreviousSession();
             static std::string lastOpenedProject();
             struct window {int height; int width;};
 

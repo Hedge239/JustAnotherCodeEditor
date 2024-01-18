@@ -10,48 +10,27 @@
 #include <cmath>
 
 
-// READ FROM SESSION // Now before I actually test this, I just notice how much unessary code this is, so ima fix that later then test
-bool app::UI::sessionManager::hasPreviousSession()
-{
-    if(!std::filesystem::exists(app::common::global::APPDATA + "\\cache\\session.jses"))
-    {
-        return false;
-    }else
-    {
-        return true;
-    }
-}
-
+// READ FROM SESSION //
 std::string app::UI::sessionManager::lastOpenedProject()
 {
-    if(!app::UI::sessionManager::hasPreviousSession())
-    {
-        return "";
-    }else
+    if(app::common::fileHandeler::DoesFileExist("cache\\session.jses"))
     {
         if(!app::common::fileHandeler::ReadLineFromFile("cache\\session.jses", 3).empty())
-        {
-            return app::common::fileHandeler::ReadLineFromFile("cache\\session.jses", 3);
-        }else
-        {
-            return "";
-        }
+            {return app::common::fileHandeler::ReadLineFromFile("cache\\session.jses", 3);}
     }
+
+    return "";
 }
 
 app::UI::sessionManager::window GetWindowSize()
 {
-    if(!app::UI::sessionManager::hasPreviousSession())
-    {
-        return {500, 500};
-    }else
+    if(app::common::fileHandeler::DoesFileExist("cache\\session.jses"))
     {
         if(!app::common::fileHandeler::ReadLineFromFile("cache\\session.jses", 1).empty() && !app::common::fileHandeler::ReadLineFromFile("cache\\session.jses", 2).empty())
         {
             int winHeight;
             int winWidth;
 
-            // Attempt to convert the strings to intigers (I hate error prevention, just dont mess with the file)
             try
             {
                 winHeight = std::stoi(app::common::fileHandeler::ReadLineFromFile("cache\\session.jses", 1));
@@ -65,11 +44,10 @@ app::UI::sessionManager::window GetWindowSize()
             }
 
             return {winHeight, winWidth};
-        }else
-        {
-            return {500, 500};
         }
     }
+
+    return {500, 500};
 }
 
 // WRITE TO SESSION //
