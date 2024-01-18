@@ -66,6 +66,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE ${DEPENDENCES_SRC} ${BUILD_FLAGS})
 # Copy files in Assets
 set(APP_ASSETS
 "assets/gfx"
+"assets/locales"
 )
 
 file(COPY ${APP_ASSETS} DESTINATION "${CMAKE_BINARY_DIR}/../JACE_app")
