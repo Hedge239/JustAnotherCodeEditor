@@ -14,6 +14,8 @@ namespace app
             static bool DoesFileExist(std::string File);
 
             static void SetDataPath();
+            static void CreateSettings();
+            static void LoadSettingsToMemory();
         };
     }
 }
