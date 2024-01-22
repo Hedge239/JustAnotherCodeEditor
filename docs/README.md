@@ -1,7 +1,7 @@
 # Just Another Code Editor (JACE)
 [ LOGO HERE]
 
-JACE, short for Just Another Code Editor, is a open-source text editor design to excel at its main goal, being a text editor.
+JACE, short for Just Another Code Editor, is a open-source text editor design to write code while being stable and light-weight on performance.
 
 ## Features
 - TODO
