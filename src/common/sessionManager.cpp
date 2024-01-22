@@ -1,4 +1,4 @@
-#include "JACE/_UI/sessionManager.h"
+#include "JACE/common/sessionManager.h"
 
 #include "JACE/common/logHandeler.h"
 #include "JACE/common/global.h"

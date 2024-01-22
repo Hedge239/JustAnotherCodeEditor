@@ -3,9 +3,9 @@ set(APP_SRC
     "src/common/global.cpp"
     "src/common/fileHandeler.cpp"
     "src/common/localesHandeler.cpp"
+    "src/common/sessionManager.cpp"
     "src/_UI/WindowManager.cpp"
     "src/_UI/themeManager.cpp"
-    "src/_UI/sessionManager.cpp"
     "src/plugins/PluginLoader.cpp"
     "src/plugins/PluginManager.cpp"
 )
