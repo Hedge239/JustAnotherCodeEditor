@@ -1,6 +1,9 @@
+#include "JACE/setup.h"
+
 #include "JACE/common/global.h"
 #include "JACE/common/logHandeler.h"
 #include "JACE/common/fileHandeler.h"
+#include "JACE/common/localesHandeler.h"
 
 #include "JACE/_UI/WindowManager.h"
 #include "JACE/_UI/themeManager.h"
@@ -44,7 +47,7 @@ int main(int argc, char* argv[])
         }
     }
 
-    app::common::fileHandeler::SetDataPath();
+    app::setup::SetDataPath();
 
     if(!std::filesystem::is_directory(app::common::global::APPDATA))
         {app::common::log::CreateCrashLog("'path=' in app.cfg does not lead to a valid directory"); exit(-1);}
@@ -62,13 +65,13 @@ int main(int argc, char* argv[])
     app::common::log::startSession();
     app::common::log::LogToFile("application", "[MAIN] UserData set to: " + app::common::global::APPDATA);
 
-    // Load plugins & Themes
+    // Create Settings (if needed)
+
+    // Load user files
     app::plugins::manager::LoadPluginsFromFile();
     app::UI::themeManager::InitThemeManager();
+    app::common::Localisation::setAppLanguage();
 
-    // Load UserData into memory (ie settings, keybinds, etc)
-    //// TODO, I will only set this up when I actually need settings
-    
     // Load UI - pain
     app::UI::appUI::CreateEditorWindow();
 

@@ -13,7 +13,7 @@
 // READ FROM SESSION //
 std::string app::UI::sessionManager::lastOpenedProject()
 {
-    if(app::common::fileHandeler::DoesFileExist("cache\\session.jses"))
+    if(std::filesystem::exists(app::common::global::APPDATA + "\\cache\\session.jses"))
     {
         if(!app::common::fileHandeler::ReadLineFromFile("cache\\session.jses", 3).empty())
             {return app::common::fileHandeler::ReadLineFromFile("cache\\session.jses", 3);}
@@ -24,7 +24,7 @@ std::string app::UI::sessionManager::lastOpenedProject()
 
 app::UI::sessionManager::window GetWindowSize()
 {
-    if(app::common::fileHandeler::DoesFileExist("cache\\session.jses"))
+    if(std::filesystem::exists(app::common::global::APPDATA + "\\cache\\session.jses"))
     {
         if(!app::common::fileHandeler::ReadLineFromFile("cache\\session.jses", 1).empty() && !app::common::fileHandeler::ReadLineFromFile("cache\\session.jses", 2).empty())
         {

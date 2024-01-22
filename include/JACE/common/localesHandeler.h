@@ -9,8 +9,8 @@ namespace app
     {
         class Localisation
         {
-            // Functions //
-            void setAppLanguage();
+            public:
+            static void setAppLanguage();
 
             // Strings, just strings //
         };

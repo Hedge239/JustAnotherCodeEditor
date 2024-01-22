@@ -3,15 +3,14 @@
 
 #include "JACE/common/logHandeler.h"
 
-
 #include <filesystem>
 #include <fstream>
 #include <string>
 
-// Most functions in this file are made to use files specified in "app.cfg"
+
 std::string app::common::fileHandeler::ReadLineFromFile(std::string TargetFile, int TargetLine)
 {
-    if(!std::filesystem::is_directory(app::common::global::APPDATA + "\\" + TargetFile))
+    if(!std::filesystem::exists(app::common::global::APPDATA + "\\" + TargetFile))
         {app::common::log::LogToFile("application", "[fileHandeler] Faild to find file: " + app::common::global::APPDATA + "\\" + TargetFile);}
 
     std::ifstream file;
@@ -40,44 +39,4 @@ std::string app::common::fileHandeler::ReadLineFromFile(std::string TargetFile, 
 
     // Return with nothing, when there is nothing
     return "";
-}
-
-bool app::common::fileHandeler::DoesFileExist(std::string InputFile)
-{
-    if(!std::filesystem::exists(app::common::global::APPDATA + "\\" + InputFile))
-        {return false;}
-
-    return true;
-}
-
-// Functions
-void app::common::fileHandeler::SetDataPath()
-{
-    if(!std::filesystem::exists("app.cfg"))
-    {
-        std::ofstream cfg;
-
-        cfg.open("app.cfg");
-        cfg << "path=" + app::common::global::APPDATA << std::endl;
-
-        cfg.close();
-    }else
-    {
-        std::ifstream cfg("app.cfg");
-        std::string line;
-
-        if(std::getline(cfg, line))
-        {
-            if(line.substr(0,5) == "path=")
-            {
-                app::common::global::APPDATA = std::string(line.substr(5));
-            }
-        }else
-        {
-            return;
-        }
-    }
-
-    if(!std::filesystem::is_directory(app::common::global::APPDATA))
-        {std::filesystem::create_directory(app::common::global::APPDATA);}
 }

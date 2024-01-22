@@ -11,7 +11,7 @@ void app::common::log::LogToFile(std::string FileName, std::string Message)
 {
     if(!std::filesystem::exists(app::common::global::APPDATA + "\\logs\\sessionLatest"))
     {
-        std::filesystem::create_directory(app::common::global::APPDATA + "\\logs\\sessionLatest");
+        std::filesystem::create_directories(app::common::global::APPDATA + "\\logs\\sessionLatest");
     }
 
     std::ofstream file;

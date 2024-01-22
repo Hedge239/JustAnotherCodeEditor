@@ -1,4 +1,5 @@
 set(APP_SRC
+    "src/setup.cpp"
     "src/common/logHandeler.cpp"
     "src/common/global.cpp"
     "src/common/fileHandeler.cpp"

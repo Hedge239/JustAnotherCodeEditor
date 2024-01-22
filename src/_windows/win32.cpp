@@ -10,7 +10,7 @@
 void app::win32::system::GetDataPath()
 {
     PWSTR DataPath;
-    HRESULT result = SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, NULL, &DataPath);
+    HRESULT result = SHGetKnownFolderPath(FOLDERID_Documents, 0, NULL, &DataPath);
     std::wstring dataPathString(DataPath);
     
     if(result == S_OK)

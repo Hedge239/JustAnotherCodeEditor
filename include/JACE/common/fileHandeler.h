@@ -11,11 +11,6 @@ namespace app
         {
             public:
             static std::string ReadLineFromFile(std::string TargetFile, int targetLine);
-            static bool DoesFileExist(std::string File);
-
-            static void SetDataPath();
-            static void CreateSettings();
-            static void LoadSettingsToMemory();
         };
     }
 }
