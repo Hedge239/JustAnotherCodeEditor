@@ -38,3 +38,25 @@ void app::setup::SetDataPath()
     if(!std::filesystem::is_directory(app::common::global::APPDATA))
         {std::filesystem::create_directories(app::common::global::APPDATA);}
 }
+
+void app::setup::validateUserFiles()
+{
+    // APPLICATION //
+    if(!std::filesystem::exists(app::common::global::APPDATA + "\\keybinds.ini"))
+    {
+        // KEYBINDS //
+        app::common::log::LogToFile("application", "[SETUP] Creating `keybinds.ini`");
+    }
+
+    if(!std::filesystem::exists(app::common::global::APPDATA + "\\settings.ini"))
+    {
+        // SETTINGS //
+        app::common::log::LogToFile("application", "[SETUP] Creating `settings.ini`");
+    }
+    
+    if(!std::filesystem::exists(app::common::global::APPDATA + "\\_repos.cfg"))
+    {
+        // PLUGIN REPOS //
+        app::common::log::LogToFile("application", "[SETUP] Creating `_repos.cfg`");
+    }
+}

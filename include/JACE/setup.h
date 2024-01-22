@@ -7,6 +7,7 @@ namespace app
     {
         public:
         static void SetDataPath();
+        static void validateUserFiles();
     };
 }
 

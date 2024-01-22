@@ -28,7 +28,7 @@
 int main(int argc, char* argv[])
 {
 
-    // Get where UserData will be stored and validate
+    // Get userData dir
     if(!std::filesystem::exists("app.cfg"))
     {
         if(IsWindows)
@@ -47,6 +47,7 @@ int main(int argc, char* argv[])
         }
     }
 
+    // Set userData dir
     app::setup::SetDataPath();
 
     if(!std::filesystem::is_directory(app::common::global::APPDATA))
@@ -56,26 +57,22 @@ int main(int argc, char* argv[])
     
     // Create Cache
     if(!std::filesystem::exists(app::common::global::APPDATA + "\\cache"))
-    {
-        std::ofstream c_cache;
-        std::filesystem::create_directory(app::common::global::APPDATA + "\\cache");
-    }
+    {std::filesystem::create_directory(app::common::global::APPDATA + "\\cache");}
 
     // Init Logger
     app::common::log::startSession();
     app::common::log::LogToFile("application", "[MAIN] UserData set to: " + app::common::global::APPDATA);
 
-    // Create Settings (if needed)
-
-    // Load user files
+    // Load userData
+    app::setup::validateUserFiles();
+    app::common::Localisation::setAppLanguage();
     app::plugins::manager::LoadPluginsFromFile();
     app::UI::themeManager::InitThemeManager();
-    app::common::Localisation::setAppLanguage();
 
-    // Load UI - pain
+    // Create UI
     app::UI::appUI::CreateEditorWindow();
 
-    // Application cleanup/closeing
+    // Cleanup
     app::common::log::LogToFile("application", "[MAIN] Application shuting down");
 
     app::plugins::manager::pmPluginPreUnloaded();
