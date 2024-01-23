@@ -73,7 +73,7 @@ int main(int argc, char* argv[])
     app::UI::appUI::CreateEditorWindow();
 
     // Cleanup
-    app::common::log::LogToFile("application", "[MAIN] Application shuting down");
+    app::common::log::LogToFile("application", "[MAIN] Main Window Closed, cleaning up");
 
     app::plugins::manager::pmPluginPreUnloaded();
     app::plugins::manager::UnloadLoadedPlugins();

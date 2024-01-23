@@ -63,10 +63,4 @@ set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "../JA
 target_include_directories(${PROJECT_NAME} PRIVATE "include" ${DEPENDENCES_INCLUDE})
 target_link_libraries(${PROJECT_NAME} PRIVATE ${DEPENDENCES_SRC} ${BUILD_FLAGS})
 
-# Copy files in Assets
-set(APP_ASSETS
-"assets/gfx"
-"assets/locales"
-)
-
-file(COPY ${APP_ASSETS} DESTINATION "${CMAKE_BINARY_DIR}/../JACE_app")
+file(COPY "assets/" DESTINATION "${CMAKE_BINARY_DIR}/../JACE_app")

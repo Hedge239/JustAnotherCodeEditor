@@ -41,22 +41,40 @@ void app::setup::SetDataPath()
 
 void app::setup::validateUserFiles()
 {
+    app::common::log::LogToFile("application", "[SETUP] Vaidating required UserFiles");
+
     // APPLICATION //
     if(!std::filesystem::exists(app::common::global::APPDATA + "\\keybinds.ini"))
     {
         // KEYBINDS //
         app::common::log::LogToFile("application", "[SETUP] Creating `keybinds.ini`");
+        std::ofstream keybinds;
+
+        keybinds.open(app::common::global::APPDATA + "\\keybinds.ini");
+
+        keybinds.close();
     }
 
     if(!std::filesystem::exists(app::common::global::APPDATA + "\\settings.ini"))
     {
         // SETTINGS //
         app::common::log::LogToFile("application", "[SETUP] Creating `settings.ini`");
+        std::ofstream settings;
+
+        settings.open(app::common::global::APPDATA + "\\settings.ini");
+        settings << "english";  // Eventually get system language, this will work for now
+
+        settings.close();
     }
     
     if(!std::filesystem::exists(app::common::global::APPDATA + "\\_repos.cfg"))
     {
         // PLUGIN REPOS //
         app::common::log::LogToFile("application", "[SETUP] Creating `_repos.cfg`");
+        std::ofstream repos;
+
+        repos.open(app::common::global::APPDATA + "\\_repos.cfg");
+
+        repos.close();
     }
 }
