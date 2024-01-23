@@ -68,18 +68,21 @@ void app::plugins::loader::LoadPlugins(const std::vector<std::string>& plugins)
         }
     }
 
-    for (auto func : FuncCreatePlugin) {
+    for (auto func : FuncCreatePlugin) 
+    {
         LoadedPlugins.push_back(func());
     }
 }
 
 void app::plugins::loader::UnloadPlugins()
 {
-    for (size_t i = 0; i < LoadedPlugins.size(); ++i) {
+    for (size_t i = 0; i < LoadedPlugins.size(); ++i) 
+    {
         FuncDestroyPlugin[i](LoadedPlugins[i]);
     }
 
-    for (auto handle : PluginHandles) {
+    for (auto handle : PluginHandles) 
+    {
         UnloadLib(handle);
     }
 

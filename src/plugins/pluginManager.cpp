@@ -50,11 +50,9 @@ void app::plugins::manager::LoadPluginsFromFile()
         while(std::getline(pluginListFile, line))
         {
             if(line.empty())
-            {
-                break;
-            }
+            {break;}
 
-            // This is yet another horrible function, makeing this another problem for future me
+            // Add on .dll (windows) or .so (Litterally everything else, except apple.. I think)
             if(IsWindows)
             {
                 line = app::common::global::APPDATA + "\\" + line + ".dll";
@@ -83,7 +81,8 @@ void app::plugins::manager::LoadPluginsFromFile()
 
     // Assign log & alert plugins
     const auto& loadedPlugins = app::plugins::loader::GetLoadedPlugins();
-    for (const auto& plugin : loadedPlugins) {
+    for (const auto& plugin : loadedPlugins) 
+    {
         plugin->SetLogCallBack(app::common::log::LogForPlugins);
         plugin->PluginLoaded();
     }
@@ -103,7 +102,8 @@ void app::plugins::manager::UnloadLoadedPlugins()
 void app::plugins::manager::pmPluginPreUnloaded()
 {
     const auto& loadedPlugins = app::plugins::loader::GetLoadedPlugins();
-    for (const auto& plugin : loadedPlugins) {
+    for (const auto& plugin : loadedPlugins) 
+    {
         plugin->PluginPreUnloaded();
     }
 }
