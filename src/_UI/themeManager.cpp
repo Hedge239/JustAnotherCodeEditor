@@ -13,46 +13,51 @@ std::string g_AppTheme; // themeManager will handle all the gfx and color pickin
 
 void app::UI::themeManager::InitThemeManager()
 {
+    app::common::log::LogToFile("application", "[THEME_MANAGER] Initializing");
+
     if(!std::filesystem::exists(app::common::global::APPDATA + "\\themes\\theme.ini"))
     {
-        std::ofstream c_themeFile;
+        std::ofstream themeFile;
         std::filesystem::create_directory(app::common::global::APPDATA + "\\themes");
-        c_themeFile.open(app::common::global::APPDATA + "\\themes\\themes.ini");
-        c_themeFile.close();
 
-        app::common::log::LogToFile("application", "[THEME_MANAGER] theme.ini not detected, creating");
+        themeFile.open(app::common::global::APPDATA + "\\themes\\theme.ini");
+        themeFile.close();
+        
+        app::common::log::LogToFile("application", "[THEME_MANAGER] Faild to locate theme.ini : Creating");
+        app::common::log::LogToFile("application", "[THEME_MANAGER] Theme set to 'DEFAULT'");
 
+        g_AppTheme = "DEFAULT";
         return;
     }
 
-    // Read for theme dir
+    // Get theme from file
     std::ifstream themeFile;
-
     themeFile.open(app::common::global::APPDATA + "\\themes\\theme.ini");
-    app::common::log::LogToFile("application", "[THEME_MANAGER] Initializing");
 
     if(themeFile.is_open())
     {
+        // I know that file manager has this function built in, but like it was allready here and I am to lazy to remove it
         std::string line;
         std::getline(themeFile, line);
-        
+
         if(line.empty())
         {
-            app::common::log::LogToFile("application", "[THEME_MANAGER] No theme detected in theme.ini");
-            return;
-        }
-
-        if(!std::filesystem::is_directory(app::common::global::APPDATA + "\\themes\\" + line))
+            app::common::log::LogToFile("application", "[THEME_MANAGER] No theme detected in 'theme.ini' defaulting");
+            g_AppTheme = "DEFAULT";
+        }else if(!std::filesystem::exists(app::common::global::APPDATA + "\\themes\\" + line))
         {
-            app::common::log::LogToFile("application", "[THEME_MANAGER] Invalid direcotry: " + app::common::global::APPDATA + "\\themes\\" + line);
-            return;
+            app::common::log::LogToFile("application", "[THEME_MANAGER] Invalid '.theme': " + app::common::global::APPDATA + "\\themes\\" + line + " : Defaulting");
+            g_AppTheme = "DEFAULT";
+        }else
+        {
+            g_AppTheme = app::common::global::APPDATA + "\\themes\\" + line;
         }
 
-            g_AppTheme = app::common::global::APPDATA + "\\themes\\" + line;
-            app::common::log::LogToFile("application", "[THEME_MANAGER] Setting theme too: " + g_AppTheme);
     }else
     {
-        app::common::log::LogToFile("application", "[THEME_MANAGER] [ERROR] Faild to load theme.ini, aborting");
-        return;
+        app::common::log::LogToFile("application", "[THEME_MANAGER] [ERROR] Faild to load 'theme.ini' defaulting");
+        g_AppTheme = "DEFAULT";
     }
+
+    app::common::log::LogToFile("application", "[THEME_MANAGER] Theme set to: " + g_AppTheme);
 }
