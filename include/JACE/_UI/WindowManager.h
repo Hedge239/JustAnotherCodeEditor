@@ -8,7 +8,7 @@ namespace app
         class appUI
         {
             public:
-            static void CreateEditorWindow();
+            static void InitMainWindow();
         };
     }
 }

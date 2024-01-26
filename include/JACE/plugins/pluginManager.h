@@ -14,7 +14,7 @@ namespace app
             static void LoadPluginsFromFile();
             static void UnloadLoadedPlugins();
 
-            // Plugin Functions
+            // Plugin Functions - pm = plugin message //
             static void pmPluginPreUnloaded();
         };
     }

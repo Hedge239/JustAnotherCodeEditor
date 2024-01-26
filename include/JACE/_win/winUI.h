@@ -8,7 +8,7 @@ namespace app
         class UI
         {
             public:
-            static void w32CreateWindow();
+            static void w32_createEditorWindow();
         };
     }
 }

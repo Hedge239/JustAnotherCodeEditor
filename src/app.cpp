@@ -70,7 +70,7 @@ int main(int argc, char* argv[])
     app::UI::themeManager::InitThemeManager();
 
     // Create UI
-    //app::UI::appUI::CreateEditorWindow();
+    app::UI::appUI::InitMainWindow();
 
     // Cleanup
     app::common::log::LogToFile("application", "[MAIN] Main Window Closed, cleaning up");

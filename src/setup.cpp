@@ -62,7 +62,8 @@ void app::setup::validateUserFiles()
         std::ofstream settings;
 
         settings.open(app::common::global::APPDATA + "\\settings.ini");
-        settings << "english";  // Eventually get system language, this will work for now
+        settings << "english";  // System Language
+        settings << "false";  // Load .local into memory
 
         settings.close();
     }
