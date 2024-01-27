@@ -20,7 +20,7 @@ void app::common::Localisation::setAppLanguage()
     if(!std::filesystem::exists(app::common::global::APPDATA + "\\settings.ini"))
     {
         app::common::log::LogToFile("application", "[LOCALISATION_MANAGER] Faild to find settings. Relaunch the app, if that fails you did something wrong");
-        app::common::log::CreateCrashLog("NO SETTINGS FILE : RESTART APP"); exit(-1);
+        app::common::log::CreateCrashLog("NO SETTINGS FILE"); exit(-1);
     }
 
     g_appLanguage = app::common::fileHandeler::ReadLineFromFile("settings.ini", 1);
@@ -32,11 +32,9 @@ void app::common::Localisation::setAppLanguage()
     // Apply file path to locales folder
     app::common::log::LogToFile("application", "[LOCALISATION_MANAGER] Language set to: " + g_appLanguage);
     g_appLanguage = "locales\\" + g_appLanguage + ".local";
+}
 
-    // Check if it exist
-    if(!std::filesystem::exists(g_appLanguage))
-    {
-        app::common::log::LogToFile("application", "[LOCALISATION_MANAGER] No .local file detected");
-        app::common::log::CreateCrashLog("INVALID .LOCAL FILE"); exit(-1);
-    }
+std::string app::common::Localisation::GetText(std::string inputKey)
+{
+    // TODO after slep
 }
