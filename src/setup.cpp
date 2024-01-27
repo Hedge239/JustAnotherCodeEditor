@@ -2,6 +2,7 @@
 
 #include "JACE/common/global.h"
 #include "JACE/common/logHandeler.h"
+#include "JACE/common/fileHandeler.h"
 
 #include <filesystem>
 #include <fstream>
@@ -39,6 +40,32 @@ void app::setup::SetDataPath()
         {std::filesystem::create_directories(app::common::global::APPDATA);}
 }
 
+void LoadUserCfgToMem()
+{
+    app::common::log::LogToFile("application", "[SETUP] Loading required settings to memory");
+
+    // MEMORY MODE //
+    try
+    {
+        app::common::global::MEMORYMODE = std::stoi(app::common::fileHandeler::ReadLineFromFile("settings.ini", 2));
+    }catch(std::invalid_argument& ia)
+    {
+        app::common::log::LogToFile("application", "[SETUP] [ERROR] Invalid argument in 'settings.ini' line 2");
+    }catch(std::out_of_range& oor)
+    {
+        app::common::log::LogToFile("application", "[SETUP] [ERROR] Arugment out of range in 'settings.ini' line 2");
+    }
+
+    if(!(app::common::global::MEMORYMODE == 0 || app::common::global::MEMORYMODE == 1))
+    {
+        app::common::log::LogToFile("application", "[SETUP] [ERROR] Invalid argument in 'settings.ini' line 2, defaulting to 0");
+        app::common::global::MEMORYMODE = 0;
+    }
+
+    app::common::log::LogToFile("application", "[SETUP] MEMORYMODE set to: " + std::to_string(app::common::global::MEMORYMODE));
+
+}
+
 void app::setup::validateUserFiles()
 {
     app::common::log::LogToFile("application", "[SETUP] Vaidating required UserFiles");
@@ -63,7 +90,7 @@ void app::setup::validateUserFiles()
 
         settings.open(app::common::global::APPDATA + "\\settings.ini");
         settings << "english";  // System Language
-        settings << "false";  // Load .local into memory
+        settings << "0";  // Application Memory Mode: 0 = Direct: Load directly from file each time, 1 = Hybrid: Load text directly from file then save to memory
 
         settings.close();
     }
@@ -78,4 +105,7 @@ void app::setup::validateUserFiles()
 
         repos.close();
     }
+
+    app::common::log::LogToFile("application", "[SETUP] All files validated");
+    LoadUserCfgToMem();
 }

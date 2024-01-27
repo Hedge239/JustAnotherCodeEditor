@@ -10,6 +10,24 @@
 #include <string>
 
 
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    switch(uMsg)
+    {
+        case WM_DESTROY:
+        {
+            PostQuitMessage(0);
+            break;
+        }
+
+        default:
+            return DefWindowProcW(hwnd, uMsg, wParam, lParam);
+    }
+
+    return 0;
+}
+
 void app::win32::UI::w32_createEditorWindow()
 {
+    
 }

@@ -12,6 +12,7 @@ namespace app
         namespace global
         {
             extern std::string APPDATA;
+            extern int MEMORYMODE;
         }
     }
 }
