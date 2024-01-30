@@ -8,10 +8,8 @@
 #include <fstream>
 #include <unordered_map>
 
-#define MAX_NUMBER_OF_LINES 1
 
-
-std::unordered_map<std::string, std::string> g_localtextMem;
+std::unordered_map<std::string, std::string> g_localtextInMem;
 std::string g_appLanguage;
 
 void app::common::Localisation::setAppLanguage()
@@ -34,7 +32,37 @@ void app::common::Localisation::setAppLanguage()
     g_appLanguage = "locales\\" + g_appLanguage + ".local";
 }
 
+// Read/write to language file/memory
+bool loadedInMemory(std::string key)
+{
+    if(app::common::global::MEMORYMODE == 1)
+    {
+        return true;
+    }
+
+    return false;
+}
+
+void writeToMemory(std::string key, std::string text)
+{
+
+}
+
 std::string app::common::Localisation::GetText(std::string inputKey)
 {
-    // TODO after slep
+    if(!loadedInMemory(inputKey))
+    {
+        std::ifstream localFile(g_appLanguage);
+        std::string line;
+
+        if(localFile.is_open())
+        {
+            while(getline(localFile, line))
+            {
+            }
+        }
+    }else
+    {
+
+    }
 }
