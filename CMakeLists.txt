@@ -1,4 +1,4 @@
-# Only needs to hold until I finish BuildToolsForC+, then this goes to life support
+# Only needs to hold until I finish BuildToolsForC+, then this goes to life support (Thank goodness)
 # Also taking ALOT of code from ZephyrUI, as this only took priority because I have a growing annoyance with VS-Code.
 # Allthough the goal atleast for now, is to have ZephyrUI in a fuctional state and moving the UI system to that by version 2.0.0, witch should be easy since its based off it allready.
 
@@ -63,4 +63,5 @@ set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "../JA
 target_include_directories(${PROJECT_NAME} PRIVATE "include" ${DEPENDENCES_INCLUDE})
 target_link_libraries(${PROJECT_NAME} PRIVATE ${DEPENDENCES_SRC} ${BUILD_FLAGS})
 
+# This one line of code, angers me... I just want to copy files when there modified, AAAAAAAAAAAAAAAAA
 file(COPY "assets/" DESTINATION "${CMAKE_BINARY_DIR}/../JACE_app")
