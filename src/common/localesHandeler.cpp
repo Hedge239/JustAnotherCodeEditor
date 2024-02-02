@@ -9,7 +9,7 @@
 #include <unordered_map>
 
 
-std::unordered_map<std::string, std::string> g_localtextInMem;
+std::unordered_map<std::string, std::string> g_localtextMap;
 std::string g_appLanguage;
 
 void app::common::Localisation::setAppLanguage()
@@ -32,37 +32,64 @@ void app::common::Localisation::setAppLanguage()
     g_appLanguage = "locales\\" + g_appLanguage + ".local";
 }
 
-// Read/write to language file/memory
+// Check if using Hybrid Mode, if so check if its been loaded
 bool loadedInMemory(std::string key)
 {
     if(app::common::global::MEMORYMODE == 1)
     {
-        return true;
+        if(g_localtextMap.find(key) != g_localtextMap.end())
+            {return true;}
     }
 
     return false;
 }
 
-void writeToMemory(std::string key, std::string text)
-{
-
-}
-
+// Read the text either from .local file or memory
 std::string app::common::Localisation::GetText(std::string inputKey)
 {
     if(!loadedInMemory(inputKey))
     {
-        std::ifstream localFile(g_appLanguage);
+        std::ifstream langFile;
+        std::string currentKey;
         std::string line;
 
-        if(localFile.is_open())
+        langFile.open(g_appLanguage);
+        if(!langFile.is_open())
         {
-            while(getline(localFile, line))
+            app::common::log::LogToFile("application", "[LOCALISATION_MANAGER] Faild to open: " + g_appLanguage);
+            app::common::log::CreateCrashLog("FAILD TO OPEN LANGUAGE FILE"); exit(-1);
+        }
+
+        while(std::getline(langFile, line))
+        {
+            size_t colonPos = line.find(":");
+            if(colonPos != std::string::npos)
             {
+                currentKey = line.substr(0, colonPos);
+                if(currentKey == inputKey)
+                {
+                    if(app::common::global::MEMORYMODE == 1)
+                        {g_localtextMap[currentKey] = line.substr(colonPos + 1);}
+
+                    return line.substr(colonPos + 1);
+                    break;
+                }
             }
         }
+
     }else
     {
-
+        // Redundant, and only kept because I KNOW someone will find a way to bypass the loadedinMemory function
+        try
+        {
+            return g_localtextMap.at(inputKey);
+        }
+        catch(std::out_of_range& e)
+        {
+            app::common::log::LogToFile("application", "[LOCALISATION_MANAGER] [ERROR] Invalid key for g_localTextMap");
+        }
+        
     }
+
+    return "INVALID_LANG_KEY";
 }
