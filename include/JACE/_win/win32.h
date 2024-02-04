@@ -1,6 +1,8 @@
 #ifndef _WIN32_H_
 #define _WIN32_H_
 
+#include <string>
+
 namespace app
 {
     namespace win32
@@ -9,6 +11,7 @@ namespace app
         {
             public:
             static void GetDataPath();
+            static std::wstring StringToWideString(std::string InputString);
         };
     }
 }

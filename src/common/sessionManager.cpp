@@ -11,7 +11,7 @@
 
 
 // READ FROM SESSION //
-std::string app::UI::sessionManager::lastOpenedProject()
+std::string app::common::sessionManager::lastOpenedProject()
 {
     if(std::filesystem::exists(app::common::global::APPDATA + "\\cache\\session.jses"))
     {
@@ -22,32 +22,48 @@ std::string app::UI::sessionManager::lastOpenedProject()
     return "";
 }
 
-app::UI::sessionManager::window GetWindowSize()
+int app::common::sessionManager::WindowHeight()
 {
     if(std::filesystem::exists(app::common::global::APPDATA + "\\cache\\session.jses"))
     {
-        if(!app::common::fileHandeler::ReadLineFromFile("cache\\session.jses", 1).empty() && !app::common::fileHandeler::ReadLineFromFile("cache\\session.jses", 2).empty())
+        if(!app::common::fileHandeler::ReadLineFromFile("cache\\session.jses", 1).empty())
         {
-            int winHeight;
-            int winWidth;
-
             try
             {
-                winHeight = std::stoi(app::common::fileHandeler::ReadLineFromFile("cache\\session.jses", 1));
-                winWidth = std::stoi(app::common::fileHandeler::ReadLineFromFile("cache\\session.jses", 2));
+                return std::stoi(app::common::fileHandeler::ReadLineFromFile("cache\\session.jses", 1));
             }catch(std::invalid_argument& ia)
             {
-                return {500, 500};
+                app::common::log::LogToFile("application", "[SESSION_MANAGER] Invalid Argument for 'WindowHeight'");
             }catch(std::out_of_range& oor)
             {
-                return {500, 500};
+                app::common::log::LogToFile("application", "[SESSION_MANAGER] Argument out of range for 'WindowHeight'");
             }
-
-            return {winHeight, winWidth};
         }
     }
 
-    return {500, 500};
+    return 500;
+}
+
+int app::common::sessionManager::WindowWidth()
+{
+    if(std::filesystem::exists(app::common::global::APPDATA + "\\cache\\session.jses"))
+    {
+        if(!app::common::fileHandeler::ReadLineFromFile("cache\\session.jses", 2).empty())
+        {
+            try
+            {
+                return std::stoi(app::common::fileHandeler::ReadLineFromFile("cache\\session.jses", 2));
+            }catch(std::invalid_argument& ia)
+            {
+                app::common::log::LogToFile("application", "[SESSION_MANAGER] Invalid Argument for 'WindowHeight'");
+            }catch(std::out_of_range& oor)
+            {
+                app::common::log::LogToFile("application", "[SESSION_MANAGER] Argument out of range for 'WindowHeight'");
+            }
+        }
+    }
+
+    return 500;
 }
 
 // WRITE TO SESSION //

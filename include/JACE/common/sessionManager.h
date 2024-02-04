@@ -5,13 +5,14 @@
 
 namespace app
 {
-    namespace UI
+    namespace common
     {
         class sessionManager
         {
             public:
             static std::string lastOpenedProject();
-            struct window {int height; int width;};
+            static int WindowHeight();
+            static int WindowWidth();
 
             static void WriteWindowSize();
             static void WriteProjectDirectory();
