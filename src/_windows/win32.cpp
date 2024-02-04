@@ -25,14 +25,11 @@ void app::win32::system::GetDataPath()
     }
 }
 
-// .... What did  I type again?
+// .... What did  I type again? - Did I mention that I hate windows?
 std::wstring app::win32::system::StringToWideString(std::string InputString)
 {
     if(InputString.empty())
-    {
-        app::common::log::LogToFile("application", "[WINDOWS] StringToWideString: Empty String");
-        return L"";
-    }
+    {return L"";}
 
     int wstring_length = MultiByteToWideChar(CP_UTF8, 0, InputString.c_str(), InputString.length(), NULL, 0);
     std::wstring wideStringTo(wstring_length, L' ');

@@ -13,9 +13,6 @@ namespace app
             static std::string lastOpenedProject();
             static int WindowHeight();
             static int WindowWidth();
-
-            static void WriteWindowSize();
-            static void WriteProjectDirectory();
         };
     }
 }

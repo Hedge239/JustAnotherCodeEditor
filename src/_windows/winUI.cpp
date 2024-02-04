@@ -29,7 +29,7 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 
 void app::win32::UI::w32_createEditorWindow()
 {
-    // Define application name - TODO find a better way to do this
+    // Define application name - Because windows sucks
     std::wstring ApplicationName =  app::win32::system::StringToWideString(app::common::Localisation::GetText("app_name"));
 
     // Define the Window Class
