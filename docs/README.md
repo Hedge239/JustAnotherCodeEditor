@@ -10,16 +10,11 @@ JACE, short for Just Another Code Editor, is a open-source text editor design to
 Pre-commpiled versions can be downloaded for various operating systems here[LINK, TODO].
 
 ### Building from Source
-If you wish to build JACE from source instead, follow these steps:
-1. Have the following packages installed
-    - Windows
-        - CMake
-    - Linux (Tested with Debian 12)
-        - libx11-dev    (Optional: have UNIX_DYNAMIC_DS set to true in CMakeLists.txt for x11 to work)
-        - libwayland-dev
-        - CMake
-2. Clone the repository
-3. Navigate to project directory and build the project using CMake
+If you wish to build JACE from source instead, have the following installed and run CMake using the provided CMakelists.txt
+
+#### Prerequisites (Linux Only)
+- X11 Development Package (libx11-dev on Debian12), **Note the X11 package is only required if 'UNIX_DYNAMIC_DS' is set to 'TRUE' in the 'CMakeLists.txt' file.**
+- Wayland Development Package (libwayland-dev on Debian12)
 
 ## Contribution
 [TODO]
