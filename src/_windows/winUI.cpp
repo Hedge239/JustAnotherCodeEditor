@@ -14,6 +14,43 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 {
     switch(uMsg)
     {
+        case WM_CREATE:
+        {
+            // Create MenuBar - TOPBAR //
+            HMENU hMenu = CreateMenu();
+
+            // File
+            HMENU hFileMenu = CreateMenu();
+            AppendMenuW(hMenu, MF_POPUP, (UINT_PTR)hFileMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file")).c_str());
+            
+            // Edit
+            HMENU hEditMenu = CreateMenu();
+            AppendMenuW(hMenu, MF_POPUP, (UINT_PTR)hEditMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_edit")).c_str());
+            
+            // View
+            HMENU hViewMenu = CreateMenu();
+            AppendMenuW(hMenu, MF_POPUP, (UINT_PTR)hViewMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_view")).c_str());
+            
+            // Project
+            HMENU hProjectMenu = CreateMenu();
+            AppendMenuW(hMenu, MF_POPUP, (UINT_PTR)hProjectMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_project")).c_str());
+            
+            // Extensions
+            HMENU hPluginMenu = CreateMenu();
+            AppendMenuW(hMenu, MF_POPUP, (UINT_PTR)hPluginMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_plugin")).c_str());
+            
+            // Settings
+            HMENU hSettingsMenu = CreateMenu();
+            AppendMenuW(hMenu, MF_POPUP, (UINT_PTR)hSettingsMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_settings")).c_str());
+            
+            // Help
+            HMENU hHelpMenu = CreateMenu();
+            AppendMenuW(hMenu, MF_POPUP, (UINT_PTR)hHelpMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_help")).c_str());
+
+            SetMenu(hwnd, hMenu);
+            break;
+        }
+
         case WM_DESTROY:
         {
             PostQuitMessage(0);

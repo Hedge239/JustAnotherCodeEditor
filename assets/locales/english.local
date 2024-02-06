@@ -1,1 +1,8 @@
 app_name:Just Another Code Editor
+menu_file:File
+menu_edit:Edit
+menu_view:View
+menu_project:Project
+menu_plugin:Extensions
+menu_settings:Settings
+menu_help:Help
