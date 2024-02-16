@@ -55,8 +55,7 @@ else()
     message(FATAL_ERROR "Faild to find valid display service")
 endif()
 
-add_executable(${PROJECT_NAME} "src/app.cpp" ${PLATFORM_SRC} ${APP_SRC})
-
+add_executable(${PROJECT_NAME} "src/app.cpp")
 target_sources(${PROJECT_NAME} PRIVATE ${PLATFORM_SRC} ${APP_SRC})
 set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "../JACE_app")
 
