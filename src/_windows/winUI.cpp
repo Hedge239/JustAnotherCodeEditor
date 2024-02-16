@@ -22,6 +22,7 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
             // File
             HMENU hFileMenu = CreateMenu();
             AppendMenuW(hMenu, MF_POPUP, (UINT_PTR)hFileMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file")).c_str());
+            AppendMenuW(hFileMenu, MF_STRING, 1, L"Open File");
             
             // Edit
             HMENU hEditMenu = CreateMenu();
