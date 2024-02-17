@@ -22,15 +22,18 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
             // File
             HMENU hFileMenu = CreateMenu();
             AppendMenuW(hMenu, MF_POPUP, (UINT_PTR)hFileMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file")).c_str());
-            AppendMenuW(hFileMenu, MF_STRING, 1, L"Open File");
-            AppendMenuW(hFileMenu, MF_STRING, 1, L"Open Folder");
-            AppendMenuW(hFileMenu, MF_STRING, 1, L"Save Current");
-            AppendMenuW(hFileMenu, MF_STRING, 1, L"Save All");
-            AppendMenuW(hFileMenu, MF_STRING, 1, L"Save As");
-            AppendMenuW(hFileMenu, MF_STRING, 1, L"Close File");
-            AppendMenuW(hFileMenu, MF_STRING, 1, L"Close Folder");
-            AppendMenuW(hFileMenu, MF_STRING, 1, L"Reload");
-            AppendMenuW(hFileMenu, MF_STRING, 1, L"Quit");
+            AppendMenuW(hFileMenu, MF_STRING, 1, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file_openfile")).c_str());
+            AppendMenuW(hFileMenu, MF_STRING, 2, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file_openfolder")).c_str());
+            AppendMenuW(hFileMenu, MF_SEPARATOR, 0, NULL);
+            AppendMenuW(hFileMenu, MF_STRING, 3, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file_closefile")).c_str());
+            AppendMenuW(hFileMenu, MF_STRING, 4, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file_closefolder")).c_str());
+            AppendMenuW(hFileMenu, MF_SEPARATOR, 0, NULL);
+            AppendMenuW(hFileMenu, MF_STRING, 5, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file_savecurrent")).c_str());
+            AppendMenuW(hFileMenu, MF_STRING, 6, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file_saveall")).c_str());
+            AppendMenuW(hFileMenu, MF_STRING, 7, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file_saveas")).c_str());
+            AppendMenuW(hFileMenu, MF_SEPARATOR, 0, NULL);
+            AppendMenuW(hFileMenu, MF_STRING, 8, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file_reload")).c_str());
+            AppendMenuW(hFileMenu, MF_STRING, 9, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file_quit")).c_str());
             
             // Edit
             HMENU hEditMenu = CreateMenu();

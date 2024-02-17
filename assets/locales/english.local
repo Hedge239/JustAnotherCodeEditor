@@ -2,16 +2,14 @@ app_name:Just Another Code Editor
 menu_file:File
 menu_file_openfile:Open File
 menu_file_openfolder:Open Folder
-menu_file_save:Save
-menu_file_saveas:Save As
+menu_file_closefile:Close File
+menu_file_closefolder:Close Folder
+menu_file_savecurrent:Save Current
+menu_file_saveall:Save All
+menu_file_saveas:Save As..
+menu_file_reload:Reload
+menu_file_quit:Quit
 menu_edit:Edit
-menu_edit_undo:Undo
-menu_edit_redo:Redo
-menu_edit_cut:Cut
-menu_edit_copy:Copy
-menu_edit_paste:Paste
-menu_edit_find:Find..
-menu_edit_findlarge:Find in directory..
 menu_view:View
 menu_project:Project
 menu_plugin:Extensions
