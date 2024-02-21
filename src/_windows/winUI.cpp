@@ -9,19 +9,43 @@
 #include <windows.h>
 #include <string>
 
+#define IDC_MAIN_EDIT 101
+
+
+// Window Componets, did I mention I still hate winAPI
+HWND g_hEditorTextBox;
+HMENU g_hEditorMenu;
 
 LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     switch(uMsg)
     {
+        case WM_COMMAND:
+        {
+            switch(LOWORD(wParam))
+            {
+                // File
+                case 9:
+                {
+                    PostQuitMessage(0);
+                    break;
+                }
+                case 8:
+                {
+                    // Do reload things, if I keep it
+                    break;
+                }
+            }
+        }
+
         case WM_CREATE:
         {
             // Create MenuBar - TOPBAR //
-            HMENU hMenu = CreateMenu();
+            g_hEditorMenu = CreateMenu();
 
             // File
             HMENU hFileMenu = CreateMenu();
-            AppendMenuW(hMenu, MF_POPUP, (UINT_PTR)hFileMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file")).c_str());
+            AppendMenuW(g_hEditorMenu, MF_POPUP, (UINT_PTR)hFileMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file")).c_str());
             AppendMenuW(hFileMenu, MF_STRING, 1, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file_openfile")).c_str());
             AppendMenuW(hFileMenu, MF_STRING, 2, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file_openfolder")).c_str());
             AppendMenuW(hFileMenu, MF_SEPARATOR, 0, NULL);
@@ -32,34 +56,50 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
             AppendMenuW(hFileMenu, MF_STRING, 6, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file_saveall")).c_str());
             AppendMenuW(hFileMenu, MF_STRING, 7, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file_saveas")).c_str());
             AppendMenuW(hFileMenu, MF_SEPARATOR, 0, NULL);
-            AppendMenuW(hFileMenu, MF_STRING, 8, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file_reload")).c_str());
+            //AppendMenuW(hFileMenu, MF_STRING, 8, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file_reload")).c_str());
             AppendMenuW(hFileMenu, MF_STRING, 9, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file_quit")).c_str());
             
             // Edit
             HMENU hEditMenu = CreateMenu();
-            AppendMenuW(hMenu, MF_POPUP, (UINT_PTR)hEditMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_edit")).c_str());
+            AppendMenuW(g_hEditorMenu, MF_POPUP, (UINT_PTR)hEditMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_edit")).c_str());
             
             // View
             HMENU hViewMenu = CreateMenu();
-            AppendMenuW(hMenu, MF_POPUP, (UINT_PTR)hViewMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_view")).c_str());
+            AppendMenuW(g_hEditorMenu, MF_POPUP, (UINT_PTR)hViewMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_view")).c_str());
             
-            // Project
+            // Project - SOURCE CONTROL!!!!
             HMENU hProjectMenu = CreateMenu();
-            AppendMenuW(hMenu, MF_POPUP, (UINT_PTR)hProjectMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_project")).c_str());
+            AppendMenuW(g_hEditorMenu, MF_POPUP, (UINT_PTR)hProjectMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_project")).c_str());
             
-            // Extensions
+            // Extensions - I got to somehow let plugins add to this -_-
             HMENU hPluginMenu = CreateMenu();
-            AppendMenuW(hMenu, MF_POPUP, (UINT_PTR)hPluginMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_plugin")).c_str());
+            AppendMenuW(g_hEditorMenu, MF_POPUP, (UINT_PTR)hPluginMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_plugin")).c_str());
             
             // Settings
             HMENU hSettingsMenu = CreateMenu();
-            AppendMenuW(hMenu, MF_POPUP, (UINT_PTR)hSettingsMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_settings")).c_str());
+            AppendMenuW(g_hEditorMenu, MF_POPUP, (UINT_PTR)hSettingsMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_settings")).c_str());
             
             // Help
             HMENU hHelpMenu = CreateMenu();
-            AppendMenuW(hMenu, MF_POPUP, (UINT_PTR)hHelpMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_help")).c_str());
+            AppendMenuW(g_hEditorMenu, MF_POPUP, (UINT_PTR)hHelpMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_help")).c_str());
 
-            SetMenu(hwnd, hMenu);
+            // Textbox
+            g_hEditorTextBox =  CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "", WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE | ES_AUTOVSCROLL, 0, 0, 0, 0, hwnd, (HMENU)IDC_MAIN_EDIT, GetModuleHandle(NULL), NULL);
+
+            // FileExploerer
+
+            // Terminal
+            SetMenu(hwnd, g_hEditorMenu);
+            break;
+        }
+
+        case WM_SIZE:
+        {
+            if(g_hEditorTextBox != NULL)
+            {
+                MoveWindow(g_hEditorTextBox, 0, 0, LOWORD(lParam), HIWORD(lParam), FALSE);
+            }
+
             break;
         }
 
