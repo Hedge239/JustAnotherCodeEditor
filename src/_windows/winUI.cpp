@@ -97,9 +97,10 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
         {
             if(g_hEditorTextBox != NULL)
             {
+                InvalidateRect(g_hEditorTextBox, NULL, true);
+                UpdateWindow(g_hEditorTextBox);
                 MoveWindow(g_hEditorTextBox, 0, 0, LOWORD(lParam), HIWORD(lParam), FALSE);
             }
-
             break;
         }
 
