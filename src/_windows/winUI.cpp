@@ -9,8 +9,6 @@
 #include <windows.h>
 #include <string>
 
-#define IDC_MAIN_EDIT 101
-
 
 // Window Componets, did I mention I still hate winAPI
 HWND g_hEditorTextBox;
@@ -84,7 +82,7 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
             AppendMenuW(g_hEditorMenu, MF_POPUP, (UINT_PTR)hHelpMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_help")).c_str());
 
             // Textbox
-            g_hEditorTextBox =  CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "", WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL| WS_HSCROLL| WS_BORDER, 0, 0, 0, 0, hwnd, (HMENU)IDC_MAIN_EDIT, GetModuleHandle(NULL), NULL);
+            g_hEditorTextBox =  CreateWindowEx(WS_EX_CLIENTEDGE, TEXT("Edit"), "", WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL| WS_HSCROLL| WS_BORDER, 0, 0, 0, 0, hwnd, (HMENU)1, (HINSTANCE)GetWindowLongPtr(hwnd, GWLP_HINSTANCE), NULL);
 
             // FileExploerer
 
@@ -97,7 +95,10 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
         {
             if(g_hEditorTextBox != NULL)
             {
-                MoveWindow(g_hEditorTextBox, 0, 0, LOWORD(lParam), HIWORD(lParam), FALSE);
+                //InvalidateRect(g_hEditorTextBox, NULL, TRUE);
+                //UpdateWindow(g_hEditorTextBox);
+                MoveWindow(g_hEditorTextBox, 0, 0, LOWORD(lParam), HIWORD(lParam), TRUE);
+                InvalidateRect(g_hEditorTextBox, NULL, FALSE);
             }
 
             break;
