@@ -1,1 +1,3 @@
-IDI_ICON1               ICON        DISCARDABLE            "assets\gfx\logo.ico"
+#include "JACE/_win/resources.h"
+
+IDI_APPLICATION_ICON ICON DISCARDABLE "assets\gfx\logo.ico"

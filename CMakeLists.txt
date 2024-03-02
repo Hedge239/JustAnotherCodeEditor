@@ -15,6 +15,7 @@ include(".buildtools/cmake/app.cmake")
 if(WIN32)
     message(STATUS "Display Desktop: Win32")
     message(STATUS "Display Server: Win32")
+
     include(".buildtools/cmake/platform/windows.cmake")
 elseif(UNIX)
     message(STATUS "Display Desktop: LINUX")
@@ -62,5 +63,9 @@ set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "../JA
 target_include_directories(${PROJECT_NAME} PRIVATE "include" ${DEPENDENCES_INCLUDE})
 target_link_libraries(${PROJECT_NAME} PRIVATE ${DEPENDENCES_SRC} ${BUILD_FLAGS})
 
-# This one line of code, angers me... I just want to copy files when there modified, AAAAAAAAAAAAAAAAA
+# After build things, ie copy folder, set flags, bla bla bla
 file(COPY "assets/" DESTINATION "${CMAKE_BINARY_DIR}/../JACE_app")
+
+if(WIN32)
+    set_target_properties(${PROJECT_NAME} PROPERTIES WIN32_EXECUTABLE TRUE)
+endif()

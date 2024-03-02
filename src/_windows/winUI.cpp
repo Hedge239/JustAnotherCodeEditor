@@ -1,5 +1,6 @@
 #include "JACE/_win/winUI.h"
 #include "JACE/_win/win32.h"
+#include "JACE/_win/resources.h"
 
 #include "JACE/common/sessionManager.h"
 #include "JACE/common/localesHandeler.h"
@@ -122,6 +123,7 @@ void app::win32::UI::w32_createEditorWindow()
     WindowClass.lpfnWndProc = WindowProcedure;
     WindowClass.hInstance = GetModuleHandle(NULL);
     WindowClass.lpszClassName = ApplicationName.c_str();
+    WindowClass.hIcon = LoadIcon(WindowClass.hInstance, MAKEINTRESOURCE(IDI_APPLICATION_ICON));
     RegisterClassW(&WindowClass);
 
     // Define the window Style
