@@ -11,8 +11,6 @@
 
 
 // Window Componets, did I mention I still hate winAPI
-HWND g_hEditorTextBox;
-HMENU g_hEditorMenu;
 
 LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -39,11 +37,11 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
         case WM_CREATE:
         {
             // Create MenuBar - TOPBAR //
-            g_hEditorMenu = CreateMenu();
+            HMENU hEditorMenu = CreateMenu();
 
             // File
             HMENU hFileMenu = CreateMenu();
-            AppendMenuW(g_hEditorMenu, MF_POPUP, (UINT_PTR)hFileMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file")).c_str());
+            AppendMenuW(hEditorMenu, MF_POPUP, (UINT_PTR)hFileMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file")).c_str());
             AppendMenuW(hFileMenu, MF_STRING, 1, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file_openfile")).c_str());
             AppendMenuW(hFileMenu, MF_STRING, 2, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file_openfolder")).c_str());
             AppendMenuW(hFileMenu, MF_SEPARATOR, 0, NULL);
@@ -59,47 +57,44 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
             
             // Edit
             HMENU hEditMenu = CreateMenu();
-            AppendMenuW(g_hEditorMenu, MF_POPUP, (UINT_PTR)hEditMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_edit")).c_str());
+            AppendMenuW(hEditorMenu, MF_POPUP, (UINT_PTR)hEditMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_edit")).c_str());
             
             // View
             HMENU hViewMenu = CreateMenu();
-            AppendMenuW(g_hEditorMenu, MF_POPUP, (UINT_PTR)hViewMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_view")).c_str());
+            AppendMenuW(hEditorMenu, MF_POPUP, (UINT_PTR)hViewMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_view")).c_str());
             
             // Project - SOURCE CONTROL!!!!
             HMENU hProjectMenu = CreateMenu();
-            AppendMenuW(g_hEditorMenu, MF_POPUP, (UINT_PTR)hProjectMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_project")).c_str());
+            AppendMenuW(hEditorMenu, MF_POPUP, (UINT_PTR)hProjectMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_project")).c_str());
             
             // Extensions - I got to somehow let plugins add to this -_-
             HMENU hPluginMenu = CreateMenu();
-            AppendMenuW(g_hEditorMenu, MF_POPUP, (UINT_PTR)hPluginMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_plugin")).c_str());
+            AppendMenuW(hEditorMenu, MF_POPUP, (UINT_PTR)hPluginMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_plugin")).c_str());
             
             // Settings
             HMENU hSettingsMenu = CreateMenu();
-            AppendMenuW(g_hEditorMenu, MF_POPUP, (UINT_PTR)hSettingsMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_settings")).c_str());
+            AppendMenuW(hEditorMenu, MF_POPUP, (UINT_PTR)hSettingsMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_settings")).c_str());
             
             // Help
             HMENU hHelpMenu = CreateMenu();
-            AppendMenuW(g_hEditorMenu, MF_POPUP, (UINT_PTR)hHelpMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_help")).c_str());
+            AppendMenuW(hEditorMenu, MF_POPUP, (UINT_PTR)hHelpMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_help")).c_str());
 
             // Textbox
-            g_hEditorTextBox =  CreateWindowEx(WS_EX_CLIENTEDGE, TEXT("Edit"), "", WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL| WS_HSCROLL| WS_BORDER, 0, 0, 0, 0, hwnd, (HMENU)100, GetModuleHandle(NULL), NULL);
+            HWND hEditorTextBox = CreateWindowEx(WS_EX_CLIENTEDGE, TEXT("Edit"), "", WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL| WS_HSCROLL| WS_BORDER, 0, 0, 0, 0, hwnd, (HMENU)1, GetModuleHandle(NULL), NULL);
 
             // FileExploerer
 
             // Terminal
-            SetMenu(hwnd, g_hEditorMenu);
+            SetMenu(hwnd, hEditorMenu);
             break;
         }
 
         case WM_SIZE:
         {
-            if(g_hEditorTextBox != NULL)
-            {
-                InvalidateRect(g_hEditorTextBox, NULL, TRUE);
-                //UpdateWindow(g_hEditorTextBox);
-                MoveWindow(g_hEditorTextBox, 0, 0, LOWORD(lParam), HIWORD(lParam), TRUE);
-                //InvalidateRect(g_hEditorTextBox, NULL, FALSE);
-            }
+            HWND hEditorTextBox = GetDlgItem(hwnd, 1); // windows....
+
+            if(hEditorTextBox != NULL)
+            {MoveWindow(hEditorTextBox, 0, 0, LOWORD(lParam), HIWORD(lParam), TRUE);}
 
             break;
         }
