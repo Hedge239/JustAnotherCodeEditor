@@ -12,18 +12,22 @@
 
 
 // GLOBAL VARIABLES //
+#define CURSOR_REACH 10
+
 bool g_isMovingLeftPanel = false;
 bool g_isMovingLowerPanel = false;
 
 int g_leftPanelWidth = 200;
 int g_lowerPanelHeight = 100;
 
-POINT g_previousLocation = {0};
+POINT g_previousPanelLocation = {0};
+
 
 LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     switch(uMsg)
     {
+        // WINDOW OPERATIONS & COMMANDS //
         case WM_COMMAND:
         {
             switch(LOWORD(wParam))
@@ -42,6 +46,74 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
             }
         }
 
+        // WINDOW INPUT - MOUSE //
+        case WM_MOUSEMOVE:
+        {
+            if(g_isMovingLeftPanel || g_isMovingLowerPanel)
+            {
+                if(g_isMovingLeftPanel)     // Get new width of the Left Panel
+                    {g_leftPanelWidth += LOWORD(lParam) - g_previousPanelLocation.x;}
+
+                if(g_isMovingLowerPanel)    // Get new height of the lower panel
+                    {g_lowerPanelHeight -= HIWORD(lParam) - g_previousPanelLocation.y;}
+
+                g_previousPanelLocation = {LOWORD(lParam), HIWORD(lParam)};
+
+                // Force the window to adjust & resize
+                RECT clientRect;
+                GetClientRect(hwnd, &clientRect);
+
+                SendMessage(hwnd, WM_SIZE, SIZE_RESTORED, MAKELPARAM(clientRect.right, clientRect.bottom));
+            }
+
+            break;
+        }
+
+        case WM_LBUTTONDOWN:
+        {
+            // Find where cursor is and capture mouse input
+            HWND hLeftPanel = GetDlgItem(hwnd, 1);
+            HWND hLowerPanel = GetDlgItem(hwnd, 2);
+
+            RECT lowerPanelRect, leftPanelRect;
+            GetWindowRect(hLeftPanel, &leftPanelRect);
+            GetWindowRect(hLowerPanel, &lowerPanelRect);
+
+            ScreenToClient(hwnd, (LPPOINT)&leftPanelRect.left);
+            ScreenToClient(hwnd, (LPPOINT)&leftPanelRect.right);
+            ScreenToClient(hwnd, (LPPOINT)&lowerPanelRect.left);
+            ScreenToClient(hwnd, (LPPOINT)&lowerPanelRect.right);
+
+            if(LOWORD(lParam) >= leftPanelRect.right - CURSOR_REACH && LOWORD(lParam) <= leftPanelRect.right + CURSOR_REACH)
+            {
+                g_isMovingLeftPanel = true;
+                g_previousPanelLocation = {LOWORD(lParam), HIWORD(lParam)};
+
+                SetCapture(hwnd);
+            }else if(HIWORD(lParam) >= lowerPanelRect.top - CURSOR_REACH && HIWORD(lParam) <= lowerPanelRect.top + CURSOR_REACH)
+            {
+                g_isMovingLowerPanel = true;
+                g_previousPanelLocation = {LOWORD(lParam), HIWORD(lParam)};
+
+                SetCapture(hwnd);
+            }
+
+            break;
+        }
+
+        case WM_LBUTTONUP:
+        {
+            if(g_isMovingLeftPanel || g_isMovingLowerPanel)
+            {
+                g_isMovingLeftPanel = false;
+                g_isMovingLowerPanel = false;
+                ReleaseCapture();
+            }
+
+            break;
+        }
+
+        // WINDOW CREATION & MANAGEMENT //
         case WM_CREATE:
         {
             // Create MenuBar - TOPBAR //
