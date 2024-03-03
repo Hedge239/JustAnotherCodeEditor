@@ -13,6 +13,7 @@
 
 // GLOBAL VARIABLES //
 #define CURSOR_REACH 10
+#define PANEL_RESIZE_THRESHOLD 10 // In Miliseconds
 
 bool g_isMovingLeftPanel = false;
 bool g_isMovingLowerPanel = false;
@@ -49,21 +50,29 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
         // WINDOW INPUT - MOUSE //
         case WM_MOUSEMOVE:
         {
-            if(g_isMovingLeftPanel || g_isMovingLowerPanel)
+            static DWORD lastResizeTime = 0;
+            const DWORD currentTime = GetTickCount();
+
+            if ((wParam & MK_LBUTTON) && (currentTime - lastResizeTime > PANEL_RESIZE_THRESHOLD))
             {
-                if(g_isMovingLeftPanel)     // Get new width of the Left Panel
-                    {g_leftPanelWidth += LOWORD(lParam) - g_previousPanelLocation.x;}
+                if(g_isMovingLeftPanel || g_isMovingLowerPanel)
+                {
+                    if(g_isMovingLeftPanel)     // Get new width of the Left Panel
+                       {g_leftPanelWidth += LOWORD(lParam) - g_previousPanelLocation.x;}
 
-                if(g_isMovingLowerPanel)    // Get new height of the lower panel
-                    {g_lowerPanelHeight -= HIWORD(lParam) - g_previousPanelLocation.y;}
+                    if(g_isMovingLowerPanel)    // Get new height of the lower panel
+                       {g_lowerPanelHeight -= HIWORD(lParam) - g_previousPanelLocation.y;}
 
-                g_previousPanelLocation = {LOWORD(lParam), HIWORD(lParam)};
+                    g_previousPanelLocation = {LOWORD(lParam), HIWORD(lParam)};
 
-                // Force the window to adjust & resize
-                RECT clientRect;
-                GetClientRect(hwnd, &clientRect);
+                    // Force the window to adjust & resize
+                    RECT clientRect;
+                    GetClientRect(hwnd, &clientRect);
 
-                SendMessage(hwnd, WM_SIZE, SIZE_RESTORED, MAKELPARAM(clientRect.right, clientRect.bottom));
+                    SendMessage(hwnd, WM_SIZE, SIZE_RESTORED, MAKELPARAM(clientRect.right, clientRect.bottom));
+                }
+
+                lastResizeTime = currentTime;
             }
 
             break;
