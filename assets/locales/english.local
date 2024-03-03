@@ -7,6 +7,7 @@ menu_file_closefolder:Close Folder
 menu_file_savecurrent:Save Current
 menu_file_saveall:Save All
 menu_file_saveas:Save As..
+menu_file_reload:Reload
 menu_file_quit:Quit
 menu_edit:Edit
 menu_view:View

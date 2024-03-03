@@ -41,7 +41,9 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
                 }
                 case 8:
                 {
-                    // Do reload things, if I keep it
+                    // Works!?! MAYBE!?!?
+                    InvalidateRect(hwnd, NULL, TRUE);
+                    UpdateWindow(hwnd);
                     break;
                 }
             }
@@ -61,9 +63,10 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
                 GetCursorPos(&cursorPos);
                 ScreenToClient(hwnd, &cursorPos);
 
-                RECT lowerPanelRect, leftPanelRect;
+                RECT lowerPanelRect, leftPanelRect, hwndClientRect;
                 GetWindowRect(hLeftPanel, &leftPanelRect);
                 GetWindowRect(hLowerPanel, &lowerPanelRect);
+                GetClientRect(hwnd, &hwndClientRect);
 
                 MapWindowPoints(HWND_DESKTOP, hwnd, (LPPOINT)&leftPanelRect, 2);
                 MapWindowPoints(HWND_DESKTOP, hwnd, (LPPOINT)&lowerPanelRect, 2);
@@ -78,7 +81,18 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
                     break;
                 }else
                 {
+                    if(cursorPos.x <= 0 || cursorPos.x >= hwndClientRect.right - 1)
+                    {
+                        SetCursor(LoadCursor(NULL, IDC_SIZEWE));
+                        break;
+                    }else if(cursorPos.y >= hwndClientRect.bottom - 1)
+                    {
+                        SetCursor(LoadCursor(NULL, IDC_SIZENS));
+                        break;
+                    }
+
                     SetCursor(LoadCursor(NULL, IDC_ARROW));
+                    break;
                 }
             }
 
@@ -179,7 +193,7 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
             AppendMenuW(hFileMenu, MF_STRING, 6, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file_saveall")).c_str());
             AppendMenuW(hFileMenu, MF_STRING, 7, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file_saveas")).c_str());
             AppendMenuW(hFileMenu, MF_SEPARATOR, 0, NULL);
-            //AppendMenuW(hFileMenu, MF_STRING, 8, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file_reload")).c_str());
+            AppendMenuW(hFileMenu, MF_STRING, 8, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file_reload")).c_str());
             AppendMenuW(hFileMenu, MF_STRING, 9, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file_quit")).c_str());
             
             // Edit
