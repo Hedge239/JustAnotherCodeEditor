@@ -11,7 +11,14 @@
 #include <string>
 
 
-// Window Componets, did I mention I still hate winAPI
+// GLOBAL VARIABLES //
+bool g_isMovingLeftPanel = false;
+bool g_isMovingLowerPanel = false;
+
+int g_leftPanelWidth = 200;
+int g_lowerPanelHeight = 100;
+
+POINT g_previousLocation = {0};
 
 LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -80,8 +87,13 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
             HMENU hHelpMenu = CreateMenu();
             AppendMenuW(hEditorMenu, MF_POPUP, (UINT_PTR)hHelpMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_help")).c_str());
 
+            // Window Elements - woop//
+            HWND hLeftPanel = CreateWindowEx(WS_EX_CLIENTEDGE, "STATIC", "", WS_CHILD | WS_VISIBLE, 0, 0, 100, 100, hwnd, (HMENU)1, GetModuleHandle(NULL), NULL);
+            HWND hLowerPanel = CreateWindowEx(WS_EX_CLIENTEDGE, "STATIC", "", WS_CHILD | WS_VISIBLE, 0, 0, 100, 100, hwnd, (HMENU)2, GetModuleHandle(NULL), NULL);
+            HWND hMiddlePanel = CreateWindowEx(WS_EX_CLIENTEDGE, "STATIC", "", WS_CHILD | WS_VISIBLE, 0, 0, 100, 100, hwnd, (HMENU)3, GetModuleHandle(NULL), NULL);
+
             // Textbox
-            HWND hEditorTextBox = CreateWindowEx(WS_EX_CLIENTEDGE, TEXT("Edit"), "", WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL| WS_HSCROLL| WS_BORDER, 0, 0, 0, 0, hwnd, (HMENU)1, GetModuleHandle(NULL), NULL);
+            HWND hEditorTextBox = CreateWindowEx(WS_EX_CLIENTEDGE, TEXT("Edit"), "", WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL| WS_HSCROLL| WS_BORDER, 0, 0, 0, 0, hMiddlePanel, (HMENU)10, GetModuleHandle(NULL), NULL);
 
             // FileExploerer
 
@@ -92,10 +104,21 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 
         case WM_SIZE:
         {
-            HWND hEditorTextBox = GetDlgItem(hwnd, 1); // windows....
+            // Panels Adjustment
+            HWND hLeftPanel = GetDlgItem(hwnd, 1);
+            HWND hLowerPanel = GetDlgItem(hwnd, 2);
+            HWND hMiddilePanel = GetDlgItem(hwnd, 3);
 
-            if(hEditorTextBox != NULL)
-            {MoveWindow(hEditorTextBox, 0, 0, LOWORD(lParam), HIWORD(lParam), TRUE);}
+            MoveWindow(hLeftPanel, 0, 0, g_leftPanelWidth, HIWORD(lParam), TRUE);
+            MoveWindow(hLowerPanel, g_leftPanelWidth, HIWORD(lParam) - g_lowerPanelHeight, LOWORD(lParam) - g_leftPanelWidth, g_lowerPanelHeight, TRUE);
+            MoveWindow(hMiddilePanel, g_leftPanelWidth, 0, LOWORD(lParam) - g_leftPanelWidth, HIWORD(lParam) - g_lowerPanelHeight, TRUE);
+
+            // Middle Panel Children //
+            RECT middlePanelRect;
+            GetClientRect(hMiddilePanel, &middlePanelRect);
+
+            HWND hEditorTextBox = GetDlgItem(hMiddilePanel, 10);
+            MoveWindow(hEditorTextBox, 0, 0, middlePanelRect.right, middlePanelRect.bottom, TRUE);
 
             break;
         }
