@@ -48,8 +48,45 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
         }
 
         // WINDOW INPUT - MOUSE //
+        case WM_SETCURSOR:
+        {
+            if(LOWORD(lParam) == HTCLIENT)
+            {
+                // Change cursor when over edges of panels
+                HWND hLeftPanel = GetDlgItem(hwnd, 1);
+                HWND hLowerPanel = GetDlgItem(hwnd, 2);
+
+                POINT cursorPos;
+                GetCursorPos(&cursorPos);
+                ScreenToClient(hwnd, &cursorPos);
+
+                RECT lowerPanelRect, leftPanelRect;
+                GetWindowRect(hLeftPanel, &leftPanelRect);
+                GetWindowRect(hLowerPanel, &lowerPanelRect);
+
+                MapWindowPoints(HWND_DESKTOP, hwnd, (LPPOINT)&leftPanelRect, 2);
+                MapWindowPoints(HWND_DESKTOP, hwnd, (LPPOINT)&lowerPanelRect, 2);
+
+                if(cursorPos.x >= leftPanelRect.right - CURSOR_REACH && cursorPos.x <= leftPanelRect.right + CURSOR_REACH)
+                {
+                    SetCursor(LoadCursor(NULL, IDC_SIZEWE));
+                    break;
+                }else if(cursorPos.y >= lowerPanelRect.top - CURSOR_REACH && cursorPos.y <= lowerPanelRect.top + CURSOR_REACH)
+                {
+                    SetCursor(LoadCursor(NULL, IDC_SIZENS));
+                    break;
+                }else
+                {
+                    SetCursor(LoadCursor(NULL, IDC_ARROW));
+                }
+            }
+
+            break;
+        }
+
         case WM_MOUSEMOVE:
         {
+            // Calculate new size
             static DWORD lastResizeTime = 0;
             const DWORD currentTime = GetTickCount();
 
@@ -174,7 +211,7 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
             HWND hMiddlePanel = CreateWindowEx(WS_EX_CLIENTEDGE, "STATIC", "", WS_CHILD | WS_VISIBLE, 0, 0, 100, 100, hwnd, (HMENU)3, GetModuleHandle(NULL), NULL);
 
             // Textbox
-            HWND hEditorTextBox = CreateWindowEx(WS_EX_CLIENTEDGE, TEXT("Edit"), "", WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL| WS_HSCROLL| WS_BORDER, 0, 0, 0, 0, hMiddlePanel, (HMENU)10, GetModuleHandle(NULL), NULL);
+            HWND hEditorTextBox = CreateWindowEx(WS_EX_CLIENTEDGE, TEXT("Edit"), "", WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL | WS_HSCROLL, 0, 0, 0, 0, hMiddlePanel, (HMENU)10, GetModuleHandle(NULL), NULL);
 
             // FileExploerer
 
