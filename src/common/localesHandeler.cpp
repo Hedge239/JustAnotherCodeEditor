@@ -44,7 +44,7 @@ bool loadedInMemory(std::string key)
     return false;
 }
 
-// Read the text either from .local file or memory
+// Read the text either from .local file or memory // TODO: add bool called "dontUseMemory" as windows loads text into memory automatically...
 std::string app::common::Localisation::GetText(std::string inputKey)
 {
     if(!loadedInMemory(inputKey))
