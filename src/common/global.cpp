@@ -1,6 +1,5 @@
 #include "JACE/common/global.h"
 
-
 #include <string>
 
 
