@@ -33,21 +33,24 @@ void app::common::Localisation::setAppLanguage()
 }
 
 // Check if using Hybrid Mode, if so check if its been loaded
-bool loadedInMemory(std::string key)
+bool loadedInMemory(std::string key, bool isDisabled)
 {
-    if(app::common::global::MEMORYMODE == 1)
+    if(!isDisabled)
     {
-        if(g_localtextMap.find(key) != g_localtextMap.end())
-            {return true;}
+        if(app::common::global::MEMORYMODE == 1)
+        {
+            if(g_localtextMap.find(key) != g_localtextMap.end())
+                {return true;}
+        }
     }
 
     return false;
 }
 
-// Read the text either from .local file or memory // TODO: add bool called "dontUseMemory" as windows loads text into memory automatically...
-std::string app::common::Localisation::GetText(std::string inputKey)
+// Read the text either from .local file or memory || added dontUseMemory since if the main window is allways open, why use extra memory to save strings?
+std::string app::common::Localisation::GetText(std::string inputKey, bool dontUseMemory)
 {
-    if(!loadedInMemory(inputKey))
+    if(!loadedInMemory(inputKey, dontUseMemory))
     {
         std::ifstream langFile;
         std::string currentKey;
@@ -68,8 +71,11 @@ std::string app::common::Localisation::GetText(std::string inputKey)
                 currentKey = line.substr(0, colonPos);
                 if(currentKey == inputKey)
                 {
-                    if(app::common::global::MEMORYMODE == 1)
-                        {g_localtextMap[currentKey] = line.substr(colonPos + 1);}
+                    if(!dontUseMemory)
+                    {
+                        if(app::common::global::MEMORYMODE == 1)
+                            {g_localtextMap[currentKey] = line.substr(colonPos + 1);}
+                    }
 
                     return line.substr(colonPos + 1);
                     break;

@@ -11,7 +11,7 @@ namespace app
         {
             public:
             static void setAppLanguage();
-            static std::string GetText(std::string key);
+            static std::string GetText(std::string key, bool dontUseMemory);
         };
     }
 }
