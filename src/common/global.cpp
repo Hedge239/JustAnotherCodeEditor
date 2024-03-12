@@ -10,6 +10,8 @@ namespace app
         namespace global
         {
             std::string APPDATA;
+            std::string WORKINGDIR;
+            
             int MEMORYMODE;
         }
     }

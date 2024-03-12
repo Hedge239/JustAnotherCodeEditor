@@ -17,6 +17,7 @@ if(WIN32)
     message(STATUS "Display Server: Win32")
 
     include(".buildtools/cmake/platform/windows.cmake")
+    list(APPEND DEPENDENCES_SRC Comctl32)
 elseif(UNIX)
     message(STATUS "Display Desktop: LINUX")
     include(".buildtools/cmake/platform/linux.cmake")
