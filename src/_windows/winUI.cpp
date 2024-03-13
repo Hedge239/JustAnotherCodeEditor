@@ -235,7 +235,7 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 
             TCITEM tie;
             tie.mask = TCIF_TEXT;
-            tie.pszText = "Test Tab";"
+            tie.pszText = "Test Tab";
             TabCtrl_InsertItem(hTabs, 0, &tie);
             // FileExploerer
             
