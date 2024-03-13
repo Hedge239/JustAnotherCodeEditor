@@ -8,12 +8,14 @@
 #include "JACE/_UI/themeManager.h"
 
 #include <windows.h>
+#include <commctrl.h>
 #include <string>
 
 
 // GLOBAL VARIABLES // Primary Elements 1 - 9 (Panels, etc) Child Elements 10 - 100
 #define CURSOR_REACH 10
 #define PANEL_RESIZE_THRESHOLD 10 // In Miliseconds
+#define TABS_PANEL_SIZE 30
 
 bool g_isMovingLeftPanel = false;
 bool g_isMovingLowerPanel = false;
@@ -229,7 +231,12 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
             HWND hEditorTextBox = CreateWindowEx(WS_EX_CLIENTEDGE, TEXT("Edit"), "", WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL | WS_HSCROLL, 0, 0, 0, 0, hMiddlePanel, (HMENU)10, GetModuleHandle(NULL), NULL);
 
             // Tabs
+            HWND hTabs = CreateWindowEx(WS_EX_CLIENTEDGE, WC_TABCONTROL, "", WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE, 0, 0, 0, 0, hMiddlePanel, (HMENU)11, GetModuleHandle(NULL), NULL);
 
+            TCITEM tie;
+            tie.mask = TCIF_TEXT;
+            tie.pszText = "Test Tab";"
+            TabCtrl_InsertItem(hTabs, 0, &tie);
             // FileExploerer
             
             // Terminal
@@ -252,8 +259,11 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
             RECT middlePanelRect;
             GetClientRect(hMiddilePanel, &middlePanelRect);
 
+            HWND hTabs = GetDlgItem(hMiddilePanel, 11);
+            MoveWindow(hTabs, 0, 0, middlePanelRect.right, TABS_PANEL_SIZE, TRUE);
+
             HWND hEditorTextBox = GetDlgItem(hMiddilePanel, 10);
-            MoveWindow(hEditorTextBox, 0, 0, middlePanelRect.right, middlePanelRect.bottom, TRUE);
+            MoveWindow(hEditorTextBox, 0, TABS_PANEL_SIZE, middlePanelRect.right, middlePanelRect.bottom, TRUE);
 
             break;
         }
@@ -273,6 +283,12 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 
 void app::win32::UI::w32_createEditorWindow()
 {
+    // Init Common Controls
+    INITCOMMONCONTROLSEX icex;
+    icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
+    icex.dwICC = ICC_TAB_CLASSES;
+    InitCommonControlsEx(&icex);
+
     // Define application name - Because windows sucks
     std::wstring ApplicationName =  app::win32::system::StringToWideString(app::common::Localisation::GetText("app_name", false));
 
