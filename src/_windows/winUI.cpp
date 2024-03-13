@@ -26,6 +26,15 @@ int g_lowerPanelHeight = 100;
 POINT g_previousPanelLocation = {0};
 
 
+void createNewTab(HWND hTabs, std::string tabName)
+{
+    TCITEM tie;
+    tie.mask = TCIF_TEXT;
+    tie.pszText = (LPSTR)tabName.c_str();
+
+    TabCtrl_InsertItem(hTabs, 0, &tie);
+}
+
 LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     switch(uMsg)
@@ -232,6 +241,8 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 
             // Tabs
             HWND hTabs = CreateWindowEx(WS_EX_CLIENTEDGE, WC_TABCONTROL, "", WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE | WS_BORDER, 0, 0, 0, 0, hMiddlePanel, (HMENU)11, GetModuleHandle(NULL), NULL);
+
+            createNewTab(hTabs, "New File");
 
             // FileExploerer
             
