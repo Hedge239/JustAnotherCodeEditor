@@ -26,18 +26,18 @@ int g_lowerPanelHeight = 100;
 POINT g_previousPanelLocation = {0};
 
 
-void createNewTab(HWND hTabs, std::string tabName)
+void createNewTab(HWND hTabManager, std::string tabName)
 {
     TCITEM tie;
     tie.mask = TCIF_TEXT;
     tie.pszText = (LPSTR)tabName.c_str();
 
-    if(TabCtrl_GetItemCount(hTabs) == 0)
+    if(TabCtrl_GetItemCount(hTabManager) == 0)
     {
-        TabCtrl_InsertItem(hTabs, 0, &tie);
+        TabCtrl_InsertItem(hTabManager, 0, &tie);
     }else
     {
-        TabCtrl_InsertItem(hTabs, TabCtrl_GetItemCount(hTabs) + 1, &tie);
+        TabCtrl_InsertItem(hTabManager, TabCtrl_GetItemCount(hTabManager) + 1, &tie);
     }
 }
 
@@ -246,9 +246,9 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
             HWND hEditorTextBox = CreateWindowEx(WS_EX_CLIENTEDGE, TEXT("Edit"), "", WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL | WS_HSCROLL, 0, 0, 0, 0, hMiddlePanel, (HMENU)10, GetModuleHandle(NULL), NULL);
 
             // Tabs
-            HWND hTabs = CreateWindowEx(WS_EX_CLIENTEDGE, WC_TABCONTROL, "", WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE | WS_BORDER, 0, 0, 0, 0, hMiddlePanel, (HMENU)11, GetModuleHandle(NULL), NULL);
+            HWND hTabManager = CreateWindowEx(WS_EX_CLIENTEDGE, WC_TABCONTROL, "", WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE | WS_BORDER, 0, 0, 0, 0, hMiddlePanel, (HMENU)11, GetModuleHandle(NULL), NULL);
 
-            createNewTab(hTabs, "New File");
+            createNewTab(hTabManager, "New File");
 
             // FileExploerer
             
@@ -272,8 +272,8 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
             RECT middlePanelRect;
             GetClientRect(hMiddilePanel, &middlePanelRect);
 
-            HWND hTabs = GetDlgItem(hMiddilePanel, 11);
-            MoveWindow(hTabs, 0, 0, middlePanelRect.right, TABS_PANEL_SIZE, TRUE);
+            HWND hTabManager = GetDlgItem(hMiddilePanel, 11);
+            MoveWindow(hTabManager, 0, 0, middlePanelRect.right, TABS_PANEL_SIZE, TRUE);
 
             HWND hEditorTextBox = GetDlgItem(hMiddilePanel, 10);
             MoveWindow(hEditorTextBox, 0, TABS_PANEL_SIZE, middlePanelRect.right, middlePanelRect.bottom, TRUE);
