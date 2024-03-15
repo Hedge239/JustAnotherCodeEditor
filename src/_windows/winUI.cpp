@@ -32,7 +32,13 @@ void createNewTab(HWND hTabs, std::string tabName)
     tie.mask = TCIF_TEXT;
     tie.pszText = (LPSTR)tabName.c_str();
 
-    TabCtrl_InsertItem(hTabs, 0, &tie);
+    if(TabCtrl_GetItemCount(hTabs) == 0)
+    {
+        TabCtrl_InsertItem(hTabs, 0, &tie);
+    }else
+    {
+        TabCtrl_InsertItem(hTabs, TabCtrl_GetItemCount(hTabs) + 1, &tie);
+    }
 }
 
 LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
