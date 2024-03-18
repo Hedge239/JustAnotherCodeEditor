@@ -100,6 +100,7 @@ LRESULT wm_OnCreate(HWND hwnd, WPARAM wParam, LPARAM lParam)
     HWND hTabManager = CreateWindowEx(WS_EX_CLIENTEDGE, WC_TABCONTROL, "", WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE | WS_BORDER, 0, 0, 0, 0, hMiddlePanel, (HMENU)11, GetModuleHandle(NULL), NULL);
     HWND hEditorTextBox = CreateWindowEx(WS_EX_CLIENTEDGE, TEXT("Edit"), "", WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL | WS_HSCROLL, 0, 0, 0, 0, hMiddlePanel, (HMENU)10, GetModuleHandle(NULL), NULL);
 
+    app_CreateNewTab(hwnd, "TestTab");
     return 0;
 }
 
@@ -124,6 +125,11 @@ LRESULT wm_OnSizeChange(HWND hwnd, WPARAM wParam, LPARAM lParam)
     HWND hEditorTextBox = GetDlgItem(hMiddilePanel, 10);
     MoveWindow(hEditorTextBox, 0, TABS_PANEL_SIZE, middlePanelRect.right, middlePanelRect.bottom, TRUE);
 
+    return 0;
+}
+
+LRESULT wm_OnItemDraw(HWND hwnd, WPARAM wParam, LPARAM lParam)
+{
     return 0;
 }
 
@@ -281,6 +287,9 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 
     case WM_SIZE:
         return wm_OnSizeChange(hwnd, wParam, lParam);
+
+    case WM_DRAWITEM:
+        return wm_OnItemDraw(hwnd, wParam, lParam);
 
     case WM_DESTROY:
         return wm_OnDestroy(hwnd, wParam, lParam);
