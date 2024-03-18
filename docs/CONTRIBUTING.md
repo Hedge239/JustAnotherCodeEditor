@@ -26,8 +26,6 @@ Once you have confirmed that the bug still occurs with the above criteria, then 
 - Version of JACE
 - Any additional relevant details involving system config (eg. x11, Wayland)
 
-> Note: If the bug is a severe security issue, please report the security vulnerability instead of submitting bug report
-
 ## Suggesting Enhancements
 Before subjecting a enhancement before confirm the following:
 - You have read the [documentation](https://github.com/Hedge239/JustAnotherCodeEditor/wiki)
