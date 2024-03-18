@@ -17,7 +17,7 @@ If you wish to build JACE from source instead, have the following installed and 
 - Wayland Development Package (libwayland-dev on Debian12)
 
 ## Contribution
-[TODO]
+Please read [CONTRIBUTING.md](https://github.com/Hedge239/JustAnotherCodeEditor/blob/latest-dev/docs/CONTRIBUTING.md) for more info
 
 
 ## License
