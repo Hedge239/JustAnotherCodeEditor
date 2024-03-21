@@ -46,6 +46,9 @@ void app_CreateNewTab(HWND hwnd, std::string tabName)
 // WINDOW MANAGER FUNCTIONS //
 LRESULT wm_OnCreate(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
+    // Enable window functions
+    DragAcceptFiles(hwnd, TRUE);
+
     // MenuBar
     HMENU hEditorMenu = CreateMenu();
 
@@ -101,6 +104,32 @@ LRESULT wm_OnCreate(HWND hwnd, WPARAM wParam, LPARAM lParam)
     HWND hEditorTextBox = CreateWindowEx(WS_EX_CLIENTEDGE, TEXT("Edit"), "", WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL | WS_HSCROLL, 0, 0, 0, 0, hMiddlePanel, (HMENU)10, GetModuleHandle(NULL), NULL);
 
     app_CreateNewTab(hwnd, "TestTab");
+    return 0;
+}
+
+LRESULT wm_OnFileDrop(HWND hwnd, WPARAM wParam, LPARAM lParam)
+{
+    HDROP hDrop = (HDROP)wParam;
+    int fileCount = DragQueryFile(hDrop, 0xFFFFFFFF, NULL, 0);
+
+    if(fileCount > 0)
+    {
+        for(int i = 0; i < fileCount; ++i)
+        {
+            char filePath[MAX_PATH];
+
+            if(DragQueryFile(hDrop, i, filePath, MAX_PATH) != 0)
+            {
+                // Extract file name
+                std::string filePathString = filePath;
+                std::string fileName = filePathString.substr(filePathString.find_last_of("\\/") + 1);
+
+                app_CreateNewTab(hwnd, fileName);
+            }
+        }
+    }
+
+    DragFinish(hDrop);
     return 0;
 }
 
@@ -281,6 +310,9 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 
     case WM_SETCURSOR:
         return wm_SetMouseCursor(hwnd, wParam, lParam);
+
+    case WM_DROPFILES:
+        return wm_OnFileDrop(hwnd, wParam, lParam);
 
     case WM_CREATE:
         return wm_OnCreate(hwnd, wParam, lParam);
