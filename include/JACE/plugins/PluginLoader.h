@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <string>
-#include "PluginInterface.h"
+#include "pluginInterface.h"
 
 namespace app
 {

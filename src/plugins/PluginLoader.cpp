@@ -1,8 +1,6 @@
-#include "JACE/plugins/PluginLoader.h"
+#include "JACE/plugins/pluginLoader.h"
 
 #include "JACE/common/logHandeler.h"
-
-#include <iostream>
 
 
 #ifdef _WIN32

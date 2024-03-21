@@ -1,9 +1,6 @@
 #ifndef _PLUGINMANAGER_H_
 #define _PLUGINMANAGER_H_
 
-#include "PluginInterface.h"
-#include <vector>
-
 namespace app
 {
     namespace plugins

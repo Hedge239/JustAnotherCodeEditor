@@ -5,29 +5,30 @@
 cmake_minimum_required(VERSION 3.5.0)
 project(JACE VERSION 0.0.1)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/.buildtools/.cmake/modules")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/buildtools/.cmake/modules")
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "")
 
 # Toggle off to not include X11
 option(LINUX_DYNAMIC_DS "Build the project to use both X11 and Wayland" ON)
 
-include(".buildtools/cmake/app.cmake")
+include("buildtools/cmake/app.cmake")
 
 if(WIN32)
     message(STATUS "Display Desktop: Win32")
     message(STATUS "Display Server: Win32")
 
-    include(".buildtools/cmake/platform/windows.cmake")
+    include("buildtools/cmake/platform/windows.cmake")
     list(APPEND DEPENDENCES_SRC Comctl32)
 elseif(UNIX)
     message(STATUS "Display Desktop: LINUX")
-    include(".buildtools/cmake/platform/linux.cmake")
+    include("buildtools/cmake/platform/linux.cmake")
 
     if(LINUX_DYNAMIC_DS)
         message(STATUS "Display Server Mode: DYNAMIC")
         message(STATUS "Display Server: WAYLAND/X11 HYBRID")
 
-        include(".buildtools/cmake/platforms/x11.cmake")
-        include(".buildtools/cmake/platforms/wayland.cmake")
+        include("buildtools/cmake/platforms/x11.cmake")
+        include("buildtools/cmake/platforms/wayland.cmake")
 
         find_package(X11 REQUIRED)
         find_package(Wayland REQUIRED)
@@ -59,13 +60,13 @@ endif()
 
 add_executable(${PROJECT_NAME} "src/app.cpp")
 target_sources(${PROJECT_NAME} PRIVATE ${PLATFORM_SRC} ${APP_SRC})
-set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "../JACE_app")
+set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY "JACE_app")
 
 target_include_directories(${PROJECT_NAME} PRIVATE "include" ${DEPENDENCES_INCLUDE})
 target_link_libraries(${PROJECT_NAME} PRIVATE ${DEPENDENCES_SRC} ${BUILD_FLAGS})
 
 # After build things, ie copy folder, set flags, bla bla bla
-file(COPY "assets/" DESTINATION "${CMAKE_BINARY_DIR}/../JACE_app")
+file(COPY "assets/" DESTINATION "${CMAKE_BINARY_DIR}/JACE_app")
 
 if(WIN32)
     set_target_properties(${PROJECT_NAME} PROPERTIES WIN32_EXECUTABLE TRUE)

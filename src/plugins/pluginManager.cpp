@@ -1,10 +1,9 @@
-#include "JACE/plugins/PluginManager.h"
-#include "JACE/plugins/PluginLoader.h"
+#include "JACE/plugins/pluginManager.h"
+#include "JACE/plugins/pluginLoader.h"
 
 #include "JACE/common/global.h"
 #include "JACE/common/logHandeler.h"
 
-#include <iostream>
 #include <filesystem>
 #include <fstream>
 #include <vector>

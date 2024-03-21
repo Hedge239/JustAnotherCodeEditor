@@ -2,16 +2,14 @@
 
 #include "JACE/common/global.h"
 #include "JACE/common/logHandeler.h"
-#include "JACE/common/fileHandeler.h"
 #include "JACE/common/localesHandeler.h"
 
 #include "JACE/_UI/WindowManager.h"
 #include "JACE/_UI/themeManager.h"
 
-#include "JACE/plugins/PluginManager.h"
+#include "JACE/plugins/pluginManager.h"
 
 #include <filesystem>
-#include <fstream>
 
 // This is to be coppied to ANYTHING that has window specific functions, I can see this getting REAL MESSY in the future witch is a later problem
 #ifdef _WIN32

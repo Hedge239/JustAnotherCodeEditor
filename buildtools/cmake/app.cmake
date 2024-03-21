@@ -7,6 +7,6 @@ set(APP_SRC
     "src/common/sessionManager.cpp"
     "src/_UI/WindowManager.cpp"
     "src/_UI/themeManager.cpp"
-    "src/plugins/PluginLoader.cpp"
-    "src/plugins/PluginManager.cpp"
+    "src/plugins/pluginLoader.cpp"
+    "src/plugins/pluginManager.cpp"
 )
