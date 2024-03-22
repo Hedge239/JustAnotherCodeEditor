@@ -89,7 +89,7 @@ void app::setup::validateUserFiles()
         std::ofstream settings;
 
         settings.open(app::common::global::APPDATA + "\\settings.ini");
-        settings << "english";  // System Language
+        settings << "english" << std::endl;  // System Language
         settings << "0";  // Application Memory Mode: 0 = Direct: Load directly from file each time, 1 = Hybrid: Load text directly from file then save to memory
 
         settings.close();
