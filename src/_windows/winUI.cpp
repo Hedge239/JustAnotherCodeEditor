@@ -2,10 +2,13 @@
 #include "JACE/_win/win32.h"
 #include "JACE/_win/resources.h"
 
+#include "JACE/common/logHandeler.h"
 #include "JACE/common/sessionManager.h"
 #include "JACE/common/localesHandeler.h"
 
+#include <minwindef.h>
 #include <windows.h>
+#include <unordered_map>
 #include <commctrl.h>
 #include <string>
 
@@ -15,6 +18,12 @@
 #define PANEL_RESIZE_THRESHOLD 10
 #define TABS_PANEL_SIZE 30
 
+struct tabInfo
+{
+    std::string fileLocation;
+    std::string storedText;
+};
+
 bool g_isMovingLeftPanel = false;
 bool g_isMovingLowerPanel = false;
 
@@ -23,13 +32,16 @@ int g_lowerPanelHeight = 100;
 
 POINT g_previousPanelLocation = {0};
 
+std::unordered_map<std::string, tabInfo> tabMap;
 
 // APPLICATION FUNCTIONS
 void app_CreateNewTab(HWND hwnd, std::string tabName, std::string fileLocation)
 {
     HWND hMiddilePanel = GetDlgItem(hwnd, 3);
+    HWND hEditorTextBox = GetDlgItem(hwnd, 10);
     HWND hTabManager = GetDlgItem(hMiddilePanel, 11);
 
+    // Create Tab
     TCITEM tie;
     tie.mask = TCIF_TEXT;
     tie.pszText = (LPSTR)tabName.c_str();
@@ -41,7 +53,20 @@ void app_CreateNewTab(HWND hwnd, std::string tabName, std::string fileLocation)
     {
         TabCtrl_InsertItem(hTabManager, TabCtrl_GetItemCount(hTabManager) + 1, &tie);
     }
+
+    // Get text from file (if appicable)
+    std::string fileText;
+
+    if(!fileLocation.empty())
+    {
+        // TODO
+    }
+
+    // Store tab for later use
+    tabMap[tabName] = {fileLocation, "Example Text"};
 }
+
+// CALLBACKS //
 
 // WINDOW MANAGER FUNCTIONS //
 LRESULT wm_OnCreate(HWND hwnd, WPARAM wParam, LPARAM lParam)
@@ -176,11 +201,6 @@ LRESULT wm_OnSizeChange(HWND hwnd, WPARAM wParam, LPARAM lParam)
     HWND hEditorTextBox = GetDlgItem(hMiddilePanel, 10);
     MoveWindow(hEditorTextBox, 0, TABS_PANEL_SIZE, middlePanelRect.right, middlePanelRect.bottom, TRUE);
 
-    return 0;
-}
-
-LRESULT wm_OnItemDraw(HWND hwnd, WPARAM wParam, LPARAM lParam)
-{
     return 0;
 }
 
@@ -338,15 +358,12 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 
     case WM_COMMAND:
         return wm_OnCommand(hwnd, wParam, lParam);
-
+    
     case WM_CREATE:
         return wm_OnCreate(hwnd, wParam, lParam);
 
     case WM_SIZE:
         return wm_OnSizeChange(hwnd, wParam, lParam);
-
-    case WM_DRAWITEM:
-        return wm_OnItemDraw(hwnd, wParam, lParam);
 
     case WM_DESTROY:
         return wm_OnDestroy(hwnd, wParam, lParam);
