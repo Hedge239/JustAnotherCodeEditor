@@ -25,7 +25,7 @@ POINT g_previousPanelLocation = {0};
 
 
 // APPLICATION FUNCTIONS
-void app_CreateNewTab(HWND hwnd, std::string tabName)
+void app_CreateNewTab(HWND hwnd, std::string tabName, std::string fileLocation)
 {
     HWND hMiddilePanel = GetDlgItem(hwnd, 3);
     HWND hTabManager = GetDlgItem(hMiddilePanel, 11);
@@ -103,7 +103,6 @@ LRESULT wm_OnCreate(HWND hwnd, WPARAM wParam, LPARAM lParam)
     HWND hTabManager = CreateWindowEx(WS_EX_CLIENTEDGE, WC_TABCONTROL, "", WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE | WS_BORDER, 0, 0, 0, 0, hMiddlePanel, (HMENU)11, GetModuleHandle(NULL), NULL);
     HWND hEditorTextBox = CreateWindowEx(WS_EX_CLIENTEDGE, TEXT("Edit"), "", WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL | WS_HSCROLL, 0, 0, 0, 0, hMiddlePanel, (HMENU)10, GetModuleHandle(NULL), NULL);
 
-    app_CreateNewTab(hwnd, "TestTab");
     return 0;
 }
 
@@ -124,12 +123,35 @@ LRESULT wm_OnFileDrop(HWND hwnd, WPARAM wParam, LPARAM lParam)
                 std::string filePathString = filePath;
                 std::string fileName = filePathString.substr(filePathString.find_last_of("\\/") + 1);
 
-                app_CreateNewTab(hwnd, fileName);
+                app_CreateNewTab(hwnd, fileName, filePathString);
             }
         }
     }
 
     DragFinish(hDrop);
+    return 0;
+}
+
+LRESULT wm_OnCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
+{
+    switch(LOWORD(wParam))
+    {
+        // Toolbar - File
+        case 9:
+        {
+            // quit
+            PostQuitMessage(0);
+            break;
+        }
+        case 8:
+        {
+            // Reload - works??! IDK???
+            InvalidateRect(hwnd, NULL, true);
+            UpdateWindow(hwnd);
+            break;
+        }
+    }
+
     return 0;
 }
 
@@ -313,6 +335,9 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 
     case WM_DROPFILES:
         return wm_OnFileDrop(hwnd, wParam, lParam);
+
+    case WM_COMMAND:
+        return wm_OnCommand(hwnd, wParam, lParam);
 
     case WM_CREATE:
         return wm_OnCreate(hwnd, wParam, lParam);
