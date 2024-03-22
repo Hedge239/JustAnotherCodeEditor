@@ -2,9 +2,9 @@
 #include "JACE/_win/win32.h"
 #include "JACE/_win/resources.h"
 
-#include "JACE/common/logHandeler.h"
 #include "JACE/common/sessionManager.h"
 #include "JACE/common/localesHandeler.h"
+#include "JACE/common//logHandeler.h"
 
 #include <minwindef.h>
 #include <windows.h>
@@ -38,7 +38,7 @@ std::unordered_map<std::string, tabInfo> tabMap;
 void app_CreateNewTab(HWND hwnd, std::string tabName, std::string fileLocation)
 {
     HWND hMiddilePanel = GetDlgItem(hwnd, 3);
-    HWND hEditorTextBox = GetDlgItem(hwnd, 10);
+    HWND hEditorTextBox = GetDlgItem(hMiddilePanel, 10);
     HWND hTabManager = GetDlgItem(hMiddilePanel, 11);
 
     // Create Tab
@@ -66,7 +66,38 @@ void app_CreateNewTab(HWND hwnd, std::string tabName, std::string fileLocation)
     tabMap[tabName] = {fileLocation, "Example Text"};
 }
 
-// CALLBACKS //
+// MIDDLEPANNEL CALLBACKS //
+LRESULT middlePanel_wm_WhenNotified(HWND hwnd, WPARAM wParam, LPARAM lParam)
+{
+    if(((LPNMHDR)lParam) -> idFrom == 11 && ((LPNMHDR)lParam) -> code == TCN_SELCHANGE)
+    {
+        TCHAR tabName[256];
+        int tabIndex = TabCtrl_GetCurSel(((LPNMHDR)lParam)->hwndFrom);
+
+        TCITEM tie;
+        tie.mask = TCIF_TEXT;
+        tie.pszText = tabName;
+        tie.cchTextMax = sizeof(tabName)/sizeof(tabName[0]);
+
+        if(TabCtrl_GetItem(((LPNMHDR)lParam)->hwndFrom, tabIndex, &tie))
+        {
+            // TODO
+        }
+    }
+
+    return 0;
+}
+
+LRESULT CALLBACK cb_MiddlePanel(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
+{
+    switch (uMsg) 
+    {
+        case WM_NOTIFY:
+            return middlePanel_wm_WhenNotified(hwnd, wParam, lParam);
+    }
+
+    return DefSubclassProc(hwnd, uMsg, wParam, lParam);
+}
 
 // WINDOW MANAGER FUNCTIONS //
 LRESULT wm_OnCreate(HWND hwnd, WPARAM wParam, LPARAM lParam)
@@ -128,55 +159,8 @@ LRESULT wm_OnCreate(HWND hwnd, WPARAM wParam, LPARAM lParam)
     HWND hTabManager = CreateWindowEx(WS_EX_CLIENTEDGE, WC_TABCONTROL, "", WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE | WS_BORDER, 0, 0, 0, 0, hMiddlePanel, (HMENU)11, GetModuleHandle(NULL), NULL);
     HWND hEditorTextBox = CreateWindowEx(WS_EX_CLIENTEDGE, TEXT("Edit"), "", WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL | WS_HSCROLL, 0, 0, 0, 0, hMiddlePanel, (HMENU)10, GetModuleHandle(NULL), NULL);
 
-    return 0;
-}
-
-LRESULT wm_OnFileDrop(HWND hwnd, WPARAM wParam, LPARAM lParam)
-{
-    HDROP hDrop = (HDROP)wParam;
-    int fileCount = DragQueryFile(hDrop, 0xFFFFFFFF, NULL, 0);
-
-    if(fileCount > 0)
-    {
-        for(int i = 0; i < fileCount; ++i)
-        {
-            char filePath[MAX_PATH];
-
-            if(DragQueryFile(hDrop, i, filePath, MAX_PATH) != 0)
-            {
-                // Extract file name
-                std::string filePathString = filePath;
-                std::string fileName = filePathString.substr(filePathString.find_last_of("\\/") + 1);
-
-                app_CreateNewTab(hwnd, fileName, filePathString);
-            }
-        }
-    }
-
-    DragFinish(hDrop);
-    return 0;
-}
-
-LRESULT wm_OnCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
-{
-    switch(LOWORD(wParam))
-    {
-        // Toolbar - File
-        case 9:
-        {
-            // quit
-            PostQuitMessage(0);
-            break;
-        }
-        case 8:
-        {
-            // Reload - works??! IDK???
-            InvalidateRect(hwnd, NULL, true);
-            UpdateWindow(hwnd);
-            break;
-        }
-    }
-
+    // Subclassing
+    SetWindowSubclass(hMiddlePanel, cb_MiddlePanel, 0, 0);
     return 0;
 }
 
@@ -206,6 +190,12 @@ LRESULT wm_OnSizeChange(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 LRESULT wm_OnDestroy(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
+    HWND hMiddilePanel = GetDlgItem(hwnd, 3);
+    app::common::log::LogToFile("application", "[Win32] Destroy Message Recived");
+
+    // TODO
+
+    RemoveWindowSubclass(hMiddilePanel, cb_MiddlePanel, 0);
     PostQuitMessage(0);
     return 0;
 }
@@ -335,6 +325,55 @@ LRESULT wm_OnMouseMove(HWND hwnd, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
+// WINDOW MANAGER INPUT OUTPUT //
+LRESULT wm_OnFileDrop(HWND hwnd, WPARAM wParam, LPARAM lParam)
+{
+    HDROP hDrop = (HDROP)wParam;
+    int fileCount = DragQueryFile(hDrop, 0xFFFFFFFF, NULL, 0);
+
+    if(fileCount > 0)
+    {
+        for(int i = 0; i < fileCount; ++i)
+        {
+            char filePath[MAX_PATH];
+
+            if(DragQueryFile(hDrop, i, filePath, MAX_PATH) != 0)
+            {
+                // Extract file name
+                std::string filePathString = filePath;
+                std::string fileName = filePathString.substr(filePathString.find_last_of("\\/") + 1);
+
+                app_CreateNewTab(hwnd, fileName, filePathString);
+            }
+        }
+    }
+
+    DragFinish(hDrop);
+    return 0;
+}
+
+LRESULT wm_OnCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
+{
+    switch(LOWORD(wParam))
+    {
+        // Toolbar - File
+        case 9:
+        {
+            // quit
+            DestroyWindow(hwnd);
+            break;
+        }
+        case 8:
+        {
+            // Reload - works??! IDK???
+            InvalidateRect(hwnd, NULL, true);
+            UpdateWindow(hwnd);
+            break;
+        }
+    }
+
+    return 0;
+}
 
 // MAIN WINDOW //
 LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
