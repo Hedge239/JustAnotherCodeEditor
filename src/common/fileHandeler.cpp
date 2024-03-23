@@ -1,6 +1,5 @@
 #include "JACE/common/fileHandeler.h"
 #include "JACE/common/global.h"
-
 #include "JACE/common/logHandeler.h"
 
 #include <filesystem>
@@ -11,7 +10,7 @@
 std::string app::common::fileHandeler::ReadLineFromFile(std::string TargetFile, int TargetLine)
 {
     if(!std::filesystem::exists(app::common::global::APPDATA + "\\" + TargetFile))
-        {app::common::log::LogToFile("application", "[fileHandeler] Faild to find file: " + app::common::global::APPDATA + "\\" + TargetFile);}
+        {app::common::log::LogToFile("application", "[fileHandeler] Faild to find file: " + app::common::global::APPDATA + "\\" + TargetFile); return "";}
 
     std::ifstream file;
     std::string line;
@@ -38,5 +37,28 @@ std::string app::common::fileHandeler::ReadLineFromFile(std::string TargetFile, 
     }
 
     // Return with nothing, when there is nothing
+    return "";
+}
+
+// ! with proper spacing !
+std::string app::common::fileHandeler::GetTextFromFile(std::string TargetFilePath)
+{
+    if(!std::filesystem::exists((TargetFilePath)))
+        {app::common::log::LogToFile("application", "[fileHandeler] Faild to find file: " + TargetFilePath); return "";}
+
+    std::ifstream file;
+
+    file.open(TargetFilePath);
+    if(file.is_open())
+    {
+        std::string fileContent((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+
+        file.close();
+        return fileContent;
+    }else 
+    {
+        app::common::log::LogToFile("application", "[fileHandeler] fild to open file: " + TargetFilePath);
+    }
+
     return "";
 }

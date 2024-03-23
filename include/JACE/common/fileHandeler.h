@@ -11,6 +11,7 @@ namespace app
         {
             public:
             static std::string ReadLineFromFile(std::string TargetFile, int targetLine);
+            static std::string GetTextFromFile(std::string TargetFilePath);
         };
     }
 }

@@ -4,9 +4,9 @@
 
 #include "JACE/common/sessionManager.h"
 #include "JACE/common/localesHandeler.h"
-#include "JACE/common//logHandeler.h"
+#include "JACE/common/logHandeler.h"
+#include "JACE/common/fileHandeler.h"
 
-#include <minwindef.h>
 #include <windows.h>
 #include <unordered_map>
 #include <commctrl.h>
@@ -59,16 +59,17 @@ void app_CreateNewTab(HWND hwnd, std::string tabName, std::string fileLocation)
 
     if(!fileLocation.empty())
     {
-        // TODO
+        fileText = app::common::fileHandeler::GetTextFromFile(fileLocation);
     }
 
     // Store tab for later use
-    tabMap[tabName] = {fileLocation, "Example Text"};
+    tabMap[tabName] = {fileLocation, fileText};
 }
 
 void app_OpenTab(HWND hwnd, std::string tabName)
 {
-    //TODO
+    HWND hEditorTextBox = GetDlgItem(hwnd, 10);
+    SetWindowText(hEditorTextBox, tabMap[tabName].storedText.c_str());
 }
 
 // MIDDLEPANNEL CALLBACKS //
