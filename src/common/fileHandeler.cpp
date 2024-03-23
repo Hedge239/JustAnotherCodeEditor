@@ -51,9 +51,18 @@ std::string app::common::fileHandeler::GetTextFromFile(std::string TargetFilePat
     file.open(TargetFilePath);
     if(file.is_open())
     {
-        std::string fileContent((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+        std::string fileContent;
+        std::string line;
 
-        file.close();
+        while(std::getline(file, line))
+        {
+            #ifdef _WIN32
+                fileContent += line + "\r\n";
+            #elif 
+                fileContent += line + "\n";
+            #endif
+        }
+
         return fileContent;
     }else 
     {

@@ -30,8 +30,9 @@ bool g_isMovingLowerPanel = false;
 int g_leftPanelWidth = 200;
 int g_lowerPanelHeight = 100;
 
-POINT g_previousPanelLocation = {0};
+std::string g_currentTab;
 
+POINT g_previousPanelLocation = {0};
 std::unordered_map<std::string, tabInfo> tabMap;
 
 // APPLICATION FUNCTIONS
@@ -69,7 +70,24 @@ void app_CreateNewTab(HWND hwnd, std::string tabName, std::string fileLocation)
 void app_OpenTab(HWND hwnd, std::string tabName)
 {
     HWND hEditorTextBox = GetDlgItem(hwnd, 10);
-    SetWindowText(hEditorTextBox, tabMap[tabName].storedText.c_str());
+
+    if(tabMap.count(g_currentTab))
+    {
+        // Get Text from hEdtiorTextBox, and save text to previous tabInfo
+        int textLength = GetWindowTextLength(hEditorTextBox) + 1;
+        TCHAR* buffer = new TCHAR[textLength];
+
+        GetWindowText(hEditorTextBox, buffer, textLength);
+        tabMap[g_currentTab].storedText = std::string(buffer);
+
+        delete[] buffer;
+    }
+
+    std::wstring wtext(tabMap[tabName].storedText.begin(), tabMap[tabName].storedText.end());
+    SetWindowTextW(hEditorTextBox, wtext.c_str());
+
+    // Change current tab after completion
+    g_currentTab = tabName;
 }
 
 // MIDDLEPANNEL CALLBACKS //
@@ -187,7 +205,7 @@ LRESULT wm_OnSizeChange(HWND hwnd, WPARAM wParam, LPARAM lParam)
     MoveWindow(hTabManager, 0, 0, middlePanelRect.right, TABS_PANEL_SIZE, TRUE);
 
     HWND hEditorTextBox = GetDlgItem(hMiddilePanel, 10);
-    MoveWindow(hEditorTextBox, 0, TABS_PANEL_SIZE, middlePanelRect.right, middlePanelRect.bottom, TRUE);
+    MoveWindow(hEditorTextBox, 0, TABS_PANEL_SIZE, middlePanelRect.right, middlePanelRect.bottom - 30, TRUE);
 
     return 0;
 }
