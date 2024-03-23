@@ -66,6 +66,11 @@ void app_CreateNewTab(HWND hwnd, std::string tabName, std::string fileLocation)
     tabMap[tabName] = {fileLocation, "Example Text"};
 }
 
+void app_OpenTab(HWND hwnd, std::string tabName)
+{
+    //TODO
+}
+
 // MIDDLEPANNEL CALLBACKS //
 LRESULT middlePanel_wm_WhenNotified(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
@@ -80,9 +85,7 @@ LRESULT middlePanel_wm_WhenNotified(HWND hwnd, WPARAM wParam, LPARAM lParam)
         tie.cchTextMax = sizeof(tabName)/sizeof(tabName[0]);
 
         if(TabCtrl_GetItem(((LPNMHDR)lParam)->hwndFrom, tabIndex, &tie))
-        {
-            // TODO
-        }
+            app_OpenTab(hwnd, tie.pszText);
     }
 
     return 0;
