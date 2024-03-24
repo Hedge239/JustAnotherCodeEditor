@@ -7,38 +7,48 @@
 #include "JACE/common/logHandeler.h"
 #include "JACE/common/fileHandeler.h"
 
+#include <vector>
 #include <windows.h>
 #include <unordered_map>
 #include <commctrl.h>
 #include <string>
+#include <algorithm>
 
 
-// Global Variables
+// Global Variables //
 #define CURSOR_REACH 10
 #define PANEL_RESIZE_THRESHOLD 10
 #define TABS_PANEL_SIZE 30
 
-struct tabInfo
-{
-    std::string fileLocation;
-    std::string storedText;
-};
-
+// Panels
 bool g_isMovingLeftPanel = false;
 bool g_isMovingLowerPanel = false;
 
 int g_leftPanelWidth = 200;
 int g_lowerPanelHeight = 100;
 
-std::string g_currentTab;
-
 POINT g_previousPanelLocation = {0};
-std::unordered_map<std::string, tabInfo> tabMap;
+
+// Tabs
+struct tabInfo
+{
+    std::string fileLocation;
+    std::string storedText;
+};
+
+std::string g_currentTab;
+std::vector<std::string> g_modifiedTabs;
+std::unordered_map<std::string, tabInfo> g_tabMap;
+
 
 // APPLICATION FUNCTIONS
-void app_CreateNewTab(HWND hwnd, std::string tabName, std::string fileLocation)
+void app_saveAllModifiedTabs()
 {
-    HWND hMiddilePanel = GetDlgItem(hwnd, 3);
+    //TODO
+}
+
+void app_CreateNewTab(HWND hMiddilePanel, std::string tabName, std::string fileLocation)
+{
     HWND hEditorTextBox = GetDlgItem(hMiddilePanel, 10);
     HWND hTabManager = GetDlgItem(hMiddilePanel, 11);
 
@@ -64,26 +74,26 @@ void app_CreateNewTab(HWND hwnd, std::string tabName, std::string fileLocation)
     }
 
     // Store tab for later use
-    tabMap[tabName] = {fileLocation, fileText};
+    g_tabMap[tabName] = {fileLocation, fileText};
 }
 
-void app_OpenTab(HWND hwnd, std::string tabName)
+void app_OpenTab(HWND hMiddilePanel, std::string tabName)
 {
-    HWND hEditorTextBox = GetDlgItem(hwnd, 10);
+    HWND hEditorTextBox = GetDlgItem(hMiddilePanel, 10);
 
-    if(tabMap.count(g_currentTab))
+    if(g_tabMap.count(g_currentTab))
     {
         // Get Text from hEdtiorTextBox, and save text to previous tabInfo
         int textLength = GetWindowTextLength(hEditorTextBox) + 1;
         TCHAR* buffer = new TCHAR[textLength];
 
         GetWindowText(hEditorTextBox, buffer, textLength);
-        tabMap[g_currentTab].storedText = std::string(buffer);
+        g_tabMap[g_currentTab].storedText = std::string(buffer);
 
         delete[] buffer;
     }
 
-    std::wstring wtext(tabMap[tabName].storedText.begin(), tabMap[tabName].storedText.end());
+    std::wstring wtext(g_tabMap[tabName].storedText.begin(), g_tabMap[tabName].storedText.end());
     SetWindowTextW(hEditorTextBox, wtext.c_str());
 
     // Change current tab after completion
@@ -91,7 +101,7 @@ void app_OpenTab(HWND hwnd, std::string tabName)
 }
 
 // MIDDLEPANNEL CALLBACKS //
-LRESULT middlePanel_wm_WhenNotified(HWND hwnd, WPARAM wParam, LPARAM lParam)
+LRESULT middlePanel_wm_WhenNotified(HWND hMiddilePanel, WPARAM wParam, LPARAM lParam)
 {
     if(((LPNMHDR)lParam) -> idFrom == 11 && ((LPNMHDR)lParam) -> code == TCN_SELCHANGE)
     {
@@ -104,9 +114,49 @@ LRESULT middlePanel_wm_WhenNotified(HWND hwnd, WPARAM wParam, LPARAM lParam)
         tie.cchTextMax = sizeof(tabName)/sizeof(tabName[0]);
 
         if(TabCtrl_GetItem(((LPNMHDR)lParam)->hwndFrom, tabIndex, &tie))
-            app_OpenTab(hwnd, tie.pszText);
+            app_OpenTab(hMiddilePanel, tie.pszText);
     }
 
+    return 0;
+}
+
+LRESULT middlePanel_wm_OnCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
+{
+    if(HIWORD(wParam) == EN_CHANGE && LOWORD(wParam) == 10)
+    {   
+        // Don't add to the modified tabs list if its allready there
+        if(g_tabMap.count(g_currentTab) && std::find(g_modifiedTabs.begin(), g_modifiedTabs.end(), g_currentTab) == g_modifiedTabs.end())
+        {
+            g_modifiedTabs.push_back(g_currentTab);
+        }
+    }
+
+    return 0;
+}
+
+LRESULT middlePanel_wm_OnFileDrop(HWND hwnd, WPARAM wParam, LPARAM lParam)
+{
+    HDROP hDrop = (HDROP)wParam;
+    int fileCount = DragQueryFile(hDrop, 0xFFFFFFFF, NULL, 0);
+
+    if(fileCount > 0)
+    {
+        for(int i = 0; i < fileCount; ++i)
+        {
+            char filePath[MAX_PATH];
+
+            if(DragQueryFile(hDrop, i, filePath, MAX_PATH) != 0)
+            {
+                // Extract file name
+                std::string filePathString = filePath;
+                std::string fileName = filePathString.substr(filePathString.find_last_of("\\/") + 1);
+
+                app_CreateNewTab(hwnd, fileName, filePathString);
+            }
+        }
+    }
+
+    DragFinish(hDrop);
     return 0;
 }
 
@@ -116,6 +166,12 @@ LRESULT CALLBACK cb_MiddlePanel(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
     {
         case WM_NOTIFY:
             return middlePanel_wm_WhenNotified(hwnd, wParam, lParam);
+
+        case WM_COMMAND:
+            return middlePanel_wm_OnCommand(hwnd, wParam, lParam);
+
+        case WM_DROPFILES:
+            return middlePanel_wm_OnFileDrop(hwnd, wParam, lParam);
     }
 
     return DefSubclassProc(hwnd, uMsg, wParam, lParam);
@@ -124,9 +180,6 @@ LRESULT CALLBACK cb_MiddlePanel(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 // WINDOW MANAGER FUNCTIONS //
 LRESULT wm_OnCreate(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-    // Enable window functions
-    DragAcceptFiles(hwnd, TRUE);
-
     // MenuBar
     HMENU hEditorMenu = CreateMenu();
 
@@ -176,6 +229,8 @@ LRESULT wm_OnCreate(HWND hwnd, WPARAM wParam, LPARAM lParam)
     HWND hLeftPanel = CreateWindowEx(WS_EX_CLIENTEDGE, "STATIC", "", WS_CHILD | WS_VISIBLE, 0, 0, 100, 100, hwnd, (HMENU)1, GetModuleHandle(NULL), NULL);
     HWND hLowerPanel = CreateWindowEx(WS_EX_CLIENTEDGE, "STATIC", "", WS_CHILD | WS_VISIBLE, 0, 0, 100, 100, hwnd, (HMENU)2, GetModuleHandle(NULL), NULL);
     HWND hMiddlePanel = CreateWindowEx(WS_EX_CLIENTEDGE, "STATIC", "", WS_CHILD | WS_VISIBLE, 0, 0, 100, 100, hwnd, (HMENU)3, GetModuleHandle(NULL), NULL);
+
+    DragAcceptFiles(hMiddlePanel, TRUE);
 
     // Middle Panel elements
     HWND hTabManager = CreateWindowEx(WS_EX_CLIENTEDGE, WC_TABCONTROL, "", WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE | WS_BORDER, 0, 0, 0, 0, hMiddlePanel, (HMENU)11, GetModuleHandle(NULL), NULL);
@@ -348,32 +403,6 @@ LRESULT wm_OnMouseMove(HWND hwnd, WPARAM wParam, LPARAM lParam)
 }
 
 // WINDOW MANAGER INPUT OUTPUT //
-LRESULT wm_OnFileDrop(HWND hwnd, WPARAM wParam, LPARAM lParam)
-{
-    HDROP hDrop = (HDROP)wParam;
-    int fileCount = DragQueryFile(hDrop, 0xFFFFFFFF, NULL, 0);
-
-    if(fileCount > 0)
-    {
-        for(int i = 0; i < fileCount; ++i)
-        {
-            char filePath[MAX_PATH];
-
-            if(DragQueryFile(hDrop, i, filePath, MAX_PATH) != 0)
-            {
-                // Extract file name
-                std::string filePathString = filePath;
-                std::string fileName = filePathString.substr(filePathString.find_last_of("\\/") + 1);
-
-                app_CreateNewTab(hwnd, fileName, filePathString);
-            }
-        }
-    }
-
-    DragFinish(hDrop);
-    return 0;
-}
-
 LRESULT wm_OnCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
     switch(LOWORD(wParam))
@@ -413,9 +442,6 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 
     case WM_SETCURSOR:
         return wm_SetMouseCursor(hwnd, wParam, lParam);
-
-    case WM_DROPFILES:
-        return wm_OnFileDrop(hwnd, wParam, lParam);
 
     case WM_COMMAND:
         return wm_OnCommand(hwnd, wParam, lParam);
