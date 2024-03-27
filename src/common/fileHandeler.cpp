@@ -7,15 +7,15 @@
 #include <string>
 
 
-std::string app::common::fileHandeler::ReadLineFromFile(std::string TargetFile, int TargetLine)
+std::string app::common::fileHandeler::ReadLineFromFile(std::string TargetFilePath, int TargetLine)
 {
-    if(!std::filesystem::exists(app::common::global::APPDATA + "\\" + TargetFile))
-        {app::common::log::LogToFile("application", "[fileHandeler] Faild to find file: " + app::common::global::APPDATA + "\\" + TargetFile); return "";}
+    if(!std::filesystem::exists(app::common::global::APPDATA + "\\" + TargetFilePath))
+        {app::common::log::LogToFile("application", "[fileHandeler] Faild to find file: " + app::common::global::APPDATA + "\\" + TargetFilePath); return "";}
 
     std::ifstream file;
     std::string line;
 
-    file.open(app::common::global::APPDATA + "\\" + TargetFile);
+    file.open(app::common::global::APPDATA + "\\" + TargetFilePath);
     if(file.is_open())
     {
         int CurrentLine = 0;
@@ -33,7 +33,7 @@ std::string app::common::fileHandeler::ReadLineFromFile(std::string TargetFile, 
         }
     }else
     {
-        app::common::log::LogToFile("application", "[fileHandeler] Faild to open file: " + app::common::global::APPDATA + "\\" + TargetFile);
+        app::common::log::LogToFile("application", "[fileHandeler] Faild to open file: " + app::common::global::APPDATA + "\\" + TargetFilePath);
     }
 
     // Return with nothing, when there is nothing
