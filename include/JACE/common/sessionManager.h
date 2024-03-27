@@ -1,7 +1,9 @@
 #ifndef _SESSIONMANAGER_H_
 #define _SESSIONMANAGER_H_
 
+
 #include <string>
+
 
 namespace app
 {

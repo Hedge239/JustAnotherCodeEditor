@@ -12,6 +12,7 @@
 std::unordered_map<std::string, std::string> g_localtextMap;
 std::string g_appLanguage;
 
+
 void app::common::Localisation::setAppLanguage()
 {
     // Find and get language from settings

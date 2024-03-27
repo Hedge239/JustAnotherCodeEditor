@@ -1,8 +1,10 @@
 #ifndef _PLUGININTERFACE_H_
 #define _PLUGININTERFACE_H_
 
+
 #include <string>
 #include <functional>
+
 
 class PluginInterface
 {

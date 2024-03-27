@@ -1,5 +1,7 @@
 #include "JACE/_UI/WindowManager.h"
+
 #include "JACE/common/logHandeler.h"
+
 
 #ifdef _WIN32
     #include "JACE/_win/winUI.h"

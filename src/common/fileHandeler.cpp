@@ -71,3 +71,8 @@ std::string app::common::fileHandeler::GetTextFromFile(std::string TargetFilePat
 
     return "";
 }
+
+void app::common::fileHandeler::UpdateFileText(std::string TargetFilePath, std::string newText)
+{
+    return;
+}

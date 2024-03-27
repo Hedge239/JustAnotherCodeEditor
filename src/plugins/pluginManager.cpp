@@ -9,10 +9,13 @@
 #include <vector>
 #include <string>
 
+
 #ifdef _WIN32
     const bool IsWindows = true;
 #elif defined(__unix__)
     const bool IsWindows = false;
+#else
+    #error "Not supported operating system"
 #endif
 
 

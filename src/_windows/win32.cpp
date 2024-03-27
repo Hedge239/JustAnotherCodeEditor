@@ -1,11 +1,8 @@
 #include "JACE/_win/win32.h"
 
 #include "JACE/common/global.h"
-#include "JACE/common/logHandeler.h"
-
 
 #include <string>
-#include "windows.h"
 #include "shlobj.h"
 
 

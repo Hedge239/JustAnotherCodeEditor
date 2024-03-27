@@ -3,10 +3,10 @@
 #include "JACE/common/global.h"
 #include "JACE/common/logHandeler.h"
 
-
 #include <string>
 #include <filesystem>
 #include <fstream>
+
 
 std::string g_AppTheme; // themeManager will handle all the gfx and color picking, so we will just keep a global var here
 

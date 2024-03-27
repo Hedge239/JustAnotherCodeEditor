@@ -1,13 +1,10 @@
 #include "JACE/common/sessionManager.h"
-
 #include "JACE/common/logHandeler.h"
 #include "JACE/common/global.h"
 #include "JACE/common/fileHandeler.h"
 
 #include <filesystem>
-#include <fstream>
 #include <string>
-#include <cmath>
 
 
 // READ FROM SESSION //

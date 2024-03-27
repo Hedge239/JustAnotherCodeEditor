@@ -11,6 +11,7 @@
 
 #include <filesystem>
 
+
 // This is to be coppied to ANYTHING that has window specific functions, I can see this getting REAL MESSY in the future witch is a later problem
 #ifdef _WIN32
     #include "JACE/_win/win32.h"
