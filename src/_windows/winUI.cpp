@@ -42,7 +42,12 @@ std::unordered_map<std::string, tabInfo> g_tabMap;
 
 
 // APPLICATION FUNCTIONS
-void app_saveAllModifiedTabs()
+void app_saveTabWithCustomLocation()
+{
+    //TODO le do do do, i think im starting to go crazy
+}
+
+void app_saveTabs(bool doAllTabs)
 {
     //TODO
 }
@@ -408,17 +413,30 @@ LRESULT wm_OnCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     switch(LOWORD(wParam))
     {
         // Toolbar - File
-        case 9:
+        case 9: // Quit
         {
-            // quit
             DestroyWindow(hwnd);
             break;
         }
-        case 8:
+        case 8: // Reload
         {
-            // Reload - works??! IDK???
             InvalidateRect(hwnd, NULL, true);
             UpdateWindow(hwnd);
+            break;
+        }
+        case 7: // Save As
+        {
+            app_saveTabWithCustomLocation();
+            break;
+        }
+        case 6: // Save All
+        {
+            app_saveTabs(true);
+            break;
+        }
+        case 5: // Save Current
+        {
+            app_saveTabs(false);
             break;
         }
     }
