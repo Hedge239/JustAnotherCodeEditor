@@ -41,7 +41,13 @@ std::vector<std::string> g_modifiedTabs;
 std::unordered_map<std::string, tabInfo> g_tabMap;
 
 
-// APPLICATION FUNCTIONS
+// APPLICATION FUNCTIONS //
+
+// Saving
+std::string formatExportedText(std::string input)
+{
+}
+
 void app_saveTabWithCustomLocation()
 {
     //TODO le do do do, i think im starting to go crazy
@@ -49,9 +55,9 @@ void app_saveTabWithCustomLocation()
 
 void app_saveTabs(bool doAllTabs)
 {
-    //TODO
 }
 
+// Tabs
 void app_CreateNewTab(HWND hMiddilePanel, std::string tabName, std::string fileLocation)
 {
     HWND hEditorTextBox = GetDlgItem(hMiddilePanel, 10);
@@ -105,6 +111,7 @@ void app_OpenTab(HWND hMiddilePanel, std::string tabName)
     g_currentTab = tabName;
 }
 
+
 // MIDDLEPANNEL CALLBACKS //
 LRESULT middlePanel_wm_WhenNotified(HWND hMiddilePanel, WPARAM wParam, LPARAM lParam)
 {
@@ -142,6 +149,7 @@ LRESULT middlePanel_wm_OnCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 LRESULT middlePanel_wm_OnFileDrop(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
     HDROP hDrop = (HDROP)wParam;
+    std::string fileName;
     int fileCount = DragQueryFile(hDrop, 0xFFFFFFFF, NULL, 0);
 
     if(fileCount > 0)
@@ -154,14 +162,15 @@ LRESULT middlePanel_wm_OnFileDrop(HWND hwnd, WPARAM wParam, LPARAM lParam)
             {
                 // Extract file name
                 std::string filePathString = filePath;
-                std::string fileName = filePathString.substr(filePathString.find_last_of("\\/") + 1);
+                fileName = filePathString.substr(filePathString.find_last_of("\\/") + 1);
 
                 app_CreateNewTab(hwnd, fileName, filePathString);
             }
         }
     }
-
+    
     DragFinish(hDrop);
+    app_OpenTab(hwnd, fileName);
     return 0;
 }
 
@@ -181,6 +190,7 @@ LRESULT CALLBACK cb_MiddlePanel(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 
     return DefSubclassProc(hwnd, uMsg, wParam, lParam);
 }
+
 
 // WINDOW MANAGER FUNCTIONS //
 LRESULT wm_OnCreate(HWND hwnd, WPARAM wParam, LPARAM lParam)
@@ -407,7 +417,6 @@ LRESULT wm_OnMouseMove(HWND hwnd, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-// WINDOW MANAGER INPUT OUTPUT //
 LRESULT wm_OnCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
     switch(LOWORD(wParam))
@@ -443,6 +452,7 @@ LRESULT wm_OnCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     return 0;
 }
+
 
 // MAIN WINDOW //
 LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)

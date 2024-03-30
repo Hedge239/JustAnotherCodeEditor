@@ -74,5 +74,18 @@ std::string app::common::fileHandeler::GetTextFromFile(std::string TargetFilePat
 
 void app::common::fileHandeler::UpdateFileText(std::string TargetFilePath, std::string newText)
 {
+    if(!std::filesystem::exists((TargetFilePath)))
+        {app::common::log::LogToFile("application", "[fileHandeler] Faild to find file: " + TargetFilePath); return;}
+
+    std::ofstream file;
+    std::filesystem::remove(TargetFilePath);
+
+    file.open(TargetFilePath);
+    if(file.is_open())
+    {
+        file << newText;
+        file.close();
+    }
+
     return;
 }
