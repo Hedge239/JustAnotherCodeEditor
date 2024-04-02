@@ -66,6 +66,7 @@ void app_saveTabs(int mode, HWND hwnd)
     {
         if(std::find(g_modifiedTabs.begin(), g_modifiedTabs.end(), g_currentTab) != g_modifiedTabs.end())
         {
+            app::common::log::LogToFile("application", "[Win32] Saving file: " + g_currentTab);
             app::common::fileHandeler::UpdateFileText(g_tabMap[g_currentTab].fileLocation, g_tabMap[g_currentTab].storedText);
             g_modifiedTabs.erase(std::find(g_modifiedTabs.begin(), g_modifiedTabs.end(), g_currentTab));
         }
