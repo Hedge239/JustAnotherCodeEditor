@@ -3,15 +3,16 @@
 #include "JACE/common/logHandeler.h"
 
 
-#ifdef _WIN32
+#ifdef SUPPORT_WINAPI
     #include "JACE/_win/winUI.h"
-#elif defined(__unix__)
-    #ifdef UNIX_DYNAMIC_DS
-        #include "JACE/_linux/linux-x11.h"
-    #endif
-        #include "JACE/_linux/linux-wl.h"
-#else
-    #error "Not supported operating system"
+#endif
+
+#ifdef SUPPORT_X11
+    #include "JACE/_linux/linux-x11.h"
+#endif
+
+#ifdef SUPPORT_WAYLAND
+    #include "JACE/_linux/linux-wl.h"
 #endif
 
 
