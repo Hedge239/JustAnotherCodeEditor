@@ -44,16 +44,43 @@ std::unordered_map<std::string, tabInfo> g_tabMap;
 // APPLICATION FUNCTIONS //
 
 // File Saving
-void app_saveTabWithCustomLocation()
+void app_saveTabs(int mode, HWND hwnd)
 {
-    //TODO le do do do, i think im starting to go crazy
-}
-
-void app_saveTabs(bool doAllTabs)
-{
-    if(!doAllTabs)
+    // We need to get the text from the current tab because it doesnt save to storedText unless they moved to a new tab
+    if(g_tabMap.count(g_currentTab))
     {
-        app::common::fileHandeler::UpdateFileText(g_tabMap[g_currentTab].fileLocation, g_tabMap[g_currentTab].storedText);
+        HWND hMiddilePanel = GetDlgItem(hwnd, 3);
+        HWND hEditorTextBox = GetDlgItem(hMiddilePanel, 10);
+
+        int textLength = GetWindowTextLength(hEditorTextBox) + 1;
+        TCHAR* buffer = new TCHAR[textLength];
+
+        GetWindowText(hEditorTextBox, buffer, textLength);
+        g_tabMap[g_currentTab].storedText = std::string(buffer);
+
+        delete[] buffer;
+    }
+
+    // Save Current
+    if(mode == 1)
+    {
+        if(std::find(g_modifiedTabs.begin(), g_modifiedTabs.end(), g_currentTab) != g_modifiedTabs.end())
+        {
+            app::common::fileHandeler::UpdateFileText(g_tabMap[g_currentTab].fileLocation, g_tabMap[g_currentTab].storedText);
+            g_modifiedTabs.erase(std::find(g_modifiedTabs.begin(), g_modifiedTabs.end(), g_currentTab));
+        }
+    }
+    
+    // Save all
+    if(mode == 2)
+    {
+
+    }
+
+    // Save to location
+    if(mode == 3)
+    {
+
     }
 }
 
@@ -435,17 +462,17 @@ LRESULT wm_OnCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         }
         case 7: // Save As
         {
-            app_saveTabWithCustomLocation();
+            app_saveTabs(3, hwnd);
             break;
         }
         case 6: // Save All
         {
-            app_saveTabs(true);
+            app_saveTabs(2, hwnd);
             break;
         }
         case 5: // Save Current
         {
-            app_saveTabs(false);
+            app_saveTabs(1, hwnd);
             break;
         }
     }
