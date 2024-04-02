@@ -43,11 +43,7 @@ std::unordered_map<std::string, tabInfo> g_tabMap;
 
 // APPLICATION FUNCTIONS //
 
-// Saving
-std::string formatExportedText(std::string input)
-{
-}
-
+// File Saving
 void app_saveTabWithCustomLocation()
 {
     //TODO le do do do, i think im starting to go crazy
@@ -55,6 +51,10 @@ void app_saveTabWithCustomLocation()
 
 void app_saveTabs(bool doAllTabs)
 {
+    if(!doAllTabs)
+    {
+        app::common::fileHandeler::UpdateFileText(g_tabMap[g_currentTab].fileLocation, g_tabMap[g_currentTab].storedText);
+    }
 }
 
 // Tabs

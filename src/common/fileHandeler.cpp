@@ -3,6 +3,7 @@
 #include "JACE/common/logHandeler.h"
 
 #include <filesystem>
+#include <algorithm>
 #include <fstream>
 #include <string>
 
@@ -83,7 +84,13 @@ void app::common::fileHandeler::UpdateFileText(std::string TargetFilePath, std::
     file.open(TargetFilePath);
     if(file.is_open())
     {
-        file << newText;
+        std::string FileText = newText;
+        #ifdef _WIN32
+            // Windows loves causign extra work...
+            FileText.erase(std::remove(FileText.begin(), FileText.end(), '\r'), FileText.end());
+        #endif
+
+        file << FileText;
         file.close();
     }
 
