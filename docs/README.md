@@ -1,23 +1,32 @@
 # Just Another Code Editor (JACE)
-JACE, short for Just Another Code Editor, is a open-source text editor design to write code while being stable and light-weight on performance.
+JACE, short for Just Another Code Editor, is a open-source text editor design to write code while being cross-platform and light-weight and efficient on system resources.
 
 ## Features
-- Lightweight: Made in C++, JACE uses less system resources then other editors
-- Modular: Built from the ground up with a Plugin System and with many setting giving maximum control to the user
-- Cross-platform: Designed to run on both Windows and Linux operating systems (May run on MacOS, but without one, this is unkown)
+- Lightweight: Made in C++, JACE uses less system resources compared to other editors
+- Modular: Designed with modularity at its core, JACE offers extensive customization and a expandable plugin system
+- Cross-platform: Designed to run on both Windows and Linux operating systems
 
 ## Instalation
-Pre-commpiled versions can be downloaded for various operating systems here[LINK, TODO].
+Pre-commpiled versions can be downloaded for various operating systems are abailable for download here[LINK, TODO].Additionally "Offical" plugins can be found [here](https://github.com/Hedge239/JACEplugins)
 
-### Building from Source
-If you wish to build JACE from source instead, have the following installed and run CMake using the provided CMakelists.txt
+## Building from Source
+If you wish to build JACE from scratch, nsure you meet the prerequisites outlined below and then run the provided CMakeLists.txt
+
+#### Prerequisites (Windows Only)
+- Win32
+    - Have `JACE_SUPPORT_WINAPI` set to `ON` in CMakeLists.txt
 
 #### Prerequisites (Linux Only)
-- X11 Development Package (libx11-dev on Debian12), **Note the X11 package is only required if 'UNIX_DYNAMIC_DS' is set to 'TRUE' in the 'CMakeLists.txt' file.**
-- Wayland Development Package (libwayland-dev on Debian12)
+> Note:Both X11 and Wayland support can be enabled simultaneously, albeit increasing the application's size.
+- X11
+    - X11 Development Lib
+    - Have the `JACE_SUPPORT_x11` set to `ON` in CMakeLists.txt
+- Wayland
+    - Wayland Development Lib
+    - Have the `JACE_SUPPORT_WAYLAND` set to `ON` in CMakeLists.txt
 
 ## Contribution
-Please read [CONTRIBUTING.md](https://github.com/Hedge239/JustAnotherCodeEditor/blob/latest-dev/docs/CONTRIBUTING.md) for more info
+We welcome contributions from anyone interested in supporting JACE, Please refer to [CONTRIBUTING.md](https://github.com/Hedge239/JustAnotherCodeEditor/blob/latest-dev/docs/CONTRIBUTING.md) for detailed info.
 
 
 ## License
