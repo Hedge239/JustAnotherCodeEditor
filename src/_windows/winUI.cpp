@@ -75,7 +75,14 @@ void app_saveTabs(int mode, HWND hwnd)
     // Save all
     if(mode == 2)
     {
+        for(int i = 0; g_modifiedTabs.size(); ++i)
+        {
+            std::string currentFile = g_modifiedTabs[i];
 
+            app::common::log::LogToFile("application", "[Win32] Saving file: " + currentFile);
+            app::common::fileHandeler::UpdateFileText(g_tabMap[currentFile].fileLocation, g_tabMap[currentFile].storedText);
+            g_modifiedTabs.erase(std::find(g_modifiedTabs.begin(), g_modifiedTabs.end(), currentFile));
+        }
     }
 
     // Save to location
