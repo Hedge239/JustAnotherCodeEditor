@@ -4,7 +4,7 @@
 
 
 #ifdef SUPPORT_WINAPI
-    #include "JACE/_win/winUI.h"
+    #include "JACE/_win/MainWindow.h"
 #endif
 
 #ifdef SUPPORT_X11

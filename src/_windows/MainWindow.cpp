@@ -1,4 +1,4 @@
-#include "JACE/_win/winUI.h"
+#include "JACE/_win/MainWindow.h"
 #include "JACE/_win/win32.h"
 #include "JACE/_win/resources.h"
 
