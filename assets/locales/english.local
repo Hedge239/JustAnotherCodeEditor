@@ -15,3 +15,4 @@ menu_project:Project
 menu_plugin:Extensions
 menu_settings:Settings
 menu_help:Help
+warning_unsavedChanges:You have unsaved changes. Do you wish to save?

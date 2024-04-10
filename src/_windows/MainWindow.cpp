@@ -41,8 +41,6 @@ std::vector<std::string> g_modifiedTabs;
 std::unordered_map<std::string, tabInfo> g_tabMap;
 
 
-// APPLICATION FUNCTIONS //
-
 // File Saving
 void app_saveTabs(int mode, HWND hwnd)
 {
@@ -144,6 +142,28 @@ void app_OpenTab(HWND hMiddilePanel, std::string tabName)
 
     // Change current tab after completion
     g_currentTab = tabName;
+
+    if(!IsWindowVisible(hEditorTextBox))
+    {
+        ShowWindow(hEditorTextBox, SW_SHOW);
+    }
+}
+
+// application management
+void app_AfterCreation(HWND hwnd)
+{
+    HWND hMiddilePanel = GetDlgItem(hwnd, 3);
+    HWND hEditorTextBox = GetDlgItem(hMiddilePanel, 10);
+
+    if(g_currentTab.empty())
+    {
+        ShowWindow(hEditorTextBox, SW_HIDE);
+    }
+}
+
+void app_BeforeExit(HWND hwnd)
+{
+
 }
 
 
@@ -280,14 +300,15 @@ LRESULT wm_OnCreate(HWND hwnd, WPARAM wParam, LPARAM lParam)
     HWND hLowerPanel = CreateWindowEx(WS_EX_CLIENTEDGE, "STATIC", "", WS_CHILD | WS_VISIBLE, 0, 0, 100, 100, hwnd, (HMENU)2, GetModuleHandle(NULL), NULL);
     HWND hMiddlePanel = CreateWindowEx(WS_EX_CLIENTEDGE, "STATIC", "", WS_CHILD | WS_VISIBLE, 0, 0, 100, 100, hwnd, (HMENU)3, GetModuleHandle(NULL), NULL);
 
+    // Middle Panel
     DragAcceptFiles(hMiddlePanel, TRUE);
 
-    // Middle Panel elements
     HWND hTabManager = CreateWindowEx(WS_EX_CLIENTEDGE, WC_TABCONTROL, "", WS_CHILD | WS_CLIPSIBLINGS | WS_VISIBLE | WS_BORDER, 0, 0, 0, 0, hMiddlePanel, (HMENU)11, GetModuleHandle(NULL), NULL);
     HWND hEditorTextBox = CreateWindowEx(WS_EX_CLIENTEDGE, TEXT("Edit"), "", WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL | ES_AUTOVSCROLL | ES_MULTILINE | WS_VSCROLL | WS_HSCROLL, 0, 0, 0, 0, hMiddlePanel, (HMENU)10, GetModuleHandle(NULL), NULL);
 
-    // Subclassing
     SetWindowSubclass(hMiddlePanel, cb_MiddlePanel, 0, 0);
+
+    app_AfterCreation(hwnd);
     return 0;
 }
 
@@ -317,13 +338,37 @@ LRESULT wm_OnSizeChange(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 LRESULT wm_OnDestroy(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-    HWND hMiddilePanel = GetDlgItem(hwnd, 3);
     app::common::log::LogToFile("application", "[Win32] Destroy Message Recived");
 
-    // TODO
+    HWND hMiddilePanel = GetDlgItem(hwnd, 3);
+
+    app_BeforeExit(hwnd);
 
     RemoveWindowSubclass(hMiddilePanel, cb_MiddlePanel, 0);
     PostQuitMessage(0);
+    return 0;
+}
+
+LRESULT wm_OnSystemCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
+{
+    if(wParam == SC_CLOSE)
+    {
+        // Check if user has unsaved tabs
+        if(!g_modifiedTabs.empty())
+        {
+            int msgBoxResult = MessageBoxW(NULL, app::win32::system::StringToWideString(app::common::Localisation::GetText("warning_unsavedChanges", true)).c_str(), app::win32::system::StringToWideString(app::common::Localisation::GetText("app_name", true)).c_str(), MB_YESNOCANCEL | MB_ICONQUESTION);
+
+            if(msgBoxResult == IDYES)
+            {
+                app_saveTabs(2, hwnd);
+                DestroyWindow(hwnd);
+            }else if(msgBoxResult == IDNO)
+            {
+                DestroyWindow(hwnd);
+            }
+        }
+    }
+
     return 0;
 }
 
@@ -514,6 +559,9 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
 
     case WM_SIZE:
         return wm_OnSizeChange(hwnd, wParam, lParam);
+
+    case WM_SYSCOMMAND:
+        return wm_OnSystemCommand(hwnd, wParam, lParam);
 
     case WM_DESTROY:
         return wm_OnDestroy(hwnd, wParam, lParam);
