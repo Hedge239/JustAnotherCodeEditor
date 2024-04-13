@@ -86,7 +86,9 @@ void app_saveTabs(int mode, HWND hwnd)
     // Save to location
     if(mode == 3)
     {
-
+        if(!g_currentTab.empty())
+        {
+        }
     }
 }
 
