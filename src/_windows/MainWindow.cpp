@@ -80,7 +80,6 @@ void app_RemapTabInfo(HWND hMiddilePanel, std::string oldTab, std::string newTab
     g_tabMap.erase(oldTab);
 }
 
-
 void app_CreateNewTab(HWND hMiddilePanel, std::string tabName, std::string fileLocation)
 {
     HWND hEditorTextBox = GetDlgItem(hMiddilePanel, 10);
@@ -137,6 +136,11 @@ void app_OpenTab(HWND hMiddilePanel, std::string tabName)
     {
         ShowWindow(hEditorTextBox, SW_SHOW);
     }
+}
+
+void app_CloseTab(HWND hMiddilePanel, std::string tabName)
+{
+    
 }
 
 // File Saving
@@ -217,6 +221,7 @@ void app_saveTabs(int mode, HWND hwnd)
         }
     }
 }
+
 
 // application management
 void app_AfterCreation(HWND hwnd)
