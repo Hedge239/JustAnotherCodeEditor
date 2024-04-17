@@ -15,6 +15,7 @@ namespace app
             static std::string ReadLineFromFile(std::string TargetFilePath, int targetLine);
             static std::string GetTextFromFile(std::string TargetFilePath);
             static void UpdateFileText(std::string TargetFilePath, std::string newText);
+            static void TransferFile(std::string OldFilePath, std::string NewFilePath, std::string fileText);
         };
     }
 }

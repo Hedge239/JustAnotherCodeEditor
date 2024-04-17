@@ -96,3 +96,21 @@ void app::common::fileHandeler::UpdateFileText(std::string TargetFilePath, std::
 
     return;
 }
+
+void app::common::fileHandeler::TransferFile(std::string OldFilePath, std::string NewFilePath, std::string fileText)
+{
+    if(!std::filesystem::exists((OldFilePath)))
+        {app::common::log::LogToFile("application", "[fileHandeler] Faild to find file: " + OldFilePath); return;}
+
+    std::ofstream file;
+
+    file.open(NewFilePath);
+    if(file.is_open())
+    {
+        file.close();
+        app::common::fileHandeler::UpdateFileText(NewFilePath, fileText);
+        std::filesystem::remove(OldFilePath);
+    }
+
+    return;
+}

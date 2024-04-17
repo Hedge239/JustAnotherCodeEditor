@@ -41,58 +41,46 @@ std::vector<std::string> g_modifiedTabs;
 std::unordered_map<std::string, tabInfo> g_tabMap;
 
 
-// File Saving
-void app_saveTabs(int mode, HWND hwnd)
-{
-    // We need to get the text from the current tab because it doesnt save to storedText unless they moved to a new tab
-    if(g_tabMap.count(g_currentTab))
+// Tabs
+void app_RemapTabInfo(HWND hMiddilePanel, std::string oldTab, std::string newTabLocation)
+{   
+    // Were only not using g_currentTab, since this can happen on non current tabs
+    HWND hTabManager = GetDlgItem(hMiddilePanel, 11);
+    std::string newTabName = newTabLocation.substr(newTabLocation.find_last_of("\\/") + 1);
+
+    app::common::log::LogToFile("application", "[Win32] Remapping TabInfo: " + oldTab + " --> " + newTabName);
+
+    // Update TabName
+    for(int i = 0; i < TabCtrl_GetItemCount(hTabManager); ++i)
     {
-        HWND hMiddilePanel = GetDlgItem(hwnd, 3);
-        HWND hEditorTextBox = GetDlgItem(hMiddilePanel, 10);
+        TCITEM tie;
+        tie.mask = TCIF_TEXT;
+        tie.pszText = new TCHAR[MAX_PATH];
+        tie.cchTextMax = MAX_PATH;
 
-        int textLength = GetWindowTextLength(hEditorTextBox) + 1;
-        TCHAR* buffer = new TCHAR[textLength];
+        TabCtrl_GetItem(hTabManager, i, &tie);
 
-        GetWindowText(hEditorTextBox, buffer, textLength);
-        g_tabMap[g_currentTab].storedText = std::string(buffer);
-
-        delete[] buffer;
-    }
-
-    // Save Current
-    if(mode == 1)
-    {
-        if(std::find(g_modifiedTabs.begin(), g_modifiedTabs.end(), g_currentTab) != g_modifiedTabs.end())
+        // Update Tab name
+        if(strcmp(oldTab.c_str(), tie.pszText) == 0)
         {
-            app::common::log::LogToFile("application", "[Win32] Saving file: " + g_currentTab);
-            app::common::fileHandeler::UpdateFileText(g_tabMap[g_currentTab].fileLocation, g_tabMap[g_currentTab].storedText);
-            g_modifiedTabs.erase(std::find(g_modifiedTabs.begin(), g_modifiedTabs.end(), g_currentTab));
-        }
-    }
-    
-    // Save all
-    if(mode == 2)
-    {
-        for(int i = g_modifiedTabs.size() - 1; i >= 0; --i)
-        {
-            std::string currentFile = g_modifiedTabs[i];
+            app::common::log::LogToFile("application", "[Win32] Updated TabName: " + oldTab + " -> " + newTabName);
 
-            app::common::log::LogToFile("application", "[Win32] Saving file: " + currentFile);
-            app::common::fileHandeler::UpdateFileText(g_tabMap[currentFile].fileLocation, g_tabMap[currentFile].storedText);
-            g_modifiedTabs.erase(g_modifiedTabs.begin() + i);
+            strcpy(tie.pszText, newTabName.c_str());
+            TabCtrl_SetItem(hTabManager, i, &tie);
+
+            delete[] tie.pszText;
+            break;
         }
     }
 
-    // Save to location
-    if(mode == 3)
-    {
-        if(!g_currentTab.empty())
-        {
-        }
-    }
+    if(std::find(g_modifiedTabs.begin(), g_modifiedTabs.end(), oldTab) != g_modifiedTabs.end())
+        {g_modifiedTabs.erase(std::find(g_modifiedTabs.begin(), g_modifiedTabs.end(), oldTab));}
+
+    g_tabMap[newTabName] = {newTabLocation, g_tabMap[oldTab].storedText};
+    g_tabMap.erase(oldTab);
 }
 
-// Tabs
+
 void app_CreateNewTab(HWND hMiddilePanel, std::string tabName, std::string fileLocation)
 {
     HWND hEditorTextBox = GetDlgItem(hMiddilePanel, 10);
@@ -148,6 +136,85 @@ void app_OpenTab(HWND hMiddilePanel, std::string tabName)
     if(!IsWindowVisible(hEditorTextBox))
     {
         ShowWindow(hEditorTextBox, SW_SHOW);
+    }
+}
+
+// File Saving
+void app_saveTabs(int mode, HWND hwnd)
+{
+    HWND hMiddilePanel = GetDlgItem(hwnd, 3);
+
+    // We need to get the text from the current tab because it doesnt save to storedText unless they moved to a new tab
+    if(g_tabMap.count(g_currentTab))
+    {
+        HWND hEditorTextBox = GetDlgItem(hMiddilePanel, 10);
+
+        int textLength = GetWindowTextLength(hEditorTextBox) + 1;
+        TCHAR* buffer = new TCHAR[textLength];
+
+        GetWindowText(hEditorTextBox, buffer, textLength);
+        g_tabMap[g_currentTab].storedText = std::string(buffer);
+
+        delete[] buffer;
+    }
+
+    // Save Current
+    if(mode == 1)
+    {
+        if(std::find(g_modifiedTabs.begin(), g_modifiedTabs.end(), g_currentTab) != g_modifiedTabs.end())
+        {
+            app::common::log::LogToFile("application", "[Win32] Saving file: " + g_currentTab);
+            app::common::fileHandeler::UpdateFileText(g_tabMap[g_currentTab].fileLocation, g_tabMap[g_currentTab].storedText);
+            g_modifiedTabs.erase(std::find(g_modifiedTabs.begin(), g_modifiedTabs.end(), g_currentTab));
+        }
+    }else if(mode == 2) // Save all
+    {
+        for(int i = g_modifiedTabs.size() - 1; i >= 0; --i)
+        {
+            std::string currentFile = g_modifiedTabs[i];
+
+            app::common::log::LogToFile("application", "[Win32] Saving file: " + currentFile);
+            app::common::fileHandeler::UpdateFileText(g_tabMap[currentFile].fileLocation, g_tabMap[currentFile].storedText);
+            g_modifiedTabs.erase(g_modifiedTabs.begin() + i);
+        }
+    }else if(mode == 3) // Save to location
+    {
+        if(!g_currentTab.empty())
+        {
+            TCHAR TargetLocation[MAX_PATH] = {0};
+
+            OPENFILENAME ofn;
+            ZeroMemory(&ofn, sizeof(ofn));
+
+            ofn.lStructSize = sizeof(ofn);
+            ofn.hwndOwner = hwnd;
+            ofn.lpstrFilter = "All Files (*.*)\0*.*\0";
+            ofn.lpstrFile = TargetLocation;
+            ofn.nMaxFile = MAX_PATH;
+            ofn.lpstrInitialDir = NULL;
+            ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+
+            strncpy(TargetLocation, g_tabMap[g_currentTab].fileLocation.c_str(), MAX_PATH);
+
+            if(GetSaveFileName(&ofn))
+            {
+                app::common::log::LogToFile("application", "[Win32] Saving file: " + g_tabMap[g_currentTab].fileLocation + " --> " + TargetLocation);
+                app::common::fileHandeler::TransferFile(g_tabMap[g_currentTab].fileLocation, TargetLocation, g_tabMap[g_currentTab].storedText);
+
+                // Basically remaps the tab...
+                if(g_currentTab == std::string(TargetLocation).substr(std::string(TargetLocation).find_last_of("\\/") + 1))
+                {
+                    if(std::find(g_modifiedTabs.begin(), g_modifiedTabs.end(), g_currentTab) != g_modifiedTabs.end())
+                        {g_modifiedTabs.erase(std::find(g_modifiedTabs.begin(), g_modifiedTabs.end(), g_currentTab));}
+
+                    g_tabMap[g_currentTab].fileLocation = TargetLocation;
+                }else 
+                {
+                    app_RemapTabInfo(hMiddilePanel, g_currentTab, TargetLocation);
+                    g_currentTab = std::string(TargetLocation).substr(std::string(TargetLocation).find_last_of("\\/") + 1);
+                }
+            }
+        }
     }
 }
 
@@ -351,7 +418,7 @@ LRESULT wm_OnDestroy(HWND hwnd, WPARAM wParam, LPARAM lParam)
     return 0;
 }
 
-LRESULT wm_OnSystemCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
+LRESULT wm_OnSystemCommand(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     if(wParam == SC_CLOSE)
     {
@@ -371,7 +438,7 @@ LRESULT wm_OnSystemCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         }
     }
 
-    return 0;
+    return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
 
@@ -563,7 +630,7 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
         return wm_OnSizeChange(hwnd, wParam, lParam);
 
     case WM_SYSCOMMAND:
-        return wm_OnSystemCommand(hwnd, wParam, lParam);
+        return wm_OnSystemCommand(hwnd, uMsg, wParam, lParam);
 
     case WM_DESTROY:
         return wm_OnDestroy(hwnd, wParam, lParam);
