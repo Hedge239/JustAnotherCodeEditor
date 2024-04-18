@@ -143,7 +143,8 @@ void app_CloseTab(HWND hMiddilePanel, std::string tabName)
     
 }
 
-// File Saving
+
+// File Management
 void app_saveTabs(int mode, HWND hwnd)
 {
     HWND hMiddilePanel = GetDlgItem(hwnd, 3);
@@ -220,6 +221,34 @@ void app_saveTabs(int mode, HWND hwnd)
             }
         }
     }
+}
+
+void app_openFile(HWND hwnd)
+{
+    HWND hMiddilePanel = GetDlgItem(hwnd, 3);
+    TCHAR TargetLocation[MAX_PATH] = {0};
+
+    OPENFILENAME ofn;
+    ZeroMemory(&ofn, sizeof(ofn));
+
+    ofn.lStructSize = sizeof(ofn);
+    ofn.hwndOwner = hwnd;
+    ofn.lpstrFilter = "All Files (*.*)\0*.*\0";
+    ofn.lpstrFile = TargetLocation;
+    ofn.nMaxFile = MAX_PATH;
+    ofn.lpstrInitialDir = NULL;
+    ofn.Flags = OFN_EXPLORER | OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+
+    if(GetOpenFileName(&ofn))
+    {
+        app_CreateNewTab(hMiddilePanel, std::string(TargetLocation).substr(std::string(TargetLocation).find_last_of("\\/") + 1), TargetLocation);
+        app_OpenTab(hMiddilePanel, std::string(TargetLocation).substr(std::string(TargetLocation).find_last_of("\\/") + 1));
+    }
+}
+
+void app_closeFile(HWND hwnd)
+{
+
 }
 
 
@@ -412,14 +441,14 @@ LRESULT wm_OnSizeChange(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
 LRESULT wm_OnDestroy(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
-    app::common::log::LogToFile("application", "[Win32] Destroy Message Recived");
-
     HWND hMiddilePanel = GetDlgItem(hwnd, 3);
 
     app_BeforeExit(hwnd);
-
     RemoveWindowSubclass(hMiddilePanel, cb_MiddlePanel, 0);
     PostQuitMessage(0);
+
+    app::common::log::LogToFile("application", "[Win32] Destroying Main Window");
+    app::common::log::LogToFile("application", "[Win32] Removing WindowSubclasses");
     return 0;
 }
 
@@ -600,6 +629,23 @@ LRESULT wm_OnCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         case 5: // Save Current
         {
             app_saveTabs(1, hwnd);
+            break;
+        }
+        case 4: // Close Folder
+        {
+            break;
+        }
+        case 3: // Close File
+        {
+            break;
+        }
+        case 2: // Open Folder
+        {
+            break;
+        }
+        case 1: // Open File
+        {
+            app_openFile(hwnd);
             break;
         }
     }

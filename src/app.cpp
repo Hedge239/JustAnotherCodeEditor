@@ -72,7 +72,7 @@ int main(int argc, char* argv[])
     app::UI::appUI::InitMainWindow();
 
     // Cleanup
-    app::common::log::LogToFile("application", "[MAIN] Main Window Closed, cleaning up");
+    app::common::log::LogToFile("application", "[MAIN] Performing Cleanup Task(s)");
 
     app::plugins::manager::pmPluginPreUnloaded();
     app::plugins::manager::UnloadLoadedPlugins();
