@@ -54,9 +54,11 @@ int main(int argc, char* argv[])
     if(app::common::global::APPDATA == "")
         {app::common::log::CreateCrashLog("'path=' in app.cfg can not be empty"); exit(-1);}
     
-    // Create Cache
+    // Create Temp & Cache
     if(!std::filesystem::exists(app::common::global::APPDATA + "\\cache"))
-    {std::filesystem::create_directory(app::common::global::APPDATA + "\\cache");}
+        {std::filesystem::create_directory(app::common::global::APPDATA + "\\cache");}
+    if(!std::filesystem::exists(app::common::global::APPDATA + "\\temp"))
+        {std::filesystem::create_directory(app::common::global::APPDATA + "\\temp");}
 
     // Init Logger
     app::common::log::startSession();
