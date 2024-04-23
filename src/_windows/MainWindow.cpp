@@ -140,7 +140,33 @@ void app_OpenTab(HWND hMiddilePanel, std::string tabName)
 
 void app_CloseTab(HWND hMiddilePanel, std::string tabName)
 {
-    
+    if(std::find(g_modifiedTabs.begin(), g_modifiedTabs.end(), tabName) != g_modifiedTabs.end())
+    {
+        if(g_tabMap.count(tabName))
+        {
+            HWND hEditorTextBox = GetDlgItem(hMiddilePanel, 10);
+
+            int textLength = GetWindowTextLength(hEditorTextBox) + 1;
+            TCHAR* buffer = new TCHAR[textLength];
+
+            GetWindowText(hEditorTextBox, buffer, textLength);
+            g_tabMap[tabName].storedText = std::string(buffer);
+
+            delete[] buffer;
+        }
+
+        int msgBoxResult = MessageBoxW(NULL, app::win32::system::StringToWideString(app::common::Localisation::GetText("warning_unsavedChanges", true)).c_str(), app::win32::system::StringToWideString(app::common::Localisation::GetText("app_name", true)).c_str(), MB_YESNOCANCEL | MB_ICONQUESTION);
+
+        if(msgBoxResult == IDYES)
+        {
+            // Modified version of mode 1, to use tabName instead of the current tab
+            app::common::log::LogToFile("application", "[Win32] Saving file: " + tabName);
+            app::common::fileHandeler::UpdateFileText(g_tabMap[tabName].fileLocation, g_tabMap[tabName].storedText);
+            g_modifiedTabs.erase(std::find(g_modifiedTabs.begin(), g_modifiedTabs.end(), tabName));
+        }
+
+        g_modifiedTabs.erase(std::find(g_modifiedTabs.begin(), g_modifiedTabs.end(), tabName));
+    }
 }
 
 
