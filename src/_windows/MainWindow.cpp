@@ -162,7 +162,6 @@ void app_CloseTab(HWND hMiddilePanel, std::string tabName)
             // Modified version of mode 1, to use tabName instead of the current tab
             app::common::log::LogToFile("application", "[Win32] Saving file: " + tabName);
             app::common::fileHandeler::UpdateFileText(g_tabMap[tabName].fileLocation, g_tabMap[tabName].storedText);
-            g_modifiedTabs.erase(std::find(g_modifiedTabs.begin(), g_modifiedTabs.end(), tabName));
         }
 
         g_modifiedTabs.erase(std::find(g_modifiedTabs.begin(), g_modifiedTabs.end(), tabName));
