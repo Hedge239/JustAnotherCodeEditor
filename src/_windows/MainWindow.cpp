@@ -164,7 +164,13 @@ void app_CloseTab(HWND hMiddilePanel, std::string tabName)
             app::common::fileHandeler::UpdateFileText(g_tabMap[tabName].fileLocation, g_tabMap[tabName].storedText);
         }
 
+        g_tabMap.erase(std::find(g_tabMap.begin(), g_tabMap.end(), tabName));
         g_modifiedTabs.erase(std::find(g_modifiedTabs.begin(), g_modifiedTabs.end(), tabName));
+
+        if(g_currentTab == tabName)
+        {
+
+        }
     }
 }
 
