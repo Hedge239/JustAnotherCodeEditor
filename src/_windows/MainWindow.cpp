@@ -85,6 +85,8 @@ void app_CreateNewTab(HWND hMiddilePanel, std::string tabName, std::string fileL
     HWND hEditorTextBox = GetDlgItem(hMiddilePanel, 10);
     HWND hTabManager = GetDlgItem(hMiddilePanel, 11);
 
+    app::common::log::LogToFile("application", "Creating New tab: " + tabName);
+
     // Create Tab
     TCITEM tie;
     tie.mask = TCIF_TEXT;
@@ -174,6 +176,8 @@ void app_CloseTab(HWND hMiddilePanel, std::string tabName)
         g_currentTab = "";
         ShowWindow(hEditorTextBox, SW_HIDE);
     }
+
+    app::common::log::LogToFile("application", "[Win32] Eraseing Traces of: " + tabName);
 
     for(int i = 0; i < TabCtrl_GetItemCount(hTabManager); ++i)
     {
@@ -299,12 +303,6 @@ void app_openFile(HWND hwnd)
         app_OpenTab(hMiddilePanel, std::string(TargetLocation).substr(std::string(TargetLocation).find_last_of("\\/") + 1));
     }
 }
-
-void app_closeFile(HWND hwnd)
-{
-
-}
-
 
 // application management
 void app_AfterCreation(HWND hwnd)
