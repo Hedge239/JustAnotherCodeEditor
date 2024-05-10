@@ -12,6 +12,7 @@
 # Application
 - [Global] More Plugin implementations/functions points
 - [Global] Setting fuctionality
+- [Global] Sessions
 
 # External
 - [Plugins] Plugin Template
