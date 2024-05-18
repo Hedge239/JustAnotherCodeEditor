@@ -3,7 +3,7 @@
 - [Linux] X11 System
 - [Generic] Settings Window
 - [Generic] Plugin Manager Window
-- [Generic] Side File Explorer
+- [Generic] File Explorer
 - [Generic] Bottem Panel Tabs
 - [Generic] interal Terminal support
 - [Generic] Theme Functionality
@@ -13,6 +13,7 @@
 - [Global] More Plugin implementations/functions points
 - [Global] Setting fuctionality
 - [Global] Sessions
+- [Global] Session Manager
 
 # External
 - [Plugins] Plugin Template
