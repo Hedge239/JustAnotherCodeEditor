@@ -1,7 +1,7 @@
 # GUI
 - [Linux] Wayland System
 - [Linux] X11 System
-- [Generic] File Explorer
+- [Generic] File Explorer - Priority
 - [Generic] Bottem Panel Tabs
 - [Generic] interal Terminal support
 - [Generic] Theme Functionality
