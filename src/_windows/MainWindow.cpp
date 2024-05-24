@@ -29,15 +29,23 @@ int g_lowerPanelHeight = 100;
 
 POINT g_previousPanelLocation = {0};
 
-// Tabs
+// File, Folder, & tabs
 struct tabInfo
 {
     std::string fileLocation;
     std::string storedText;
 };
 
+struct fileInfo
+{
+    std::string fileName;
+    bool isDirectory;
+    int indentLevel;
+};
+
 std::string g_currentTab;
 std::vector<std::string> g_modifiedTabs;
+std::vector<fileInfo> g_activeFolderItems;
 std::unordered_map<std::string, tabInfo> g_tabMap;
 
 
@@ -304,6 +312,11 @@ void app_openFile(HWND hwnd)
     }
 }
 
+// Folder Managerment
+void app_openFolder(HWND hwnd, std::string folderPath)
+{
+}
+
 // application management
 void app_AfterCreation(HWND hwnd)
 {
@@ -319,6 +332,17 @@ void app_AfterCreation(HWND hwnd)
 void app_BeforeExit(HWND hwnd)
 {
 
+}
+
+
+// LEFTPANNEL CALLBACKS //
+LRESULT CALLBACK cb_LeftPanel(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
+{
+    switch (uMsg) 
+    {
+    }
+
+    return DefSubclassProc(hwnd, uMsg, wParam, lParam);
 }
 
 
@@ -463,6 +487,11 @@ LRESULT wm_OnCreate(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     SetWindowSubclass(hMiddlePanel, cb_MiddlePanel, 0, 0);
 
+    // Left Panel
+    HWND hFileExploerList = CreateWindowEx(WS_EX_CLIENTEDGE, WC_LISTVIEW, "", WS_CHILD | WS_VISIBLE | LVS_REPORT, 0, 0, 0, 0, hLeftPanel, (HMENU)12,  GetModuleHandle(NULL), NULL);
+
+    SetWindowSubclass(hLeftPanel, cb_LeftPanel, 0, 0);
+
     app_AfterCreation(hwnd);
     return 0;
 }
@@ -487,6 +516,13 @@ LRESULT wm_OnSizeChange(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     HWND hEditorTextBox = GetDlgItem(hMiddilePanel, 10);
     MoveWindow(hEditorTextBox, 0, TABS_PANEL_SIZE, middlePanelRect.right, middlePanelRect.bottom - 30, TRUE);
+
+    // Left Panel
+    RECT leftPanelRect;
+    GetClientRect(hLeftPanel, &leftPanelRect);
+
+    HWND hFileExploerList = GetDlgItem(hLeftPanel, 12);
+    MoveWindow(hFileExploerList, 0, 0, leftPanelRect.right, leftPanelRect.bottom, TRUE);
 
     return 0;
 }
