@@ -8,11 +8,14 @@
 #include "JACE/common/fileHandeler.h"
 
 #include <vector>
-#include <windows.h>
 #include <unordered_map>
-#include <commctrl.h>
 #include <string>
 #include <algorithm>
+
+#include <windows.h>
+#include <commctrl.h>
+#include <shlobj.h>
+#include <shobjidl.h>
 
 
 // Global Variables //
@@ -29,23 +32,18 @@ int g_lowerPanelHeight = 100;
 
 POINT g_previousPanelLocation = {0};
 
-// File, Folder, & tabs
+// Tabs & Folders
 struct tabInfo
 {
     std::string fileLocation;
     std::string storedText;
 };
 
-struct fileInfo
-{
-    std::string fileName;
-    bool isDirectory;
-    int indentLevel;
-};
+HWND g_hFileTree = nullptr;
+INameSpaceTreeControl* g_fileTree = nullptr;
 
 std::string g_currentTab;
 std::vector<std::string> g_modifiedTabs;
-std::vector<fileInfo> g_activeFolderItems;
 std::unordered_map<std::string, tabInfo> g_tabMap;
 
 
@@ -313,8 +311,9 @@ void app_openFile(HWND hwnd)
 }
 
 // Folder Managerment
-void app_openFolder(HWND hwnd, std::string folderPath)
+void app_openFolder(HWND hwnd, std::wstring folderPath)
 {
+    HWND hLeftPanel = GetDlgItem(hwnd, 1);
 }
 
 // application management
@@ -323,10 +322,14 @@ void app_AfterCreation(HWND hwnd)
     HWND hMiddilePanel = GetDlgItem(hwnd, 3);
     HWND hEditorTextBox = GetDlgItem(hMiddilePanel, 10);
 
+    // Prevent Typeing if no Text file is open [TEMP]
     if(g_currentTab.empty())
     {
         ShowWindow(hEditorTextBox, SW_HIDE);
     }
+
+    // Open inital folder in the embeded file explorer, I will just use the application folder
+    app_openFolder(hwnd, L"");
 }
 
 void app_BeforeExit(HWND hwnd)
@@ -336,7 +339,7 @@ void app_BeforeExit(HWND hwnd)
 
 
 // LEFTPANNEL CALLBACKS //
-LRESULT leftPanel_wm_WhenNotified(HWND hMiddilePanel, WPARAM wParam, LPARAM lParam)
+LRESULT leftPanel_wm_WhenNotified(HWND hleftPanel, WPARAM wParam, LPARAM lParam)
 {
     return 0;
 }
@@ -495,9 +498,28 @@ LRESULT wm_OnCreate(HWND hwnd, WPARAM wParam, LPARAM lParam)
     SetWindowSubclass(hMiddlePanel, cb_MiddlePanel, 0, 0);
 
     // Left Panel
-    HWND hFileExploerList = CreateWindowEx(WS_EX_CLIENTEDGE, WC_LISTVIEW, "", WS_CHILD | WS_VISIBLE | LVS_REPORT, 0, 0, 0, 0, hLeftPanel, (HMENU)12,  GetModuleHandle(NULL), NULL);
-
     SetWindowSubclass(hLeftPanel, cb_LeftPanel, 0, 0);
+
+    if(SUCCEEDED(CoCreateInstance(CLSID_NamespaceTreeControl, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&g_fileTree))))
+    {
+        RECT leftPanelRect;
+        IShellItem* iDesktopItem = nullptr;
+
+        GetClientRect(hLeftPanel, &leftPanelRect);
+        g_fileTree->Initialize(hLeftPanel, &leftPanelRect, NSTCS_HASEXPANDOS | NSTCS_AUTOHSCROLL | NSTCS_FADEINOUTEXPANDOS);
+
+        SHCreateItemInKnownFolder(FOLDERID_Desktop, 0, nullptr, IID_PPV_ARGS(&iDesktopItem));
+        g_fileTree->AppendRoot(iDesktopItem, SHCONTF_FOLDERS, NSTCRS_EXPANDED, nullptr);
+
+        iDesktopItem->Release();
+
+        IOleWindow* oleWindow;
+        if (SUCCEEDED(g_fileTree->QueryInterface(IID_PPV_ARGS(&oleWindow))))
+        {
+            oleWindow->GetWindow(&g_hFileTree);
+            oleWindow->Release();
+        }
+    }
 
     app_AfterCreation(hwnd);
     return 0;
@@ -527,9 +549,8 @@ LRESULT wm_OnSizeChange(HWND hwnd, WPARAM wParam, LPARAM lParam)
     // Left Panel
     RECT leftPanelRect;
     GetClientRect(hLeftPanel, &leftPanelRect);
-
-    HWND hFileExploerList = GetDlgItem(hLeftPanel, 12);
-    MoveWindow(hFileExploerList, 0, 0, leftPanelRect.right, leftPanelRect.bottom, TRUE);
+    
+    SetWindowPos(g_hFileTree, nullptr, 0, 0, leftPanelRect.right, leftPanelRect.bottom, SWP_NOZORDER | SWP_NOACTIVATE);
 
     return 0;
 }
@@ -537,13 +558,18 @@ LRESULT wm_OnSizeChange(HWND hwnd, WPARAM wParam, LPARAM lParam)
 LRESULT wm_OnDestroy(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
     HWND hMiddilePanel = GetDlgItem(hwnd, 3);
+    HWND hLeftPanel = GetDlgItem(hwnd, 1);
 
     app_BeforeExit(hwnd);
+
+    app::common::log::LogToFile("application", "[Win32] Removing WindowSubclasses");
     RemoveWindowSubclass(hMiddilePanel, cb_MiddlePanel, 0);
-    PostQuitMessage(0);
+    RemoveWindowSubclass(hLeftPanel, cb_LeftPanel, 0);
 
     app::common::log::LogToFile("application", "[Win32] Destroying Main Window");
-    app::common::log::LogToFile("application", "[Win32] Removing WindowSubclasses");
+    CoUninitialize();
+    PostQuitMessage(0);
+
     return 0;
 }
 
@@ -797,6 +823,9 @@ void app::win32::UI::w32_createEditorWindow()
     icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
     icex.dwICC = ICC_TAB_CLASSES;
     InitCommonControlsEx(&icex);
+
+    // Start COM
+    CoInitialize(NULL);
 
     // Define WindowClass
     std::wstring ApplicationName = app::win32::system::StringToWideString(app::common::Localisation::GetText("app_name", false));
