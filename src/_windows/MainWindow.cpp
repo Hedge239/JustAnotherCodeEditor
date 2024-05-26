@@ -336,10 +336,17 @@ void app_BeforeExit(HWND hwnd)
 
 
 // LEFTPANNEL CALLBACKS //
+LRESULT leftPanel_wm_WhenNotified(HWND hMiddilePanel, WPARAM wParam, LPARAM lParam)
+{
+    return 0;
+}
+
 LRESULT CALLBACK cb_LeftPanel(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
 {
     switch (uMsg) 
     {
+        case WM_NOTIFY:
+            return leftPanel_wm_WhenNotified(hwnd, wParam, lParam);
     }
 
     return DefSubclassProc(hwnd, uMsg, wParam, lParam);
