@@ -1,7 +1,6 @@
 # GUI
 - [Linux] Wayland System
 - [Linux] X11 System
-- [Generic] File Explorer - Priority
 - [Generic] Bottem Panel Tabs
 - [Generic] interal Terminal support
 - [Generic] Theme Functionality
@@ -23,3 +22,4 @@
 # General
 - [Locals] Add more .local's
 - [Graphics] Create Icons
+- [Reformat] Organize & Seperate into multiple files (window.cpp & application.cpp) for GUI
