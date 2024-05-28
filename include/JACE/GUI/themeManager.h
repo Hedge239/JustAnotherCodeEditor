@@ -3,7 +3,7 @@
 
 namespace app
 {
-    namespace UI
+    namespace GUI
     {
         class themeManager
         {

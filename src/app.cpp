@@ -4,77 +4,69 @@
 #include "JACE/common/logHandeler.h"
 #include "JACE/common/localesHandeler.h"
 
-#include "JACE/_UI/WindowManager.h"
-#include "JACE/_UI/themeManager.h"
-
 #include "JACE/plugins/pluginManager.h"
+
+#include "JACE/GUI/themeManager.h"
+#include "JACE/GUI/windowManager.h"
 
 #include <filesystem>
 
-
-// This is to be coppied to ANYTHING that has window specific functions, I can see this getting REAL MESSY in the future witch is a later problem
 #ifdef _WIN32
-    #include "JACE/_win/win32.h"
-    const bool IsWindows = true;
-#elif defined(__unix__)
-    #include "JACE/_linux/linux.h"
-    const bool IsWindows = false;
+    #include "JACE/platforms/Windows/windows.h"
+    #define IsSystemWindows()
+#elif __linux__
+    #include "JACE/platforms/Linux/linux.h"
 #else
-    #error "Not supported operating system"
+    #error "No Supported Operating System"
 #endif
 
 
 int main(int argc, char* argv[])
 {
-
-    // Get userData dir
+    // Get userData Directory
     if(!std::filesystem::exists("app.cfg"))
     {
-        if(IsWindows)
-        {
-            #ifdef _WIN32
-                app::win32::system::GetDataPath();
-            #endif
-        }else
-        {
+        #ifdef IsSystemWindows
+            app::platforms::windows::system::GetUserDataPath();
+        #elif 
             char* DataPath = getenv("HOME");
             
             if(DataPath !=nullptr)
             {
-                app::common::global::APPDATA = std::string(DataPath) + "\\.local\\share\\Hedge239\\JustAnotherCodeEditor";
+                app::common::global::USRDATA = std::string(DataPath) + "\\.local\\share\\Hedge239\\JustAnotherCodeEditor";
             }
-        }
+        #endif
     }
 
-    // Set userData dir
+    // set USRDATA for entire application
     app::setup::SetDataPath();
 
-    if(!std::filesystem::is_directory(app::common::global::APPDATA))
-        {app::common::log::CreateCrashLog("'path=' in app.cfg does not lead to a valid directory"); exit(-1);}
-    if(app::common::global::APPDATA == "")
-        {app::common::log::CreateCrashLog("'path=' in app.cfg can not be empty"); exit(-1);}
-    
-    // Create Temp & Cache
-    if(!std::filesystem::exists(app::common::global::APPDATA + "\\cache"))
-        {std::filesystem::create_directory(app::common::global::APPDATA + "\\cache");}
-    if(!std::filesystem::exists(app::common::global::APPDATA + "\\temp"))
-        {std::filesystem::create_directory(app::common::global::APPDATA + "\\temp");}
+    if(!std::filesystem::is_directory(app::common::global::USRDATA))
+        {app::common::log::CreateCrashLog("Variable 'path=' in 'app.cfg' does not lead to a valid directory"); exit(-1);}
+    if(app::common::global::USRDATA == "")
+        {app::common::log::CreateCrashLog("Variable 'path=' in 'app.cfg' can not be empty"); exit(-1);}
+
+    // Create Temp & Cache Folders
+    if(!std::filesystem::exists(app::common::global::USRDATA + "\\cache"))
+        {std::filesystem::create_directory(app::common::global::USRDATA + "\\cache");}
+    if(!std::filesystem::exists(app::common::global::USRDATA + "\\temp"))
+        {std::filesystem::create_directory(app::common::global::USRDATA + "\\temp");}
 
     // Init Logger
-    app::common::log::startSession();
-    app::common::log::LogToFile("application", "[MAIN] UserData set to: " + app::common::global::APPDATA);
+    app::common::log::StartSession();
+    app::common::log::LogToFile("application", "[app.cpp] Variable 'USRDATA' changed to: " + app::common::global::USRDATA);
 
-    // Load userData
-    app::setup::validateUserFiles();
-    app::common::Localisation::setAppLanguage();
+    // Load Settings
+    app::setup::ValidateUserFiles();
+    app::common::Localisation::SetAppLanguage();
     app::plugins::manager::LoadPluginsFromFile();
-    app::UI::themeManager::InitThemeManager();
+    app::GUI::themeManager::InitThemeManager();
 
-    // Create UI
-    app::UI::appUI::InitMainWindow();
+    // Create Editor Window
+    app::GUI::windowManager::CreateEditorWindow();
 
     // Cleanup
-    app::common::log::LogToFile("application", "[MAIN] Performing Cleanup Task(s)");
+    app::common::log::LogToFile("application", "[app.cpp] Performing Cleanup Task(s)");
 
     app::plugins::manager::pmPluginPreUnloaded();
     app::plugins::manager::UnloadLoadedPlugins();

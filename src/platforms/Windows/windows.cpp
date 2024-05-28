@@ -1,12 +1,12 @@
-#include "JACE/_win/win32.h"
+#include "JACE/platforms/Windows/windows.h"
 
 #include "JACE/common/global.h"
 
 #include <string>
-#include "shlobj.h"
+#include <shlobj.h>
 
 
-void app::win32::system::GetDataPath()
+void app::platforms::windows::system::GetUserDataPath()
 {
     PWSTR DataPath;
     HRESULT result = SHGetKnownFolderPath(FOLDERID_Documents, 0, NULL, &DataPath);
@@ -15,15 +15,14 @@ void app::win32::system::GetDataPath()
     if(result == S_OK)
     {
         std::wstring dataPathString(DataPath);
-        app::common::global::APPDATA = std::string(dataPathString.begin(), dataPathString.end()) + "\\Hedge239\\JustAnotherCodeEditor";
+        app::common::global::USRDATA = std::string(dataPathString.begin(), dataPathString.end()) + "\\Hedge239\\JustAnotherCodeEditor";
     }else
     {
         return;
     }
 }
 
-// .... What did  I type again? - Did I mention that I hate windows?
-std::wstring app::win32::system::StringToWideString(std::string InputString)
+std::wstring app::platforms::windows::system::StringToWideString(std::string InputString)
 {
     if(InputString.empty())
     {return L"";}

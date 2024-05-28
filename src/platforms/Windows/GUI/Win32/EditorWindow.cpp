@@ -1,6 +1,6 @@
-#include "JACE/_win/MainWindow.h"
-#include "JACE/_win/win32.h"
-#include "JACE/_win/resources.h"
+#include "JACE/platforms/Windows/GUI/Win32/EditorWindow.h"
+#include "JACE/platforms/Windows/resources.h"
+#include "JACE/platforms/Windows/windows.h"
 
 #include "JACE/common/sessionManager.h"
 #include "JACE/common/localesHandeler.h"
@@ -45,7 +45,6 @@ INameSpaceTreeControl* g_fileTree = nullptr;
 std::string g_currentTab;
 std::vector<std::string> g_modifiedTabs;
 std::unordered_map<std::string, tabInfo> g_tabMap;
-
 
 // Tabs
 void app_RemapTabInfo(HWND hMiddilePanel, std::string oldTab, std::string newTabLocation)
@@ -153,7 +152,7 @@ void app_CloseTab(HWND hMiddilePanel, std::string tabName)
 
     if(std::find(g_modifiedTabs.begin(), g_modifiedTabs.end(), tabName) != g_modifiedTabs.end())
     {
-        int msgBoxResult = MessageBoxW(NULL, app::win32::system::StringToWideString(app::common::Localisation::GetText("warning_unsavedChanges", true)).c_str(), app::win32::system::StringToWideString(app::common::Localisation::GetText("app_name", true)).c_str(), MB_YESNOCANCEL | MB_ICONQUESTION);
+        int msgBoxResult = MessageBoxW(NULL, app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("warning_unsavedChanges", true)).c_str(), app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("app_name", true)).c_str(), MB_YESNOCANCEL | MB_ICONQUESTION);
 
         if(msgBoxResult == IDYES)
         {
@@ -169,7 +168,7 @@ void app_CloseTab(HWND hMiddilePanel, std::string tabName)
             }
 
             // Modified version of mode 1, to use tabName instead of the current tab
-            app::common::log::LogToFile("application", "[Win32] Saving file: " + tabName);
+            app::common::log::LogToFile("application", "[src/platforms/Windows/GUI/Win32/EditorWindow.cpp] Saving file: " + tabName);
             app::common::fileHandeler::UpdateFileText(g_tabMap[tabName].fileLocation, g_tabMap[tabName].storedText);
         }
 
@@ -183,7 +182,7 @@ void app_CloseTab(HWND hMiddilePanel, std::string tabName)
         ShowWindow(hEditorTextBox, SW_HIDE);
     }
 
-    app::common::log::LogToFile("application", "[Win32] Eraseing Traces of: " + tabName);
+    app::common::log::LogToFile("application", "[src/platforms/Windows/GUI/Win32/EditorWindow.cpp] Eraseing Traces of: " + tabName);
 
     for(int i = 0; i < TabCtrl_GetItemCount(hTabManager); ++i)
     {
@@ -197,7 +196,7 @@ void app_CloseTab(HWND hMiddilePanel, std::string tabName)
         // Find tab
         if(strcmp(tabName.c_str(), tie.pszText) == 0)
         {
-            app::common::log::LogToFile("application", "[Win32] Closeing Tab: " + tabName);
+            app::common::log::LogToFile("application", "[src/platforms/Windows/GUI/Win32/EditorWindow.cpp] Closeing Tab: " + tabName);
 
             TabCtrl_DeleteItem(hTabManager, i);
 
@@ -232,7 +231,7 @@ void app_saveTabs(int mode, HWND hwnd)
     {
         if(std::find(g_modifiedTabs.begin(), g_modifiedTabs.end(), g_currentTab) != g_modifiedTabs.end())
         {
-            app::common::log::LogToFile("application", "[Win32] Saving file: " + g_currentTab);
+            app::common::log::LogToFile("application", "[src/platforms/Windows/GUI/Win32/EditorWindow.cpp] Saving file: " + g_currentTab);
             app::common::fileHandeler::UpdateFileText(g_tabMap[g_currentTab].fileLocation, g_tabMap[g_currentTab].storedText);
             g_modifiedTabs.erase(std::find(g_modifiedTabs.begin(), g_modifiedTabs.end(), g_currentTab));
         }
@@ -242,7 +241,7 @@ void app_saveTabs(int mode, HWND hwnd)
         {
             std::string currentFile = g_modifiedTabs[i];
 
-            app::common::log::LogToFile("application", "[Win32] Saving file: " + currentFile);
+            app::common::log::LogToFile("application", "[src/platforms/Windows/GUI/Win32/EditorWindow.cpp] Saving file: " + currentFile);
             app::common::fileHandeler::UpdateFileText(g_tabMap[currentFile].fileLocation, g_tabMap[currentFile].storedText);
             g_modifiedTabs.erase(g_modifiedTabs.begin() + i);
         }
@@ -267,7 +266,7 @@ void app_saveTabs(int mode, HWND hwnd)
 
             if(GetSaveFileName(&ofn))
             {
-                app::common::log::LogToFile("application", "[Win32] Saving file: " + g_tabMap[g_currentTab].fileLocation + " --> " + TargetLocation);
+                app::common::log::LogToFile("application", "[src/platforms/Windows/GUI/Win32/EditorWindow.cpp] Saving file: " + g_tabMap[g_currentTab].fileLocation + " --> " + TargetLocation);
                 app::common::fileHandeler::TransferFile(g_tabMap[g_currentTab].fileLocation, TargetLocation, g_tabMap[g_currentTab].storedText);
 
                 // Basically remaps the tab...
@@ -444,43 +443,43 @@ LRESULT wm_OnCreate(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     // MenuBar - File
     HMENU hFileMenu = CreateMenu();
-    AppendMenuW(hEditorMenu, MF_POPUP, (UINT_PTR)hFileMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file", true)).c_str());
-    AppendMenuW(hFileMenu, MF_STRING, 1, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file_openfile", true)).c_str());
-    AppendMenuW(hFileMenu, MF_STRING, 2, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file_openfolder", true)).c_str());
+    AppendMenuW(hEditorMenu, MF_POPUP, (UINT_PTR)hFileMenu, app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("menu_file", true)).c_str());
+    AppendMenuW(hFileMenu, MF_STRING, 1, app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("menu_file_openfile", true)).c_str());
+    AppendMenuW(hFileMenu, MF_STRING, 2, app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("menu_file_openfolder", true)).c_str());
     AppendMenuW(hFileMenu, MF_SEPARATOR, 0, NULL);
-    AppendMenuW(hFileMenu, MF_STRING, 3, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file_closefile", true)).c_str());
-    AppendMenuW(hFileMenu, MF_STRING, 4, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file_closefolder", true)).c_str());
+    AppendMenuW(hFileMenu, MF_STRING, 3, app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("menu_file_closefile", true)).c_str());
+    AppendMenuW(hFileMenu, MF_STRING, 4, app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("menu_file_closefolder", true)).c_str());
     AppendMenuW(hFileMenu, MF_SEPARATOR, 0, NULL);
-    AppendMenuW(hFileMenu, MF_STRING, 5, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file_savecurrent", true)).c_str());
-    AppendMenuW(hFileMenu, MF_STRING, 6, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file_saveall", true)).c_str());
-    AppendMenuW(hFileMenu, MF_STRING, 7, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file_saveas", true)).c_str());
+    AppendMenuW(hFileMenu, MF_STRING, 5, app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("menu_file_savecurrent", true)).c_str());
+    AppendMenuW(hFileMenu, MF_STRING, 6, app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("menu_file_saveall", true)).c_str());
+    AppendMenuW(hFileMenu, MF_STRING, 7, app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("menu_file_saveas", true)).c_str());
     AppendMenuW(hFileMenu, MF_SEPARATOR, 0, NULL);
-    AppendMenuW(hFileMenu, MF_STRING, 8, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file_reload", true)).c_str());
-    AppendMenuW(hFileMenu, MF_STRING, 9, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_file_quit", true)).c_str());
+    AppendMenuW(hFileMenu, MF_STRING, 8, app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("menu_file_reload", true)).c_str());
+    AppendMenuW(hFileMenu, MF_STRING, 9, app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("menu_file_quit", true)).c_str());
 
     // MenuBar - Edit
     HMENU hEditMenu = CreateMenu();
-    AppendMenuW(hEditorMenu, MF_POPUP, (UINT_PTR)hEditMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_edit", true)).c_str());
+    AppendMenuW(hEditorMenu, MF_POPUP, (UINT_PTR)hEditMenu, app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("menu_edit", true)).c_str());
 
     // MenuBar - View
     HMENU hViewMenu = CreateMenu();
-    AppendMenuW(hEditorMenu, MF_POPUP, (UINT_PTR)hViewMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_view", true)).c_str());
+    AppendMenuW(hEditorMenu, MF_POPUP, (UINT_PTR)hViewMenu, app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("menu_view", true)).c_str());
 
     // MenuBar - Project - SOURCE CONTROL!!!!
     HMENU hProjectMenu = CreateMenu();
-    AppendMenuW(hEditorMenu, MF_POPUP, (UINT_PTR)hProjectMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_project", true)).c_str());
+    AppendMenuW(hEditorMenu, MF_POPUP, (UINT_PTR)hProjectMenu, app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("menu_project", true)).c_str());
 
     // MenuBar - Extensions - I got to somehow let plugins add to this -_-
     HMENU hPluginMenu = CreateMenu();
-    AppendMenuW(hEditorMenu, MF_POPUP, (UINT_PTR)hPluginMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_plugin", true)).c_str());
+    AppendMenuW(hEditorMenu, MF_POPUP, (UINT_PTR)hPluginMenu, app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("menu_plugin", true)).c_str());
 
     // MenuBar - Settings
     HMENU hSettingsMenu = CreateMenu();
-    AppendMenuW(hEditorMenu, MF_POPUP, (UINT_PTR)hSettingsMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_settings", true)).c_str());
+    AppendMenuW(hEditorMenu, MF_POPUP, (UINT_PTR)hSettingsMenu, app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("menu_settings", true)).c_str());
 
     // MenuBar - Help
     HMENU hHelpMenu = CreateMenu();
-    AppendMenuW(hEditorMenu, MF_POPUP, (UINT_PTR)hHelpMenu, app::win32::system::StringToWideString(app::common::Localisation::GetText("menu_help", true)).c_str());
+    AppendMenuW(hEditorMenu, MF_POPUP, (UINT_PTR)hHelpMenu, app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("menu_help", true)).c_str());
 
     SetMenu(hwnd, hEditorMenu);
 
@@ -580,7 +579,7 @@ LRESULT wm_OnSystemCommand(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         // Check if user has unsaved tabs
         if(!g_modifiedTabs.empty())
         {
-            int msgBoxResult = MessageBoxW(NULL, app::win32::system::StringToWideString(app::common::Localisation::GetText("warning_unsavedChanges", true)).c_str(), app::win32::system::StringToWideString(app::common::Localisation::GetText("app_name", true)).c_str(), MB_YESNOCANCEL | MB_ICONQUESTION);
+            int msgBoxResult = MessageBoxW(NULL, app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("warning_unsavedChanges", true)).c_str(), app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("app_name", true)).c_str(), MB_YESNOCANCEL | MB_ICONQUESTION);
 
             if(msgBoxResult == IDYES)
             {
@@ -816,7 +815,7 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
     return 0;
 }
 
-void app::win32::UI::w32_createEditorWindow()
+void app::platforms::windows::Win32::CreateEditorWindow()
 {
     // Start common controls
     INITCOMMONCONTROLSEX icex;
@@ -828,7 +827,7 @@ void app::win32::UI::w32_createEditorWindow()
     CoInitialize(NULL);
 
     // Define WindowClass
-    std::wstring ApplicationName = app::win32::system::StringToWideString(app::common::Localisation::GetText("app_name", false));
+    std::wstring ApplicationName = app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("app_name", false));
 
     WNDCLASSW WindowClass = {0};
     WindowClass.lpfnWndProc = WindowProcedure;

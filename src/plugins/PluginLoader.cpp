@@ -2,7 +2,6 @@
 
 #include "JACE/common/logHandeler.h"
 
-
 #ifdef _WIN32
 
     #include <windows.h>
@@ -43,6 +42,7 @@
 #else
     #error "Not supported operating system"
 #endif
+
 
 std::vector<void*> app::plugins::loader::PluginHandles;
 std::vector<PluginInterface*> app::plugins::loader::LoadedPlugins;

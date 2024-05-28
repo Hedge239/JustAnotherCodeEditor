@@ -16,7 +16,7 @@ void app::setup::SetDataPath()
         std::ofstream cfg;
 
         cfg.open("app.cfg");
-        cfg << "path=" + app::common::global::APPDATA << std::endl;
+        cfg << "path=" + app::common::global::USRDATA << std::endl;
 
         cfg.close();
     }else
@@ -28,7 +28,7 @@ void app::setup::SetDataPath()
         {
             if(line.substr(0,5) == "path=")
             {
-                app::common::global::APPDATA = std::string(line.substr(5));
+                app::common::global::USRDATA = std::string(line.substr(5));
             }
         }else
         {
@@ -36,13 +36,13 @@ void app::setup::SetDataPath()
         }
     }
 
-    if(!std::filesystem::is_directory(app::common::global::APPDATA))
-        {std::filesystem::create_directories(app::common::global::APPDATA);}
+    if(!std::filesystem::is_directory(app::common::global::USRDATA))
+        {std::filesystem::create_directories(app::common::global::USRDATA);}
 }
 
 void LoadUserCfgToMem()
 {
-    app::common::log::LogToFile("application", "[SETUP] Loading required settings to memory");
+    app::common::log::LogToFile("application", "[setup.cpp] Loading required settings to memory");
 
     // MEMORY MODE //
     try
@@ -50,62 +50,62 @@ void LoadUserCfgToMem()
         app::common::global::MEMORYMODE = std::stoi(app::common::fileHandeler::ReadLineFromFile("settings.ini", 2));
     }catch(std::invalid_argument& ia)
     {
-        app::common::log::LogToFile("application", "[SETUP] [ERROR] Invalid argument in 'settings.ini' line 2");
+        app::common::log::LogToFile("application", "[setup.cpp] [error] Invalid argument in 'settings.ini' line 2");
     }catch(std::out_of_range& oor)
     {
-        app::common::log::LogToFile("application", "[SETUP] [ERROR] Arugment out of range in 'settings.ini' line 2");
+        app::common::log::LogToFile("application", "[setup.cpp] [error] Arugment out of range in 'settings.ini' line 2");
     }
 
     if(!(app::common::global::MEMORYMODE == 0 || app::common::global::MEMORYMODE == 1))
     {
-        app::common::log::LogToFile("application", "[SETUP] [ERROR] Invalid argument in 'settings.ini' line 2, defaulting to 0");
+        app::common::log::LogToFile("application", "[setup.cpp] [error] Invalid argument in 'settings.ini' line 2, defaulting to 0");
         app::common::global::MEMORYMODE = 0;
     }
 
-    app::common::log::LogToFile("application", "[SETUP] MEMORYMODE set to: " + std::to_string(app::common::global::MEMORYMODE));
+    app::common::log::LogToFile("application", "[setup.cpp] Variable 'MEMORYMODE' set to: " + std::to_string(app::common::global::MEMORYMODE));
 
 }
 
-void app::setup::validateUserFiles()
+void app::setup::ValidateUserFiles()
 {
-    app::common::log::LogToFile("application", "[SETUP] Vaidating required UserFiles");
+    app::common::log::LogToFile("application", "[setup.cpp] Vaidating required UserFiles");
 
     // APPLICATION //
-    if(!std::filesystem::exists(app::common::global::APPDATA + "\\keybinds.ini"))
+    if(!std::filesystem::exists(app::common::global::USRDATA + "\\keybinds.ini"))
     {
         // KEYBINDS //
-        app::common::log::LogToFile("application", "[SETUP] Creating `keybinds.ini`");
+        app::common::log::LogToFile("application", "[setup.cpp] Creating file `keybinds.ini`");
         std::ofstream keybinds;
 
-        keybinds.open(app::common::global::APPDATA + "\\keybinds.ini");
+        keybinds.open(app::common::global::USRDATA + "\\keybinds.ini");
 
         keybinds.close();
     }
 
-    if(!std::filesystem::exists(app::common::global::APPDATA + "\\settings.ini"))
+    if(!std::filesystem::exists(app::common::global::USRDATA + "\\settings.ini"))
     {
         // SETTINGS //
-        app::common::log::LogToFile("application", "[SETUP] Creating `settings.ini`");
+        app::common::log::LogToFile("application", "[setup.cpp] Creating file `settings.ini`");
         std::ofstream settings;
 
-        settings.open(app::common::global::APPDATA + "\\settings.ini");
+        settings.open(app::common::global::USRDATA + "\\settings.ini");
         settings << "english" << std::endl;  // System Language
         settings << "0";  // Application Memory Mode: 0 = Direct: Load directly from file each time, 1 = Hybrid: Load text directly from file then save to memory
 
         settings.close();
     }
     
-    if(!std::filesystem::exists(app::common::global::APPDATA + "\\_repos.cfg"))
+    if(!std::filesystem::exists(app::common::global::USRDATA + "\\_repos.cfg"))
     {
         // PLUGIN REPOS //
-        app::common::log::LogToFile("application", "[SETUP] Creating `_repos.cfg`");
+        app::common::log::LogToFile("application", "[setup.cpp] Creating file `_repos.cfg`");
         std::ofstream repos;
 
-        repos.open(app::common::global::APPDATA + "\\_repos.cfg");
+        repos.open(app::common::global::USRDATA + "\\_repos.cfg");
 
         repos.close();
     }
 
-    app::common::log::LogToFile("application", "[SETUP] All files validated");
+    app::common::log::LogToFile("application", "[setup.cpp] All files validated");
     LoadUserCfgToMem();
 }

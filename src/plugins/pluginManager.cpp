@@ -9,7 +9,7 @@
 #include <vector>
 #include <string>
 
-
+// I would change this to fit the rest that I re-did, but this scares me, and I dont touch what works
 #ifdef _WIN32
     const bool IsWindows = true;
 #elif defined(__unix__)
@@ -21,19 +21,19 @@
 
 void app::plugins::manager::LoadPluginsFromFile()
 {
-    app::common::log::LogToFile("application", "[PLUGIN_MANAGER2] Initializing");
+    app::common::log::LogToFile("application", "[plguins/pluginManager.cpp] Initializing");
 
     // Validate plugin.ini
-    app::common::log::LogToFile("application", "[PLUGIN_MANAGER2] Searching for plugin.ini");
+    app::common::log::LogToFile("application", "[plguins/pluginManager.cpp] Searching for plugin.ini");
 
-    if(!std::filesystem::exists(app::common::global::APPDATA + "\\plugins\\plugin.ini"))
+    if(!std::filesystem::exists(app::common::global::USRDATA + "\\plugins\\plugin.ini"))
     {
         std::ofstream c_pluginlist;
-        std::filesystem::create_directory(app::common::global::APPDATA + "\\plugins");
-        c_pluginlist.open(app::common::global::APPDATA + "/plugins/plugin.ini");
+        std::filesystem::create_directory(app::common::global::USRDATA + "\\plugins");
+        c_pluginlist.open(app::common::global::USRDATA + "/plugins/plugin.ini");
         c_pluginlist.close();
 
-        app::common::log::LogToFile("application", "[PLUGIN_MANAGER2] plugin.ini not detected, creating");
+        app::common::log::LogToFile("application", "[plguins/pluginManager.cpp] plugin.ini not detected, creating");
 
         return;
     }
@@ -42,8 +42,8 @@ void app::plugins::manager::LoadPluginsFromFile()
     std::ifstream pluginListFile;
     std::vector<std::string> pluginList;
 
-    pluginListFile.open(app::common::global::APPDATA + "\\plugins\\plugin.ini");
-    app::common::log::LogToFile("application", "[PLUGIN_MANAGER2] Located plugin.ini, reading");
+    pluginListFile.open(app::common::global::USRDATA + "\\plugins\\plugin.ini");
+    app::common::log::LogToFile("application", "[plguins/pluginManager.cpp] Located plugin.ini, reading");
 
     if(pluginListFile.is_open())
     {
@@ -57,24 +57,24 @@ void app::plugins::manager::LoadPluginsFromFile()
             // Add on .dll (windows) or .so (Litterally everything else, except apple.. I think)
             if(IsWindows)
             {
-                line = app::common::global::APPDATA + "\\" + line + ".dll";
+                line = app::common::global::USRDATA + "\\" + line + ".dll";
             }else
             {
-                line = app::common::global::APPDATA + "\\" + line + ".so";
+                line = app::common::global::USRDATA + "\\" + line + ".so";
             };
 
-            app::common::log::LogToFile("application", "[PLUGIN_MANAGER2] Found: " + line);
+            app::common::log::LogToFile("application", "[plguins/pluginManager.cpp] Found: " + line);
             pluginList.push_back(line);
         }
     }else
     {
-        app::common::log::LogToFile("application", "[PLUGIN_MANAGER2] Faild to load plugin.ini");
+        app::common::log::LogToFile("application", "[plguins/pluginManager.cpp] Faild to load plugin.ini");
         return;
     }
 
     if(pluginList.empty())
     {
-        app::common::log::LogToFile("application", "[PLUGIN_MANAGER2] No Plugins Detected");
+        app::common::log::LogToFile("application", "[plguins/pluginManager.cpp] No Plugins Detected");
         return;
     }
 
@@ -89,12 +89,12 @@ void app::plugins::manager::LoadPluginsFromFile()
         plugin->PluginLoaded();
     }
 
-    app::common::log::LogToFile("application", "[PLUGIN_MANAGER2] Plugins Loaded");
+    app::common::log::LogToFile("application", "[plguins/pluginManager.cpp] Plugins Loaded");
 }
 
 void app::plugins::manager::UnloadLoadedPlugins()
 {
-    app::common::log::LogToFile("application", "[PLUGIN_MANAGER2] Unloading Plugins");
+    app::common::log::LogToFile("application", "[plguins/pluginManager.cpp] Unloading Plugins");
     app::plugins::loader::UnloadPlugins();
 }
 

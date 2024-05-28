@@ -1,11 +1,9 @@
 #ifndef _PLUGINLOADER_H_
 #define _PLUGINLOADER_H_
 
-
 #include <vector>
 #include <string>
 #include "pluginInterface.h"
-
 
 namespace app
 {

@@ -1,9 +1,7 @@
 #ifndef _SESSIONMANAGER_H_
 #define _SESSIONMANAGER_H_
 
-
 #include <string>
-
 
 namespace app
 {
@@ -12,11 +10,11 @@ namespace app
         class sessionManager
         {
             public:
-            static std::string lastOpenedProject();
+            static std::string LastOpenedProject();
             static int WindowHeight();
             static int WindowWidth();
 
-            static void setWindowSize(int Height, int Width);
+            static void SetWindowSize(int Height, int Width);
         };
     }
 }

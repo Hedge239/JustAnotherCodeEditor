@@ -12,13 +12,12 @@
 std::unordered_map<std::string, std::string> g_localtextMap;
 std::string g_appLanguage;
 
-
-void app::common::Localisation::setAppLanguage()
+void app::common::Localisation::SetAppLanguage()
 {
     // Find and get language from settings
-    if(!std::filesystem::exists(app::common::global::APPDATA + "\\settings.ini"))
+    if(!std::filesystem::exists(app::common::global::USRDATA + "\\settings.ini"))
     {
-        app::common::log::LogToFile("application", "[LOCALISATION_MANAGER] Faild to find settings. Relaunch the app, if that fails you did something wrong");
+        app::common::log::LogToFile("application", "[common/localesHandeler.cpp] Faild to find settings. Relaunch the app, if that fails you did something wrong");
         app::common::log::CreateCrashLog("NO SETTINGS FILE"); exit(-1);
     }
 
@@ -26,10 +25,10 @@ void app::common::Localisation::setAppLanguage()
 
     // Check if empty
     if(g_appLanguage == "")
-    {app::common::log::LogToFile("application", "[LOCALISATION_MANAGER] Faild to find language, defaulting to english"); g_appLanguage = "english";}
+    {app::common::log::LogToFile("application", "[common/localesHandeler.cpp] Faild to find language, defaulting to english"); g_appLanguage = "english";}
 
     // Apply file path to locales folder
-    app::common::log::LogToFile("application", "[LOCALISATION_MANAGER] Language set to: " + g_appLanguage);
+    app::common::log::LogToFile("application", "[common/localesHandeler.cpp] Language set to: " + g_appLanguage);
     g_appLanguage = "locales\\" + g_appLanguage + ".local";
 }
 
@@ -60,7 +59,7 @@ std::string app::common::Localisation::GetText(std::string inputKey, bool dontUs
         langFile.open(g_appLanguage);
         if(!langFile.is_open())
         {
-            app::common::log::LogToFile("application", "[LOCALISATION_MANAGER] Faild to open: " + g_appLanguage);
+            app::common::log::LogToFile("application", "[common/localesHandeler.cpp] Faild to open: " + g_appLanguage);
             app::common::log::CreateCrashLog("FAILD TO OPEN LANGUAGE FILE"); exit(-1);
         }
 
@@ -93,7 +92,7 @@ std::string app::common::Localisation::GetText(std::string inputKey, bool dontUs
         }
         catch(std::out_of_range& e)
         {
-            app::common::log::LogToFile("application", "[LOCALISATION_MANAGER] [ERROR] Invalid key for g_localTextMap");
+            app::common::log::LogToFile("application", "[common/localesHandeler.cpp] [ERROR] Invalid key for g_localTextMap");
         }
         
     }

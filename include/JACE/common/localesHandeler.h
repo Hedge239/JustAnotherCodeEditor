@@ -1,9 +1,7 @@
 #ifndef _LOCALESHANDELER_H_
 #define _LOCALESHANDELER_H_
 
-
 #include <string>
-
 
 namespace app
 {
@@ -12,7 +10,7 @@ namespace app
         class Localisation
         {
             public:
-            static void setAppLanguage();
+            static void SetAppLanguage();
             static std::string GetText(std::string key, bool dontUseMemory);
         };
     }

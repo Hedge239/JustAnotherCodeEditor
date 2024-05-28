@@ -3,12 +3,12 @@
 
 namespace app
 {
-    namespace UI
+    namespace GUI
     {
-        class appUI
+        class windowManager
         {
             public:
-            static void InitMainWindow();
+            static void CreateEditorWindow();
         };
     }
 }

@@ -1,9 +1,7 @@
 #ifndef _GLOBAL_H_
 #define _GLOBAL_H_
 
-
 #include <string>
-
 
 namespace app
 {
@@ -11,10 +9,10 @@ namespace app
     {
         namespace global
         {
-            extern std::string APPDATA;
-            extern std::string WORKINGDIR;
-            
-            extern int MEMORYMODE;
+            extern std::string USRDATA; // Where UserData is stored
+            extern std::string WORKINGDIR; // Where the working Project is sotred
+
+            extern int MEMORYMODE; // 1 = Load to memory 0 = Allways load from file
         }
     }
 }

@@ -10,13 +10,13 @@
 
 std::string app::common::fileHandeler::ReadLineFromFile(std::string TargetFilePath, int TargetLine)
 {
-    if(!std::filesystem::exists(app::common::global::APPDATA + "\\" + TargetFilePath))
-        {app::common::log::LogToFile("application", "[fileHandeler] Faild to find file: " + app::common::global::APPDATA + "\\" + TargetFilePath); return "";}
+    if(!std::filesystem::exists(app::common::global::USRDATA + "\\" + TargetFilePath))
+        {app::common::log::LogToFile("application", "[fileHandeler.cpp] Faild to find file: " + app::common::global::USRDATA + "\\" + TargetFilePath); return "";}
 
     std::ifstream file;
     std::string line;
 
-    file.open(app::common::global::APPDATA + "\\" + TargetFilePath);
+    file.open(app::common::global::USRDATA + "\\" + TargetFilePath);
     if(file.is_open())
     {
         int CurrentLine = 0;
@@ -34,7 +34,7 @@ std::string app::common::fileHandeler::ReadLineFromFile(std::string TargetFilePa
         }
     }else
     {
-        app::common::log::LogToFile("application", "[fileHandeler] Faild to open file: " + app::common::global::APPDATA + "\\" + TargetFilePath);
+        app::common::log::LogToFile("application", "[fileHandeler.cpp] Faild to open file: " + app::common::global::USRDATA + "\\" + TargetFilePath);
     }
 
     // Return with nothing, when there is nothing
@@ -45,7 +45,7 @@ std::string app::common::fileHandeler::ReadLineFromFile(std::string TargetFilePa
 std::string app::common::fileHandeler::GetTextFromFile(std::string TargetFilePath)
 {
     if(!std::filesystem::exists((TargetFilePath)))
-        {app::common::log::LogToFile("application", "[fileHandeler] Faild to find file: " + TargetFilePath); return "";}
+        {app::common::log::LogToFile("application", "[fileHandeler.cpp] Faild to find file: " + TargetFilePath); return "";}
 
     std::ifstream file;
 
@@ -67,7 +67,7 @@ std::string app::common::fileHandeler::GetTextFromFile(std::string TargetFilePat
         return fileContent;
     }else 
     {
-        app::common::log::LogToFile("application", "[fileHandeler] fild to open file: " + TargetFilePath);
+        app::common::log::LogToFile("application", "[fileHandeler.cpp] fild to open file: " + TargetFilePath);
     }
 
     return "";
@@ -76,7 +76,7 @@ std::string app::common::fileHandeler::GetTextFromFile(std::string TargetFilePat
 void app::common::fileHandeler::UpdateFileText(std::string TargetFilePath, std::string newText)
 {
     if(!std::filesystem::exists((TargetFilePath)))
-        {app::common::log::LogToFile("application", "[fileHandeler] Faild to find file: " + TargetFilePath); return;}
+        {app::common::log::LogToFile("application", "[fileHandeler.cpp] Faild to find file: " + TargetFilePath); return;}
 
     std::ofstream file;
     std::filesystem::remove(TargetFilePath);
@@ -100,7 +100,7 @@ void app::common::fileHandeler::UpdateFileText(std::string TargetFilePath, std::
 void app::common::fileHandeler::TransferFile(std::string OldFilePath, std::string NewFilePath, std::string fileText)
 {
     if(!std::filesystem::exists((OldFilePath)))
-        {app::common::log::LogToFile("application", "[fileHandeler] Faild to find file: " + OldFilePath); return;}
+        {app::common::log::LogToFile("application", "[fileHandeler.cpp] Faild to find file: " + OldFilePath); return;}
 
     std::ofstream file;
 

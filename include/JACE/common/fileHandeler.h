@@ -1,9 +1,7 @@
 #ifndef _FILEHANDELER_H_
 #define _FILEHANDELER_H_
 
-
 #include <string>
-
 
 namespace app
 {
