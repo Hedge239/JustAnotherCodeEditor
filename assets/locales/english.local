@@ -1,5 +1,7 @@
 app_name:Just Another Code Editor
 menu_file:File
+menu_file_newFile:New File
+menu_file_newTextFile:New Text File
 menu_file_openfile:Open File
 menu_file_openfolder:Open Folder
 menu_file_closefile:Close File

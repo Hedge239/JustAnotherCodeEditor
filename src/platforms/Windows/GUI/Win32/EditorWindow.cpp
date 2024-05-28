@@ -444,18 +444,21 @@ LRESULT wm_OnCreate(HWND hwnd, WPARAM wParam, LPARAM lParam)
     // MenuBar - File
     HMENU hFileMenu = CreateMenu();
     AppendMenuW(hEditorMenu, MF_POPUP, (UINT_PTR)hFileMenu, app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("menu_file", true)).c_str());
-    AppendMenuW(hFileMenu, MF_STRING, 1, app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("menu_file_openfile", true)).c_str());
-    AppendMenuW(hFileMenu, MF_STRING, 2, app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("menu_file_openfolder", true)).c_str());
+    AppendMenuW(hFileMenu, MF_STRING, 1, app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("menu_file_newFile", true)).c_str());
+    AppendMenuW(hFileMenu, MF_STRING, 2, app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("menu_file_newTextFile", true)).c_str());
     AppendMenuW(hFileMenu, MF_SEPARATOR, 0, NULL);
-    AppendMenuW(hFileMenu, MF_STRING, 3, app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("menu_file_closefile", true)).c_str());
-    AppendMenuW(hFileMenu, MF_STRING, 4, app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("menu_file_closefolder", true)).c_str());
+    AppendMenuW(hFileMenu, MF_STRING, 3, app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("menu_file_openfile", true)).c_str());
+    AppendMenuW(hFileMenu, MF_STRING, 4, app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("menu_file_openfolder", true)).c_str());
     AppendMenuW(hFileMenu, MF_SEPARATOR, 0, NULL);
-    AppendMenuW(hFileMenu, MF_STRING, 5, app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("menu_file_savecurrent", true)).c_str());
-    AppendMenuW(hFileMenu, MF_STRING, 6, app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("menu_file_saveall", true)).c_str());
-    AppendMenuW(hFileMenu, MF_STRING, 7, app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("menu_file_saveas", true)).c_str());
+    AppendMenuW(hFileMenu, MF_STRING, 5, app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("menu_file_closefile", true)).c_str());
+    AppendMenuW(hFileMenu, MF_STRING, 6, app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("menu_file_closefolder", true)).c_str());
     AppendMenuW(hFileMenu, MF_SEPARATOR, 0, NULL);
-    AppendMenuW(hFileMenu, MF_STRING, 8, app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("menu_file_reload", true)).c_str());
-    AppendMenuW(hFileMenu, MF_STRING, 9, app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("menu_file_quit", true)).c_str());
+    AppendMenuW(hFileMenu, MF_STRING, 7, app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("menu_file_savecurrent", true)).c_str());
+    AppendMenuW(hFileMenu, MF_STRING, 8, app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("menu_file_saveall", true)).c_str());
+    AppendMenuW(hFileMenu, MF_STRING, 9, app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("menu_file_saveas", true)).c_str());
+    AppendMenuW(hFileMenu, MF_SEPARATOR, 0, NULL);
+    AppendMenuW(hFileMenu, MF_STRING, 10, app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("menu_file_reload", true)).c_str());
+    AppendMenuW(hFileMenu, MF_STRING, 11, app::platforms::windows::system::StringToWideString(app::common::Localisation::GetText("menu_file_quit", true)).c_str());
 
     // MenuBar - Edit
     HMENU hEditMenu = CreateMenu();
@@ -725,49 +728,57 @@ LRESULT wm_OnCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
     switch(LOWORD(wParam))
     {
         // Toolbar - File
-        case 9: // Quit
+        case 11: // Quit
         {
             DestroyWindow(hwnd);
             break;
         }
-        case 8: // Reload
+        case 10: // Reload
         {
             InvalidateRect(hwnd, NULL, true);
             UpdateWindow(hwnd);
             break;
         }
-        case 7: // Save As
+        case 9: // Save As
         {
             app_saveTabs(3, hwnd);
             break;
         }
-        case 6: // Save All
+        case 8: // Save All
         {
             app_saveTabs(2, hwnd);
             break;
         }
-        case 5: // Save Current
+        case 7: // Save Current
         {
             app_saveTabs(1, hwnd);
             break;
         }
-        case 4: // Close Folder
+        case 6: // Close Folder
         {
             break;
         }
-        case 3: // Close File
+        case 5: // Close File
         {
             HWND hMiddilePanel = GetDlgItem(hwnd, 3);
             app_CloseTab(hMiddilePanel, g_currentTab);
             break;
         }
-        case 2: // Open Folder
+        case 4: // Open Folder
         {
             break;
         }
-        case 1: // Open File
+        case 3: // Open File
         {
             app_openFile(hwnd);
+            break;
+        }
+        case 2: // New Text File
+        {
+            break;
+        }
+        case 1: // New File
+        {
             break;
         }
     }
