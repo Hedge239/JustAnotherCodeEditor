@@ -511,7 +511,7 @@ LRESULT wm_OnCreate(HWND hwnd, WPARAM wParam, LPARAM lParam)
         g_fileTree->Initialize(hLeftPanel, &leftPanelRect, NSTCS_HASEXPANDOS | NSTCS_AUTOHSCROLL | NSTCS_FADEINOUTEXPANDOS);
 
         SHCreateItemInKnownFolder(FOLDERID_Desktop, 0, nullptr, IID_PPV_ARGS(&iDesktopItem));
-        g_fileTree->AppendRoot(iDesktopItem, SHCONTF_FOLDERS, NSTCRS_EXPANDED, nullptr);
+        g_fileTree->AppendRoot(iDesktopItem, SHCONTF_FOLDERS | SHCONTF_NONFOLDERS, NSTCRS_EXPANDED, nullptr);
 
         iDesktopItem->Release();
 
