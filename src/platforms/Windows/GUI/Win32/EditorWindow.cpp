@@ -53,7 +53,7 @@ void app_RemapTabInfo(HWND hMiddilePanel, std::string oldTab, std::string newTab
     HWND hTabManager = GetDlgItem(hMiddilePanel, 11);
     std::string newTabName = newTabLocation.substr(newTabLocation.find_last_of("\\/") + 1);
 
-    app::common::log::LogToFile("application", "[Win32] Remapping TabInfo: " + oldTab + " --> " + newTabName);
+    app::common::log::LogToFile("application", "[platforms/GUI/Win32/EditorWindow.cpp] Remapping TabInfo: " + oldTab + " --> " + newTabName);
 
     // Update TabName
     for(int i = 0; i < TabCtrl_GetItemCount(hTabManager); ++i)
@@ -68,7 +68,7 @@ void app_RemapTabInfo(HWND hMiddilePanel, std::string oldTab, std::string newTab
         // Update Tab name
         if(strcmp(oldTab.c_str(), tie.pszText) == 0)
         {
-            app::common::log::LogToFile("application", "[Win32] Updated TabName: " + oldTab + " -> " + newTabName);
+            app::common::log::LogToFile("application", "[platforms/GUI/Win32/EditorWindow.cpp] Updated TabName: " + oldTab + " -> " + newTabName);
 
             strcpy(tie.pszText, newTabName.c_str());
             TabCtrl_SetItem(hTabManager, i, &tie);
@@ -90,7 +90,7 @@ void app_CreateNewTab(HWND hMiddilePanel, std::string tabName, std::string fileL
     HWND hEditorTextBox = GetDlgItem(hMiddilePanel, 10);
     HWND hTabManager = GetDlgItem(hMiddilePanel, 11);
 
-    app::common::log::LogToFile("application", "Creating New tab: " + tabName);
+    app::common::log::LogToFile("application", "[platforms/GUI/Win32/EditorWindow.cpp] Creating New tab: " + tabName);
 
     // Create Tab
     TCITEM tie;
@@ -564,11 +564,11 @@ LRESULT wm_OnDestroy(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     app_BeforeExit(hwnd);
 
-    app::common::log::LogToFile("application", "[Win32] Removing WindowSubclasses");
+    app::common::log::LogToFile("application", "[platforms/GUI/Win32/EditorWindow.cpp] Removing WindowSubclasses");
     RemoveWindowSubclass(hMiddilePanel, cb_MiddlePanel, 0);
     RemoveWindowSubclass(hLeftPanel, cb_LeftPanel, 0);
 
-    app::common::log::LogToFile("application", "[Win32] Destroying Main Window");
+    app::common::log::LogToFile("application", "[platforms/GUI/Win32/EditorWindow.cpp] Destroying Main Window");
     CoUninitialize();
     PostQuitMessage(0);
 
