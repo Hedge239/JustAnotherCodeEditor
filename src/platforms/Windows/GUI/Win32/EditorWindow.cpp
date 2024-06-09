@@ -309,10 +309,20 @@ void app_openFile(HWND hwnd)
     }
 }
 
+void app_newFile(HWND hwnd, int mode)
+{
+
+}
+
 // Folder Managerment
 void app_openFolder(HWND hwnd, std::wstring folderPath)
 {
     HWND hLeftPanel = GetDlgItem(hwnd, 1);
+}
+
+void app_closeFolder(HWND hwnd)
+{
+
 }
 
 // application management
