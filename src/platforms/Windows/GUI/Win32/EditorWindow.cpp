@@ -33,7 +33,7 @@ int g_lowerPanelHeight = 100;
 POINT g_previousPanelLocation = {0};
 
 // Tabs & Folders
-struct tabInfo
+struct g_tabInfo
 {
     std::string fileLocation;
     std::string storedText;
@@ -44,7 +44,7 @@ INameSpaceTreeControl* g_fileTree = nullptr;
 
 std::string g_currentTab;
 std::vector<std::string> g_modifiedTabs;
-std::unordered_map<std::string, tabInfo> g_tabMap;
+std::unordered_map<std::string, g_tabInfo> g_tabMap;
 
 // Tabs
 void app_RemapTabInfo(HWND hMiddilePanel, std::string oldTab, std::string newTabLocation)
