@@ -19,9 +19,9 @@
 
 
 // Global Variables //
-#define CURSOR_REACH 10
-#define PANEL_RESIZE_THRESHOLD 10
-#define TABS_PANEL_SIZE 30
+#define DEF_CURSOR_REACH 10
+#define DEF_PANEL_RESIZE_THRESHOLD 10
+#define DEF_TABS_PANEL_SIZE 30
 
 // Panels
 bool g_isMovingLeftPanel = false;
@@ -553,10 +553,10 @@ LRESULT wm_OnSizeChange(HWND hwnd, WPARAM wParam, LPARAM lParam)
     GetClientRect(hMiddilePanel, &middlePanelRect);
 
     HWND hTabManager = GetDlgItem(hMiddilePanel, 11);
-    MoveWindow(hTabManager, 0, 0, middlePanelRect.right, TABS_PANEL_SIZE, TRUE);
+    MoveWindow(hTabManager, 0, 0, middlePanelRect.right, DEF_TABS_PANEL_SIZE, TRUE);
 
     HWND hEditorTextBox = GetDlgItem(hMiddilePanel, 10);
-    MoveWindow(hEditorTextBox, 0, TABS_PANEL_SIZE, middlePanelRect.right, middlePanelRect.bottom - 30, TRUE);
+    MoveWindow(hEditorTextBox, 0, DEF_TABS_PANEL_SIZE, middlePanelRect.right, middlePanelRect.bottom - 30, TRUE);
 
     // Left Panel
     RECT leftPanelRect;
@@ -632,11 +632,11 @@ LRESULT wm_SetMouseCursor(HWND hwnd, WPARAM wParam, LPARAM lParam)
         MapWindowPoints(HWND_DESKTOP, hwnd, (LPPOINT)&leftPanelRect, 2);
         MapWindowPoints(HWND_DESKTOP, hwnd, (LPPOINT)&lowerPanelRect, 2);
 
-        if(cursorPos.x >= leftPanelRect.right - CURSOR_REACH && cursorPos.x <= leftPanelRect.right + CURSOR_REACH)
+        if(cursorPos.x >= leftPanelRect.right - DEF_CURSOR_REACH && cursorPos.x <= leftPanelRect.right + DEF_CURSOR_REACH)
         {
             SetCursor(LoadCursor(NULL, IDC_SIZEWE));
             return 0;
-        }else if(cursorPos.y >= lowerPanelRect.top - CURSOR_REACH && cursorPos.y <= lowerPanelRect.top + CURSOR_REACH)
+        }else if(cursorPos.y >= lowerPanelRect.top - DEF_CURSOR_REACH && cursorPos.y <= lowerPanelRect.top + DEF_CURSOR_REACH)
         {
             SetCursor(LoadCursor(NULL, IDC_SIZENS));
             return 0;
@@ -674,13 +674,13 @@ LRESULT wm_OnLeftMouseDown(HWND hwnd, WPARAM wParam, LPARAM lParam)
     ScreenToClient(hwnd, (LPPOINT)&lowerPanelRect.left);
     ScreenToClient(hwnd, (LPPOINT)&lowerPanelRect.right);
 
-    if(LOWORD(lParam) >= leftPanelRect.right - CURSOR_REACH && LOWORD(lParam) <= leftPanelRect.right + CURSOR_REACH)
+    if(LOWORD(lParam) >= leftPanelRect.right - DEF_CURSOR_REACH && LOWORD(lParam) <= leftPanelRect.right + DEF_CURSOR_REACH)
     {
         g_isMovingLeftPanel = true;
         g_previousPanelLocation = {LOWORD(lParam), HIWORD(lParam)};
 
         SetCapture(hwnd);
-    }else if(HIWORD(lParam) >= lowerPanelRect.top - CURSOR_REACH && HIWORD(lParam) <= lowerPanelRect.top + CURSOR_REACH)
+    }else if(HIWORD(lParam) >= lowerPanelRect.top - DEF_CURSOR_REACH && HIWORD(lParam) <= lowerPanelRect.top + DEF_CURSOR_REACH)
     {
         g_isMovingLowerPanel = true;
         g_previousPanelLocation = {LOWORD(lParam), HIWORD(lParam)};
@@ -708,7 +708,7 @@ LRESULT wm_OnMouseMove(HWND hwnd, WPARAM wParam, LPARAM lParam)
     static DWORD lastResizeTime = 0;
     const DWORD currentTime = GetTickCount();
 
-    if ((wParam & MK_LBUTTON) && (currentTime - lastResizeTime > PANEL_RESIZE_THRESHOLD))
+    if ((wParam & MK_LBUTTON) && (currentTime - lastResizeTime > DEF_PANEL_RESIZE_THRESHOLD))
     {
         if(g_isMovingLeftPanel || g_isMovingLowerPanel)
         {
