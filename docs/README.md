@@ -1,4 +1,7 @@
 # Just Another Code Editor (JACE)
+[![CodeFactor](https://www.codefactor.io/repository/github/hedge239/justanothercodeeditor/badge/latest-dev)](https://www.codefactor.io/repository/github/hedge239/justanothercodeeditor/overview/latest-dev)
+
+
 JACE, short for Just Another Code Editor, is a open-source text editor design to write code while being cross-platform and light-weight and efficient on system resources.
 
 ## Features
