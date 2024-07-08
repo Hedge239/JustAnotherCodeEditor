@@ -92,10 +92,23 @@ void app_CreateNewTab(HWND hMiddilePanel, std::string tabName, std::string fileL
 
     app::common::log::LogToFile("application", "[platforms/GUI/Win32/EditorWindow.cpp] Creating New tab: " + tabName);
 
+    // Patch for if multiple of the same name files exist but in different directorys
+    std::string AppendedTabName = tabName;
+    int AppendedTabCount = 1;
+
+    // Loop until a unique key to created
+    while(g_tabMap.find(AppendedTabName) != g_tabMap.end())
+    {
+        AppendedTabName = tabName + "(" + std::to_string(AppendedTabCount) + ")";
+        AppendedTabCount++;
+
+        app::common::log::LogToFile("application", "[platforms/GUI/Win32/EditorWindow.cpp] Dupe found, appending number: " + AppendedTabName);
+    }
+
     // Create Tab
     TCITEM tie;
     tie.mask = TCIF_TEXT;
-    tie.pszText = (LPSTR)tabName.c_str();
+    tie.pszText = (LPSTR)AppendedTabName.c_str();
 
     if(TabCtrl_GetItemCount(hTabManager) == 0)
     {
@@ -114,7 +127,7 @@ void app_CreateNewTab(HWND hMiddilePanel, std::string tabName, std::string fileL
     }
 
     // Store tab for later use
-    g_tabMap[tabName] = {fileLocation, fileText};
+    g_tabMap[AppendedTabName] = {fileLocation, fileText};
 }
 
 void app_OpenTab(HWND hMiddilePanel, std::string tabName)
