@@ -46,6 +46,7 @@ std::string g_currentTab;
 std::vector<std::string> g_modifiedTabs;
 std::unordered_map<std::string, g_tabInfo> g_tabMap;
 
+
 // Tabs
 void app_RemapTabInfo(HWND hMiddilePanel, std::string oldTab, std::string newTabLocation)
 {   
