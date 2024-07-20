@@ -329,9 +329,15 @@ void app_newFile(HWND hwnd, int mode)
 }
 
 // Folder Managerment
-void app_openFolder(HWND hwnd, std::wstring folderPath)
+void app_openFolder(HWND hwnd, int mode, std::string folderPath)
 {
-    HWND hLeftPanel = GetDlgItem(hwnd, 1);
+    if(mode == 0)
+    {
+        // Open File prompt
+    }else if(mode == 1)
+    {
+        // Open Via pprovided path
+    }
 }
 
 void app_closeFolder(HWND hwnd)
@@ -351,8 +357,8 @@ void app_AfterCreation(HWND hwnd)
         ShowWindow(hEditorTextBox, SW_HIDE);
     }
 
-    // Open inital folder in the embeded file explorer, I will just use the application folder
-    app_openFolder(hwnd, L"");
+    // redundant for now, kept for later when session saving finished
+    //app_openFolder(hwnd, 1, "");
 }
 
 void app_BeforeExit(HWND hwnd)
@@ -790,6 +796,7 @@ LRESULT wm_OnCommand(HWND hwnd, WPARAM wParam, LPARAM lParam)
         }
         case 4: // Open Folder
         {
+            app_openFolder(hwnd, 0, "");
             break;
         }
         case 3: // Open File
