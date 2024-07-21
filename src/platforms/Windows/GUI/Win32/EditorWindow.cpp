@@ -331,9 +331,46 @@ void app_newFile(HWND hwnd, int mode)
 // Folder Managerment
 void app_openFolder(HWND hwnd, int mode, std::string folderPath)
 {
+    HWND hLeftPanel = GetDlgItem(hwnd, 1);
+
     if(mode == 0)
     {
         // Open File prompt
+        TCHAR TargetLocation[MAX_PATH] = {0};
+
+        BROWSEINFO bi;
+        ZeroMemory(&bi, sizeof(bi));
+
+        bi.hwndOwner = hwnd;
+        bi.lpszTitle = "Select a project directory";
+        bi.ulFlags = BIF_USENEWUI | BIF_RETURNONLYFSDIRS;
+        
+        LPITEMIDLIST ItemList = SHBrowseForFolder(&bi);
+
+        if(ItemList != NULL)
+        {
+            if(SHGetPathFromIDList(ItemList, TargetLocation))
+            {
+                IShellItem* newFileRoot = nullptr;
+
+                std::wstring newFilePath = app::platforms::windows::system::StringToWideString(TargetLocation);
+                HRESULT hResult = SHCreateItemFromParsingName(newFilePath.c_str(), nullptr, IID_PPV_ARGS(&newFileRoot));
+
+                if(SUCCEEDED(hResult))
+                {
+                    app::common::log::LogToFile("application", "[platforms/GUI/Win32/EditorWindow.cpp] Opening Folder: " + (std::string)TargetLocation);
+
+                    g_fileTree->RemoveAllRoots();
+                    g_fileTree->AppendRoot(newFileRoot, SHCONTF_FOLDERS | SHCONTF_NONFOLDERS, NSTCRS_EXPANDED, nullptr);
+
+                    newFileRoot->Release();
+                }
+
+            }
+
+            CoTaskMemFree(ItemList);
+        }
+
     }else if(mode == 1)
     {
         // Open Via pprovided path
