@@ -667,7 +667,7 @@ LRESULT wm_OnSystemCommand(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 
 // WINDOW MANAGER INPUT CONTROL //
-LRESULT wm_SetMouseCursor(HWND hwnd, WPARAM wParam, LPARAM lParam)
+LRESULT wm_SetMouseCursor(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     if(LOWORD(lParam) == HTCLIENT)
     {
@@ -691,30 +691,18 @@ LRESULT wm_SetMouseCursor(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
         if(cursorPos.x >= leftPanelRect.right - DEF_CURSOR_REACH && cursorPos.x <= leftPanelRect.right + DEF_CURSOR_REACH)
         {
+            // Panel Left/Right
             SetCursor(LoadCursor(NULL, IDC_SIZEWE));
             return 0;
         }else if(cursorPos.y >= lowerPanelRect.top - DEF_CURSOR_REACH && cursorPos.y <= lowerPanelRect.top + DEF_CURSOR_REACH)
         {
+            // Panel Up/down
             SetCursor(LoadCursor(NULL, IDC_SIZENS));
-            return 0;
-        }else
-        {
-            if(cursorPos.x <= 0 || cursorPos.x >= ClientRect.right - 1)
-            {
-                SetCursor(LoadCursor(NULL, IDC_SIZEWE));
-                return 0;
-            }else if(cursorPos.y >= ClientRect.bottom - 1)
-            {
-                SetCursor(LoadCursor(NULL, IDC_SIZENS));
-                return 0;
-            }
-
-            SetCursor(LoadCursor(NULL, IDC_ARROW));
             return 0;
         }
     }
 
-    return 0;
+    return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
 LRESULT wm_OnLeftMouseDown(HWND hwnd, WPARAM wParam, LPARAM lParam)
@@ -870,7 +858,7 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lPa
         return wm_OnLeftMouseUp(hwnd, wParam, lParam);
 
     case WM_SETCURSOR:
-        return wm_SetMouseCursor(hwnd, wParam, lParam);
+        return wm_SetMouseCursor(hwnd, uMsg, wParam, lParam);
 
     case WM_COMMAND:
         return wm_OnCommand(hwnd, wParam, lParam);
