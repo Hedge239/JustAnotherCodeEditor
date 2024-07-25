@@ -23,7 +23,7 @@
 #define DEF_PANEL_RESIZE_THRESHOLD 10
 #define DEF_TABS_PANEL_SIZE 30
 
-// Panels
+// PANELS //
 bool g_isMovingLeftPanel = false;
 bool g_isMovingLowerPanel = false;
 
@@ -32,7 +32,7 @@ int g_lowerPanelHeight = 100;
 
 POINT g_previousPanelLocation = {0};
 
-// Tabs & Folders
+// TABS & FOLDERS //
 struct g_tabInfo
 {
     std::string fileLocation;
