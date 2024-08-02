@@ -97,7 +97,7 @@ void app::setup::ValidateUserFiles()
     
     if(!std::filesystem::exists(app::common::global::USRDATA + "\\_repos.cfg"))
     {
-        // PLUGIN REPOS //
+        // REPOS //
         app::common::log::LogToFile("application", "[setup.cpp] Creating file `_repos.cfg`");
         std::ofstream repos;
 
