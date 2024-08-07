@@ -66,7 +66,7 @@ int main(int argc, char* argv[])
     app::GUI::windowManager::CreateEditorWindow();
 
     // Cleanup
-    app::common::log::LogToFile("application", "[app.cpp] Performing Cleanup Task(s)");
+    app::common::log::LogToFile("application", "[app.cpp] Performing Cleanup Tasks");
 
     app::plugins::manager::pmPluginPreUnloaded();
     app::plugins::manager::UnloadLoadedPlugins();
