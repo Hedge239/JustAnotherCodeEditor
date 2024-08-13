@@ -405,17 +405,53 @@ void app_BeforeExit(HWND hwnd)
 
 
 // LEFTPANNEL CALLBACKS //
-LRESULT leftPanel_wm_WhenNotified(HWND hleftPanel, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK cb_Filetree(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
 {
-    return 0;
-}
-
-LRESULT CALLBACK cb_LeftPanel(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
-{
-    switch (uMsg) 
+    switch (uMsg)
     {
         case WM_NOTIFY:
-            return leftPanel_wm_WhenNotified(hwnd, wParam, lParam);
+        {
+            // Special boy, only wants to work in this function, rude I say
+            LPNMHDR lPnmhdr = (LPNMHDR)lParam;
+
+            // Who needs comments (Proceedes to reget this a week later)
+            if (lPnmhdr->code == NM_DBLCLK)
+            {
+                IShellItemArray* selectedItems = nullptr;
+                HRESULT hResult = g_fileTree->GetSelectedItems(&selectedItems);
+
+                if(SUCCEEDED(hResult) && selectedItems)
+                {
+                    DWORD numberOfItems = 0;
+                    hResult = selectedItems->GetCount(&numberOfItems);
+
+                    // Eventually allow opening of multiple files, this is temp for testing purposes
+                    if(SUCCEEDED(hResult) && numberOfItems > 0)
+                    {
+                        IShellItem* shellItem = nullptr;
+                        hResult = selectedItems->GetItemAt(0, &shellItem);
+
+                        if (SUCCEEDED(hResult) && shellItem)
+                        {
+                            LPWSTR pszName;
+                            hResult = shellItem->GetDisplayName(SIGDN_FILESYSPATH, &pszName);
+
+                            if (SUCCEEDED(hResult))
+                            {
+                                  MessageBoxW(hwnd, pszName, L"test", MB_OK); // temp
+                                  CoTaskMemFree(pszName);
+                            }
+
+                            shellItem->Release();
+                        }
+                    }
+
+                    selectedItems->Release();
+                }
+            }
+
+            break;
+        }
     }
 
     return DefSubclassProc(hwnd, uMsg, wParam, lParam);
@@ -423,7 +459,7 @@ LRESULT CALLBACK cb_LeftPanel(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 
 
 // MIDDLEPANNEL CALLBACKS //
-LRESULT middlePanel_wm_WhenNotified(HWND hMiddilePanel, WPARAM wParam, LPARAM lParam)
+LRESULT middlePanel_wm_WhenNotified(HWND hwnd, WPARAM wParam, LPARAM lParam)
 {
     if(((LPNMHDR)lParam) -> idFrom == 11 && ((LPNMHDR)lParam) -> code == TCN_SELCHANGE)
     {
@@ -436,7 +472,7 @@ LRESULT middlePanel_wm_WhenNotified(HWND hMiddilePanel, WPARAM wParam, LPARAM lP
         tie.cchTextMax = sizeof(tabName)/sizeof(tabName[0]);
 
         if(TabCtrl_GetItem(((LPNMHDR)lParam)->hwndFrom, tabIndex, &tie))
-            app_OpenTab(hMiddilePanel, tie.pszText);
+            app_OpenTab(hwnd, tie.pszText);
     }
 
     return 0;
@@ -567,8 +603,6 @@ LRESULT wm_OnCreate(HWND hwnd, WPARAM wParam, LPARAM lParam)
     SetWindowSubclass(hMiddlePanel, cb_MiddlePanel, 0, 0);
 
     // Left Panel
-    SetWindowSubclass(hLeftPanel, cb_LeftPanel, 0, 0);
-
     if(SUCCEEDED(CoCreateInstance(CLSID_NamespaceTreeControl, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&g_fileTree))))
     {
         RECT leftPanelRect;
@@ -587,6 +621,8 @@ LRESULT wm_OnCreate(HWND hwnd, WPARAM wParam, LPARAM lParam)
         {
             oleWindow->GetWindow(&g_hFileTree);
             oleWindow->Release();
+
+            SetWindowSubclass(g_hFileTree, cb_Filetree, 0, 0);
         }
     }
 
@@ -633,7 +669,7 @@ LRESULT wm_OnDestroy(HWND hwnd, WPARAM wParam, LPARAM lParam)
 
     app::common::log::LogToFile("application", "[platforms/GUI/Win32/EditorWindow.cpp] Removing WindowSubclasses");
     RemoveWindowSubclass(hMiddilePanel, cb_MiddlePanel, 0);
-    RemoveWindowSubclass(hLeftPanel, cb_LeftPanel, 0);
+    RemoveWindowSubclass(hwnd, cb_Filetree, 0);
 
     app::common::log::LogToFile("application", "[platforms/GUI/Win32/EditorWindow.cpp] Destroying Main Window");
     CoUninitialize();
