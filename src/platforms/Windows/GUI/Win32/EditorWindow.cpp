@@ -446,6 +446,12 @@ LRESULT CALLBACK cb_Filetree(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam,
                                 std::string fileName = filePathString.substr(filePathString.find_last_of("\\/") + 1);
 
                                 app_CreateNewTab(hMiddilePanel, fileName, filePathString);
+
+                                if(g_currentTab.empty())
+                                {
+                                    app_OpenTab(hMiddilePanel, fileName);
+                                }
+
                                 CoTaskMemFree(pszName);
                             }
                         }
