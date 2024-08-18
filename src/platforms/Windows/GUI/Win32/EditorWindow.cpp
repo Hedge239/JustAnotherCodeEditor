@@ -438,7 +438,7 @@ LRESULT CALLBACK cb_Filetree(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam,
 
                             if (SUCCEEDED(hResult))
                             {
-                                  MessageBoxW(hwnd, pszName, L"test", MB_OK); // temp
+                                  MessageBoxW(hwnd, pszName, L"File Path", MB_OK); // temp
                                   CoTaskMemFree(pszName);
                             }
 
