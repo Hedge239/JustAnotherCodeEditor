@@ -39,7 +39,6 @@ struct g_tabInfo
     std::string storedText;
 };
 
-HWND g_hFileTree = nullptr;
 INameSpaceTreeControl* g_fileTree = nullptr;
 
 std::string g_currentTab;
@@ -425,25 +424,33 @@ LRESULT CALLBACK cb_Filetree(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam,
                     DWORD numberOfItems = 0;
                     hResult = selectedItems->GetCount(&numberOfItems);
 
-                    // Eventually allow opening of multiple files, this is temp for testing purposes
-                    if(SUCCEEDED(hResult) && numberOfItems > 0)
+                    for(DWORD i = 0; i < numberOfItems; ++i)
                     {
                         IShellItem* shellItem = nullptr;
                         hResult = selectedItems->GetItemAt(0, &shellItem);
 
-                        if (SUCCEEDED(hResult) && shellItem)
+                        if(SUCCEEDED(hResult) && shellItem)
                         {
                             LPWSTR pszName;
                             hResult = shellItem->GetDisplayName(SIGDN_FILESYSPATH, &pszName);
 
-                            if (SUCCEEDED(hResult))
+                            if(SUCCEEDED(hResult))
                             {
-                                  MessageBoxW(hwnd, pszName, L"File Path", MB_OK); // temp
-                                  CoTaskMemFree(pszName);
-                            }
+                                HWND hLeftPanel = GetParent(hwnd);
+                                HWND hMain = GetParent(hLeftPanel);
+                                HWND hMiddilePanel = GetDlgItem(hMain, 3);
 
-                            shellItem->Release();
+                                std::wstring wFilePathString = pszName;
+
+                                std::string filePathString = std::string(wFilePathString.begin(), wFilePathString.end());
+                                std::string fileName = filePathString.substr(filePathString.find_last_of("\\/") + 1);
+
+                                app_CreateNewTab(hMiddilePanel, fileName, filePathString);
+                                CoTaskMemFree(pszName);
+                            }
                         }
+
+                        shellItem->Release();
                     }
 
                     selectedItems->Release();
@@ -603,6 +610,8 @@ LRESULT wm_OnCreate(HWND hwnd, WPARAM wParam, LPARAM lParam)
     SetWindowSubclass(hMiddlePanel, cb_MiddlePanel, 0, 0);
 
     // Left Panel
+    HWND hFileTree = nullptr;
+
     if(SUCCEEDED(CoCreateInstance(CLSID_NamespaceTreeControl, NULL, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&g_fileTree))))
     {
         RECT leftPanelRect;
@@ -619,10 +628,11 @@ LRESULT wm_OnCreate(HWND hwnd, WPARAM wParam, LPARAM lParam)
         IOleWindow* oleWindow;
         if (SUCCEEDED(g_fileTree->QueryInterface(IID_PPV_ARGS(&oleWindow))))
         {
-            oleWindow->GetWindow(&g_hFileTree);
+            oleWindow->GetWindow(&hFileTree);
             oleWindow->Release();
 
-            SetWindowSubclass(g_hFileTree, cb_Filetree, 0, 0);
+            SetWindowLongPtr(hFileTree, GWLP_ID, 13);
+            SetWindowSubclass(hFileTree, cb_Filetree, 0, 0);
         }
     }
 
@@ -655,7 +665,8 @@ LRESULT wm_OnSizeChange(HWND hwnd, WPARAM wParam, LPARAM lParam)
     RECT leftPanelRect;
     GetClientRect(hLeftPanel, &leftPanelRect);
     
-    SetWindowPos(g_hFileTree, nullptr, 0, 0, leftPanelRect.right, leftPanelRect.bottom, SWP_NOZORDER | SWP_NOACTIVATE);
+    HWND hFileTree = GetDlgItem(hLeftPanel, 13);
+    SetWindowPos(hFileTree, nullptr, 0, 0, leftPanelRect.right, leftPanelRect.bottom, SWP_NOZORDER | SWP_NOACTIVATE);
 
     return 0;
 }
